@@ -993,9 +993,27 @@ export default function IrishHillsLakes() {
                     {activeAmenityTab === 'schools' && <AmenitySection title="Schools & Education" icon={<Icons.school />} items={currentAmenities.schools} />}
                     {activeAmenityTab === 'dining' && <AmenitySection title="Restaurants & Dining" icon={<Icons.utensils />} items={currentAmenities.dining} />}
                     {activeAmenityTab === 'shopping' && <AmenitySection title="Shopping & Grocery" icon={<Icons.shopping />} items={currentAmenities.shopping} />}
-                    {activeAmenityTab === 'medical' && <AmenitySection title="Medical & Healthcare" icon={<Icons.medical />} items={currentAmenities.medical} />}
-                    {activeAmenityTab === 'utilities' && <AmenitySection title="Utilities & Services" icon={<Icons.wrench />} items={Object.entries(currentAmenities.utilities).map(([k, v]) => ({ name: k.charAt(0).toUpperCase() + k.slice(1), distance: v }))} />}
-                    {activeAmenityTab === 'lake-rules' && <AmenitySection title="Lake Rules & Regulations" icon={<Icons.anchor />} items={Object.entries(currentAmenities.lakeRules).map(([k, v]) => ({ name: k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()), distance: v }))} />}
+                    {activeAmenityTab === 'utilities' && (
+  <AmenitySection
+    title="Utilities & Services"
+    icon={<Icons.wrench />}
+    items={Object.entries(currentAmenities.utilities).map(([k, v]) => ({
+      name: k,
+      distance: v
+    }))}
+  />
+)}
+                    {activeAmenityTab === 'lake-rules' && (
+  <AmenitySection
+    title="Lake Rules & Regulations"
+    icon={<Icons.anchor />}
+    items={Object.entries(currentAmenities.lakeRules).map(([k, v]) => ({
+      name: k,
+      distance: v
+    }))}
+  />
+)}
+
                     {activeAmenityTab === 'recreation' && <AmenitySection title="Recreation & Activities" icon={<Icons.tree />} items={currentAmenities.recreation} />}
                   </div>
                 </div>
