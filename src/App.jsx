@@ -547,7 +547,7 @@ export default function IrishHillsLakes() {
               backgroundSize: '128px'
             }} />
 
-            <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 500px', animation: 'fadeUp 1s ease-out', textAlign: 'left' }}>
               <div style={{
                 fontSize: '0.75rem', fontWeight: 600, letterSpacing: '5px',
