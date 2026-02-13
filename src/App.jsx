@@ -1013,17 +1013,6 @@ export default function IrishHillsLakes() {
               </div>
             </section>
           )}
-                    {activeAmenityTab === 'recreation' && (
-                      <AmenitySection title="Recreation & Activities" icon={<Icons.tree />}
-                        items={currentAmenities.recreation} />
-                    )}
-
-                    {/* No-data fallback for lakes without amenity data */}
-                    {!currentAmenities && activeAmenityTab !== 'overview' && (
-                      <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                        <p>Amenity data coming soon for this lake.</p>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
