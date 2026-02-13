@@ -548,7 +548,7 @@ export default function IrishHillsLakes() {
             }} />
 
             <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 500px', animation: 'fadeUp 1s ease-out', textAlign: 'left' }}>
+              <div style={{ flex: '0 1 500px', animation: 'fadeUp 1s ease-out', textAlign: 'left' }}>
               <div style={{
                 fontSize: '0.75rem', fontWeight: 600, letterSpacing: '5px',
                 textTransform: 'uppercase', marginBottom: '1.5rem',
