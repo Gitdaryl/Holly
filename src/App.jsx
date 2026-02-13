@@ -321,17 +321,121 @@ const Icons = {
   map: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>,
   shopping: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>,
 };
+};
 
-# Missing Components Fix
+// ═══ AMENITY SECTION COMPONENT ═══
+function AmenitySection({ title, icon, items }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+        {icon}
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332' }}>{title}</h3>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {items.map((item, i) => (
+          <div 
+            key={i} 
+            style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'flex-start',
+              padding: '0.75rem 1rem',
+              background: '#faf9f7',
+              borderRadius: '8px',
+              border: '1px solid #e8e4df'
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1a2332' }}>
+                {item.name}
+              </div>
+              {item.type && (
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>
+                  {item.type}
+                </div>
+              )}
+              {item.rating && (
+                <div style={{ fontSize: '0.75rem', color: '#e84393', marginTop: '0.2rem', fontWeight: 500 }}>
+                  ★ {item.rating}
+                </div>
+              )}
+            </div>
+            <div style={{ 
+              fontSize: '0.8rem', 
+              color: '#6b7a8d',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              marginLeft: '1rem'
+            }}>
+              {item.distance}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-You're seeing blank pages on lake detail views because two components are referenced but not defined in your code:
-
-1. `<LakeMap />` - line ~850
-2. `<AmenitySection />` - multiple places
-
-## Quick Fix: Add These Components
-
-Add these **before** the main `export default function IrishHillsLakes()` line:
+// ═══ LAKE MAP COMPONENT ═══
+function LakeMap({ lake, amenities }) {
+  return (
+    <div style={{
+      width: '100%',
+      height: '400px',
+      background: 'linear-gradient(135deg, #e8e4df 0%, #f5f3f0 100%)',
+      borderRadius: '12px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: '1px solid #e8e4df',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        opacity: 0.3
+      }} />
+      <div style={{ textAlign: 'center', zIndex: 1, padding: '2rem' }}>
+        <div style={{
+          width: '60px',
+          height: '60px',
+          background: 'white',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 1.5rem',
+          boxShadow: '0 4px 12px rgba(26,35,50,0.1)',
+          border: '2px solid #e84393'
+        }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e84393" strokeWidth="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>
+          {lake.name}
+        </h4>
+        <p style={{ fontSize: '0.85rem', color: '#6b7a8d', marginBottom: '1rem' }}>
+          {amenities.coordinates.lat.toFixed(4)}°N, {Math.abs(amenities.coordinates.lng).toFixed(4)}°W
+        </p>
+        <div style={{
+          display: 'inline-block',
+          background: 'rgba(232,67,147,0.1)',
+          padding: '0.5rem 1rem',
+          borderRadius: '8px',
+          fontSize: '0.8rem',
+          color: '#6b7a8d'
+        }}>
+          📍 Interactive map coming soon
+        </div>
+      </div>
+    </div>
+  );
+}
 
 ```jsx
 // ═══ AMENITY SECTION COMPONENT ═══
