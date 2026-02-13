@@ -388,9 +388,9 @@ export default function IrishHillsLakes() {
           50% { transform: translateY(-6px); }
         }
         @keyframes hollyFloat {
-          0%, 100% { transform: scaleX(-1) translateY(0); }
-          50% { transform: scaleX(-1) translateY(-10px); }
-        }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
         .holly-hero-wrap { animation: fadeUp 1.2s ease-out 0.4s both; }
         @media (max-width: 900px) { .holly-hero-wrap { display: none !important; } }
         @keyframes ripple {
