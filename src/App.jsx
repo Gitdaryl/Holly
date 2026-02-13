@@ -505,13 +505,7 @@ function LakeMap({ lake, amenities }) {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      
-      {/* Center content */}
-      <div style={{ 
-        textAlign: 'center', 
-        zIndex: 1,
-        padding: '2rem'
-      }}>
+      <div style={{ textAlign: 'center', zIndex: 1, padding: '2rem' }}>
         <div style={{
           width: '60px',
           height: '60px',
@@ -530,20 +524,11 @@ function LakeMap({ lake, amenities }) {
           </svg>
         </div>
         
-        <h4 style={{ 
-          fontSize: '1.1rem', 
-          fontWeight: 700, 
-          color: '#1a2332',
-          marginBottom: '0.5rem'
-        }}>
+        <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>
           {lake.name}
         </h4>
         
-        <p style={{ 
-          fontSize: '0.85rem', 
-          color: '#6b7a8d',
-          marginBottom: '1rem'
-        }}>
+        <p style={{ fontSize: '0.85rem', color: '#6b7a8d', marginBottom: '1rem' }}>
           {amenities.coordinates.lat.toFixed(4)}°N, {Math.abs(amenities.coordinates.lng).toFixed(4)}°W
         </p>
         
@@ -561,7 +546,6 @@ function LakeMap({ lake, amenities }) {
     </div>
   );
 }
-
 // ═══ MAIN COMPONENT ═══
 export default function IrishHillsLakes() {
 ```
