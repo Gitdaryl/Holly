@@ -547,7 +547,7 @@ export default function IrishHillsLakes() {
               backgroundSize: '128px'
             }} />
 
-            <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 500px', animation: 'fadeUp 1s ease-out', textAlign: 'left' }}>
               <div style={{
                 fontSize: '0.75rem', fontWeight: 600, letterSpacing: '5px',
@@ -612,20 +612,21 @@ export default function IrishHillsLakes() {
             </div>
 
               {/* Holly's floating cutout photo - flipped to face left into the text */}
-              <div className="holly-hero-wrap" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'center', opacity: 0 }}>
-                <img
-                  src="/images/holly-cutout.png"
-                  alt="Holly Griewahn - Irish Hills Lake Specialist"
-                  style={{
-                    height: 'clamp(350px, 50vh, 520px)',
-                    width: 'auto',
-                    animation: 'hollyFloat 6s ease-in-out infinite',
-                    filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))',
-                    objectFit: 'contain',
-                    marginBottom: '-2rem',
-                  }}
-                />
-              </div>
+<div className="holly-hero-wrap" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'center', opacity: 0 }}>
+  <img
+    src="/images/holly-cutout.png"
+    alt="Holly Griewahn - Irish Hills Lake Specialist"
+    style={{
+      height: 'clamp(350px, 50vh, 520px)',
+      width: 'auto',
+      animation: 'hollyFloat 6s ease-in-out infinite',
+      filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))',
+      objectFit: 'contain',
+      marginBottom: '-2rem',
+      transform: 'scaleX(-1)', // ← ADD THIS LINE to flip the image horizontally
+    }}
+  />
+</div>
             </div>
 
             {/* Scroll indicator */}
