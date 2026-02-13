@@ -1140,8 +1140,42 @@ export default function IrishHillsLakes() {
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 5vw, 2.8rem)', marginBottom: '1rem', fontWeight: 600 }}>Interested in {currentLake.name}?</h2>
               <p style={{ fontSize: '1.05rem', marginBottom: '2.5rem', opacity: 0.7, lineHeight: 1.7, fontWeight: 300 }}>Let Holly schedule a personal tour and share insider knowledge about living on {currentLake.name}.</p>
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button className="cta-primary" onClick={() => alert('GHL Booking Calendar')} style={{ padding: '1rem 2rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Icons.calendar /> Schedule a Tour</button>
-                <a href="tel:5174033413" className="cta-secondary" style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.08)', color: 'white', border: '1.5px solid rgba(255,255,255,0.2)', borderRadius: '10px', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Icons.phone /> Call Holly</a>
+<button
+  className="cta-primary"
+  onClick={() => alert('GHL Booking Calendar')}
+  style={{
+    padding: '1rem 2rem',
+    background: '#e84393',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    fontWeight: 600,
+    fontSize: '0.95rem',
+    cursor: 'pointer'
+  }}
+>
+  <Icons.calendar /> Schedule a Tour
+</button>
+
+<a
+  href="tel:5174033413"
+  className="cta-secondary"
+  style={{
+    padding: '1rem 2rem',
+    background: 'rgba(255,255,255,0.08)',
+    color: 'white',
+    border: '1.5px solid rgba(255,255,255,0.2)',
+    borderRadius: '10px',
+    fontWeight: 500,
+    fontSize: '0.95rem',
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
+  }}
+>
+  <Icons.phone /> Call Holly
+</a>
               </div>
             </div>
           </section>
