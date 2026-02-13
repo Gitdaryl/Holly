@@ -1028,10 +1028,9 @@ export default function IrishHillsLakes() {
   />
 )}
 
-{activeAmenityTab === 'recreation' &&
+{activeAmenityTab === 'recreation' && (
   <AmenitySection title="Recreation & Activities" icon={<Icons.tree />} items={currentAmenities.recreation} />
 )}
-
                   </div>
                 </div>
               </div>
