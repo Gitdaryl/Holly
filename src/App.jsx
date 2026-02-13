@@ -1037,21 +1037,6 @@ export default function IrishHillsLakes() {
             </section>
           )}
 
-          {/* NO AMENITY DATA FALLBACK */}
-          {!currentAmenities && (
-            <section style={{ padding: '3rem 2rem', background: '#faf9f7' }}>
-              <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '2px dashed #e8e4df' }}>
-                <div style={{ color: '#84393', marginBottom: '1rem' }}><Icons.map /></div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', color: '#1a2332', marginBottom: '0.5rem' }}>Neighborhood Data Coming Soon</h3>
-                <p style={{ color: '#6b7a8d', fontSize: '0.95rem', lineHeight: 1.7 }}>Full amenity details, map view, and proximity data for {currentLake.name} are being compiled. Contact Holly directly for neighborhood information.</p>
-              </div>
-            </section>
-          )}
-                  </div>
-                </div>
-              </div>
-            </section>
-
           {/* NO AMENITY DATA NOTICE */}
           {!currentAmenities && (
             <section style={{ padding: '3rem 2rem', background: '#faf9f7' }}>
