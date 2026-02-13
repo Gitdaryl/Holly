@@ -1017,7 +1017,6 @@ export default function IrishHillsLakes() {
                 </div>
               </div>
             </section>
-          )}
 
           {/* NO AMENITY DATA NOTICE */}
           {!currentAmenities && (
