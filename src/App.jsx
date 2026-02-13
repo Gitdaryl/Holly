@@ -989,21 +989,22 @@ export default function IrishHillsLakes() {
                           { name: 'Public Access', distance: currentAmenities.lakeRules.publicAccess },
                         ]} />
                       </div>
-                    )}{activeAmenityTab === 'schools' &&
+                    )}
+                    {activeAmenityTab === 'schools' && (
   <AmenitySection title="Schools & Education" icon={<Icons.school />} items={currentAmenities.schools} />
-}
+)}
 
-{activeAmenityTab === 'dining' &&
+{activeAmenityTab === 'dining' && (
   <AmenitySection title="Restaurants & Dining" icon={<Icons.utensils />} items={currentAmenities.dining} />
-}
+)}
 
-{activeAmenityTab === 'shopping' &&
+{activeAmenityTab === 'shopping' && (
   <AmenitySection title="Shopping & Grocery" icon={<Icons.shopping />} items={currentAmenities.shopping} />
-}
+)}
 
-{activeAmenityTab === 'medical' &&
+{activeAmenityTab === 'medical' && (
   <AmenitySection title="Medical & Healthcare" icon={<Icons.medical />} items={currentAmenities.medical} />
-}
+)}
 
 {activeAmenityTab === 'utilities' && (
   <AmenitySection
@@ -1029,7 +1030,7 @@ export default function IrishHillsLakes() {
 
 {activeAmenityTab === 'recreation' &&
   <AmenitySection title="Recreation & Activities" icon={<Icons.tree />} items={currentAmenities.recreation} />
-}
+)}
 
                   </div>
                 </div>
