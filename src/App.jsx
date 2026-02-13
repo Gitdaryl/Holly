@@ -505,13 +505,6 @@ function LakeMap({ lake, amenities }) {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Map placeholder background pattern */}
-      <div style={{
-  position: 'absolute',
-  inset: 0,
-  background: 'rgba(156, 146, 172, 0.03)',
-  opacity: 0.3
-      }} />
       
       {/* Center content */}
       <div style={{ 
