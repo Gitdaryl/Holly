@@ -265,6 +265,15 @@ const testimonials = [
   { quote: "Holly's expertise saved us from buying a property with hidden issues. She's not just a realtor, she's a lake expert.", name: "The Williams Family", lake: "Vineyard Lake" },
 ];
 
+const blogPosts = [
+  { id: 1, slug: 'buying-lakefront-michigan', title: 'What to Know Before Buying Lakefront in Michigan', excerpt: 'From septic inspections to seawall conditions, here are the top things every lake buyer needs to check before making an offer.', date: 'Feb 10, 2025', category: 'Buyer Tips', readTime: '5 min read' },
+  { id: 2, slug: 'devils-lake-fishing-guide', title: 'The Complete Fishing Guide to Devils Lake', excerpt: "Devils Lake is Michigan's 4th deepest lake and home to trophy bass, bluegill, and perch. Here's everything you need to know.", date: 'Jan 28, 2025', category: 'Lake Guides', readTime: '7 min read' },
+  { id: 3, slug: 'irish-hills-market-update', title: 'Irish Hills Lake Property Market Update: Winter 2025', excerpt: 'Lake property inventory remains tight heading into spring. Here are the numbers and what they mean for buyers and sellers.', date: 'Jan 15, 2025', category: 'Market Updates', readTime: '4 min read' },
+  { id: 4, slug: 'septic-systems-101', title: 'Septic Systems 101: What Every Lake Homeowner Should Know', excerpt: 'Most lake properties run on septic. Learn how they work, maintenance schedules, and warning signs of trouble.', date: 'Jan 5, 2025', category: 'Homeowner Tips', readTime: '6 min read' },
+  { id: 5, slug: 'best-lakes-for-families', title: 'Top 5 Irish Hills Lakes for Families with Kids', excerpt: 'Sandy beaches, shallow entry, calm waters — these are the lakes where young families thrive.', date: 'Dec 20, 2024', category: 'Lake Guides', readTime: '5 min read' },
+  { id: 6, slug: 'winter-lake-home-prep', title: 'Winterizing Your Lake Home: A Complete Checklist', excerpt: "Closing up for winter? Don't skip these critical steps to protect your investment from freeze damage.", date: 'Dec 8, 2024', category: 'Homeowner Tips', readTime: '4 min read' },
+];
+
 // ═══════════════════════════════════════════════════════════
 // ICONS LIBRARY
 // ═══════════════════════════════════════════════════════════
@@ -290,6 +299,8 @@ const Icons = {
   car: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 00-.84-.99L16 11l-2.7-3.6a1 1 0 00-.8-.4H5.24a2 2 0 00-1.8 1.1l-.8 1.63A6 6 0 002 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>,
   map: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>,
   compass: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>,
+  blog: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>,
+  clock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -430,6 +441,11 @@ export default function IrishHillsLakes() {
   const navigateToDirectory = () => {
     setCurrentView('directory');
     setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToBlog = () => {
+    setCurrentView('blog');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -747,9 +763,74 @@ export default function IrishHillsLakes() {
           </div>
         </div>
       </section>
+
+      {/* Blog Preview Section */}
+      <section style={{ padding: '5rem 2rem', background: '#faf9f7' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Lake Living Blog</h2>
+            <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1rem', borderRadius: '2px' }} />
+            <p style={{ color: '#6b7a8d', fontSize: '1.05rem' }}>Tips, guides, and market insights from Holly</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+            {blogPosts.slice(0, 3).map((post, i) => (
+              <div key={post.id} className="lake-card" style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', animation: `fadeUp 0.6s ease-out ${i * 0.1}s both`, opacity: 0 }}>
+                <div style={{ height: '12px', background: `linear-gradient(135deg, #e84393, #f093fb)` }} />
+                <div style={{ padding: '1.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                    <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.72rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Icons.clock /> {post.readTime}</span>
+                  </div>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
+                  <p style={{ fontSize: '0.88rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>
+                  <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{post.date}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+            <button onClick={navigateToBlog} style={{ padding: '0.75rem 2rem', background: 'white', color: '#1a2332', border: '2px solid #1a2332', borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease' }}>
+              View All Posts <Icons.arrow />
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
+  
+// ═══ BLOG PAGE ═══
+  const BlogPage = () => (
+    <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
+      <div style={{ height: '40vh', minHeight: '300px', position: 'relative', background: 'linear-gradient(135deg, #1a2332 0%, #2c3e50 100%)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <button onClick={navigateToDirectory} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '2rem' }}>
+            <Icons.back /> Home
+          </button>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', fontFamily: "'Playfair Display', serif", marginBottom: '0.75rem' }}>Lake Living Blog</h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem' }}>Tips, guides, and market insights from Holly Griewahn</p>
+        </div>
+      </div>
 
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '3rem 2rem' }}>
+        {blogPosts.map((post, i) => (
+          <article key={post.id} style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '2rem', marginBottom: '1.5rem', cursor: 'pointer', transition: 'all 0.3s ease', animation: `fadeUp 0.5s ease-out ${i * 0.08}s both`, opacity: 0 }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(26,35,50,0.1)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+              <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
+              <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{post.date}</span>
+              <span style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Icons.clock /> {post.readTime}</span>
+            </div>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h2>
+            <p style={{ fontSize: '0.95rem', color: '#6b7a8d', lineHeight: 1.7, marginBottom: '1rem' }}>{post.excerpt}</p>
+            <span style={{ fontSize: '0.85rem', color: '#e84393', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>Read More <Icons.arrow /></span>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+  
   // ═══ MAIN RETURN ═══
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332', minHeight: '100vh', background: '#faf9f7' }}>
@@ -772,7 +853,8 @@ export default function IrishHillsLakes() {
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
             <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Holly Griewahn | Lake Specialist</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
             <a href="tel:5551234567" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
               <Icons.phone /> (555) 123-4567
             </a>
@@ -781,7 +863,7 @@ export default function IrishHillsLakes() {
       </nav>
 
       {/* Page Content */}
-      {currentView === 'directory' ? <DirectoryPage /> : <LakeDetailPage />}
+      {currentView === 'directory' ? <DirectoryPage /> : currentView === 'blog' ? <BlogPage /> : <LakeDetailPage />}
 
       {/* Footer */}
       <footer style={{ background: '#0f1923', padding: '4rem 2rem 2rem', color: '#94a3b8' }}>
