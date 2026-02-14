@@ -652,9 +652,6 @@ export default function IrishHillsLakes() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
             {/* Left: Text */}
             <div style={{ flex: 1, textAlign: 'left', position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '40px' }} />
-              </div>
               <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, background: 'linear-gradient(135deg, #e84393 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
                 Holly Griewahn
               </h1>
@@ -834,9 +831,11 @@ export default function IrishHillsLakes() {
   // ═══ MAIN RETURN ═══
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332', minHeight: '100vh', background: '#faf9f7' }}>
-      <style>{css}{`
-        @media (min-width: 900px) {
+      @media (min-width: 900px) {
           .holly-photo-container { display: block !important; }
+        }
+        @media (max-width: 600px) {
+          .phone-text { display: none; }
         }
       `}</style>
 
@@ -851,12 +850,13 @@ export default function IrishHillsLakes() {
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={navigateToDirectory}>
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-            <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Holly Griewahn | Lake Specialist</span>
+            <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Holly Griewahn</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
             <a href="tel:5551234567" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
-              <Icons.phone /> (555) 123-4567
+              <Icons.phone /> <span className="phone-text">(555) 123-4567</span>
+            </a>
             </a>
           </div>
         </div>
