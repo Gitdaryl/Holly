@@ -858,7 +858,6 @@ export default function IrishHillsLakes() {
             <a href="tel:5551234567" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
               <Icons.phone /> <span className="phone-text">(555) 123-4567</span>
             </a>
-            </a>
           </div>
         </div>
       </nav>
