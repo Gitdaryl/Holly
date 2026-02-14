@@ -659,10 +659,10 @@ export default function IrishHillsLakes() {
             </div>
 
             {/* Right: Holly's Photo */}
-           <div style={{ flex: '0 0 auto', display: 'none', marginLeft: '1rem' }} className="holly-photo-container">
+           <div style={{ flex: '0 0 auto', display: 'none', paddingLeft: '2rem' }} className="holly-photo-container">
               <img src="/images/holly-cutout.png" alt="Holly Griewahn - Lake Property Specialist" style={{
                 height: '500px', maxHeight: '70vh', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))',
-                transform: 'scaleX(-1)', animation: 'gentleFloat 4s ease-in-out infinite'
+                WebkitTransform: 'scaleX(-1)', transform: 'scaleX(-1)'
               }} />
             </div>
           </div>
