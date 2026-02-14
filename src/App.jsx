@@ -640,13 +640,13 @@ export default function IrishHillsLakes() {
                 <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '40px' }} />
               </div>
               <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, background: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
-                Irish Hills Lakes
+                Holly Griewahn
               </h1>
-              <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 300 }}>
-                Discover Your Perfect Lakefront Paradise
+             <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 300 }}>
+                Holly Griewahn | Foundation Realty
               </p>
               <p style={{ fontSize: '1rem', color: '#e84393', fontWeight: 600, marginBottom: '2rem' }}>
-                Holly Griewahn | Lake Property Specialist
+                Serving 58 Lakes Across Michigan's Irish Hills
               </p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <button onClick={() => document.getElementById('lake-grid')?.scrollIntoView({ behavior: 'smooth' })} style={{ padding: '0.85rem 2rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 8px 30px rgba(232,67,147,0.3)' }}>
@@ -659,10 +659,10 @@ export default function IrishHillsLakes() {
             </div>
 
             {/* Right: Holly's Photo */}
-            <div style={{ flex: '0 0 auto', display: 'none' }} className="holly-photo-container">
+           <div style={{ flex: '0 0 auto', display: 'none', marginLeft: '1rem' }} className="holly-photo-container">
               <img src="/images/holly-cutout.png" alt="Holly Griewahn - Lake Property Specialist" style={{
                 height: '500px', maxHeight: '70vh', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))',
-                animation: 'gentleFloat 4s ease-in-out infinite'
+                transform: 'scaleX(-1)', animation: 'gentleFloat 4s ease-in-out infinite'
               }} />
             </div>
           </div>
@@ -770,7 +770,7 @@ export default function IrishHillsLakes() {
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={navigateToDirectory}>
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-            <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Irish Hills Lakes</span>
+            <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Holly Griewahn | Lake Specialist</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <a href="tel:5551234567" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
