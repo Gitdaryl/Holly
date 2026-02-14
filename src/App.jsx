@@ -831,7 +831,8 @@ export default function IrishHillsLakes() {
   // ═══ MAIN RETURN ═══
   return (
     <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332', minHeight: '100vh', background: '#faf9f7' }}>
-      @media (min-width: 900px) {
+      <style>{css}{`
+        @media (min-width: 900px) {
           .holly-photo-container { display: block !important; }
         }
         @media (max-width: 600px) {
