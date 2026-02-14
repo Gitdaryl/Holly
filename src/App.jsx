@@ -639,13 +639,13 @@ export default function IrishHillsLakes() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '40px' }} />
               </div>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, background: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
+              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, background: 'linear-gradient(135deg, #e84393 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
                 Holly Griewahn
               </h1>
              <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 300 }}>
-                Holly Griewahn | Foundation Realty
+                Foundation Realty | Irish Hills Lake Property Specialist
               </p>
-              <p style={{ fontSize: '1rem', color: '#e84393', fontWeight: 600, marginBottom: '2rem' }}>
+              <p style={{ fontSize: '1rem', color: '#60a5fa', fontWeight: 600, marginBottom: '2rem' }}>
                 Serving 58 Lakes Across Michigan's Irish Hills
               </p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
