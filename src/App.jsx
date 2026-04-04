@@ -159,8 +159,7 @@ export default function IrishHillsRealty() {
   };
 
   const navigateToBlog = () => {
-    setCurrentView('blog');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.location.href = '/blog';
   };
 
   // Smart search: matches regions, lakes, towns, property types
@@ -497,7 +496,7 @@ export default function IrishHillsRealty() {
                 Lakes, Farms, Country Estates & Village Living
               </p>
               <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.5)', marginBottom: '2rem', maxWidth: '520px', lineHeight: 1.7 }}>
-                From Grass Lake to Posey Lake, Michigan Center to Tecumseh — 9 distinct regions, 50+ lakes, and every type of property in between. 30+ years of knowing every road, every lake, and every neighbor.
+                From Grass Lake to Posey Lake, Michigan Center to Tecumseh - 9 distinct regions, 50+ lakes, and every type of property in between. 30+ years of knowing every road, every lake, and every neighbor.
               </p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <button onClick={() => document.getElementById('region-grid')?.scrollIntoView({ behavior: 'smooth' })} style={{ padding: '0.85rem 2rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 8px 30px rgba(232,67,147,0.3)' }}>
@@ -509,7 +508,7 @@ export default function IrishHillsRealty() {
               </div>
             </div>
             <div style={{ flex: '0 0 auto', display: 'none', paddingLeft: '0.5rem' }} className="holly-photo-container">
-              <img src="/images/holly-cutout.png" alt="Holly Griewahn — Foundation Realty" style={{
+              <img src="/images/holly-cutout.png" alt="Holly Griewahn - Foundation Realty" style={{
                 height: '500px', maxHeight: '70vh', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))',
               }} />
             </div>
@@ -736,7 +735,7 @@ export default function IrishHillsRealty() {
               <span style={{ fontWeight: 700, color: 'white', fontSize: '1rem' }}>Foundation Realty</span>
             </div>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '1rem' }}>
-              Holly Griewahn brings 30+ years of local expertise to every transaction. From lakefront estates to family farms, village homes to country retreats — the Irish Hills authority.
+              Holly Griewahn brings 30+ years of local expertise to every transaction. From lakefront estates to family farms, village homes to country retreats - the Irish Hills authority.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#e84393', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500 }}>

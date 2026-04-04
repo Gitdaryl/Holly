@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// INDIVIDUAL LAKE DATA — Corrected from Michigan DNR,
+// INDIVIDUAL LAKE DATA - Corrected from Michigan DNR,
 // local real estate sources, and verified acreage
 // ═══════════════════════════════════════════════════════════
 
@@ -31,7 +31,7 @@ export const lakes = {
     type: 'all-sports',
     access: 'public',
     tagline: 'Connected to Devils Lake via channel',
-    description: 'The larger of Lenawee County\'s two Round Lakes, this approximately 500-acre lake connects to Devils Lake through a navigable channel. Together they form the Manitou Beach lake system — over 1,800 acres of combined surface water.',
+    description: 'The larger of Lenawee County\'s two Round Lakes, this approximately 500-acre lake connects to Devils Lake through a navigable channel. Together they form the Manitou Beach lake system - over 1,800 acres of combined surface water.',
     features: ['~500 acres', 'Channel to Devils Lake', 'Part of 1,800-acre system', 'All-sports'],
     fishSpecies: ['Largemouth bass', 'Bluegill', 'Crappie'],
     avgPrice: '$350K',
@@ -63,7 +63,7 @@ export const lakes = {
     type: 'no-wake',
     access: 'public',
     tagline: 'Peaceful no-wake lake surrounded by state park',
-    description: 'The smaller Round Lake — 100 acres of calm, no-wake water completely surrounded by W.J. Hayes State Park. Connected to Wamplers Lake via a channel navigable by smaller boats. A favorite for pan fishing, kayaking, and canoeing.',
+    description: 'The smaller Round Lake - 100 acres of calm, no-wake water completely surrounded by W.J. Hayes State Park. Connected to Wamplers Lake via a channel navigable by smaller boats. A favorite for pan fishing, kayaking, and canoeing.',
     features: ['100 acres', 'No-wake', 'Surrounded by state park', 'Channel to Wamplers', 'Pan fishing'],
     fishSpecies: ['Bluegill', 'Crappie', 'Perch'],
     avgPrice: '$225K',
@@ -204,7 +204,7 @@ export const lakes = {
     type: 'all-sports',
     access: 'public',
     tagline: 'Deep fishing lake near Cement City',
-    description: 'Farwell Lake is a 213-acre lake in Jackson County reaching 52 feet deep — excellent for fishing. Located near Cement City and the Hillsdale County border, it offers affordable lakefront with a neighborly feel. Yes, there\'s another Round Lake adjacent — the third one in the Irish Hills.',
+    description: 'Farwell Lake is a 213-acre lake in Jackson County reaching 52 feet deep - excellent for fishing. Located near Cement City and the Hillsdale County border, it offers affordable lakefront with a neighborly feel. Yes, there\'s another Round Lake adjacent - the third one in the Irish Hills.',
     features: ['213 acres', '52 ft deep', 'All-sports', 'Great fishing', 'Affordable', 'Near Cement City'],
     fishSpecies: ['Largemouth bass', 'Bluegill', 'Perch', 'Northern pike'],
     avgPrice: '$245K',
@@ -217,7 +217,7 @@ export const lakes = {
     depth: null,
     type: 'all-sports',
     access: 'public',
-    tagline: 'The third Round Lake — near Farwell Lake',
+    tagline: 'The third Round Lake - near Farwell Lake',
     description: 'The third Round Lake in the Irish Hills area, adjacent to Farwell Lake near Cement City. A smaller, quieter lake with affordable waterfront. Because apparently the Irish Hills can\'t get enough Round Lakes.',
     features: ['Adjacent to Farwell Lake', 'Quiet', 'Affordable'],
     fishSpecies: ['Bluegill', 'Bass'],
@@ -249,8 +249,8 @@ export const lakes = {
     depth: 63,
     type: 'all-sports',
     access: 'public',
-    tagline: 'Small but deep — serious fishing lake',
-    description: 'Iron Lake is a compact 78-acre lake that punches above its weight with 63 feet of depth — as deep as Devils Lake. Home to black crappie, bluegill, and northern pike, it\'s a hidden gem for anglers who prefer less boat traffic.',
+    tagline: 'Small but deep - serious fishing lake',
+    description: 'Iron Lake is a compact 78-acre lake that punches above its weight with 63 feet of depth - as deep as Devils Lake. Home to black crappie, bluegill, and northern pike, it\'s a hidden gem for anglers who prefer less boat traffic.',
     features: ['78 acres', '63 ft deep', 'Great fishing', 'Low traffic', 'Affordable'],
     fishSpecies: ['Black crappie', 'Bluegill', 'Northern pike'],
     avgPrice: '$225K',
@@ -293,7 +293,7 @@ export const lakes = {
     depth: null,
     type: 'all-sports',
     access: 'public',
-    tagline: 'Four interconnected lakes — miles of water',
+    tagline: 'Four interconnected lakes - miles of water',
     description: 'The Wolf Lake Chain of Lakes at Michigan Center connects four lakes for miles of navigable water. A popular boating and fishing destination in northern Jackson County with a mix of year-round homes and seasonal cottages.',
     features: ['Chain of 4 lakes', 'Miles of navigable water', 'Boating & fishing', 'Michigan Center community'],
     fishSpecies: ['Largemouth bass', 'Bluegill', 'Northern pike', 'Walleye'],
@@ -302,7 +302,7 @@ export const lakes = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// SEARCH INDEX — Maps every lake name (including alternates)
+// SEARCH INDEX - Maps every lake name (including alternates)
 // to its region for smart search routing
 // ═══════════════════════════════════════════════════════════
 

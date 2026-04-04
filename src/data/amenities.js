@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// AMENITY DATA — Now keyed by REGION instead of individual lake
+// AMENITY DATA - Now keyed by REGION instead of individual lake
 // Shared amenities apply to all lakes in a cluster
 // ═══════════════════════════════════════════════════════════
 
@@ -429,8 +429,8 @@ export const blogPosts = [
   { id: 2, slug: 'devils-lake-fishing-guide', title: 'The Complete Fishing Guide to Devils Lake', excerpt: "Devils Lake is the largest lake in Lenawee County and home to trophy bass, bluegill, and perch. Here's everything you need to know.", date: 'Jan 28, 2025', category: 'Lake Guides', readTime: '7 min read' },
   { id: 3, slug: 'irish-hills-market-update', title: 'Irish Hills Property Market Update: Winter 2025', excerpt: 'Property inventory remains tight heading into spring across lakes, rural, and village markets. Here are the numbers.', date: 'Jan 15, 2025', category: 'Market Updates', readTime: '4 min read' },
   { id: 4, slug: 'septic-systems-101', title: 'Septic Systems 101: What Every Country Homeowner Should Know', excerpt: 'Most lake and rural properties run on septic. Learn how they work, maintenance schedules, and warning signs of trouble.', date: 'Jan 5, 2025', category: 'Homeowner Tips', readTime: '6 min read' },
-  { id: 5, slug: 'best-lakes-for-families', title: 'Top 5 Irish Hills Lakes for Families with Kids', excerpt: 'Sandy beaches, shallow entry, calm waters — these are the lakes where young families thrive.', date: 'Dec 20, 2024', category: 'Lake Guides', readTime: '5 min read' },
+  { id: 5, slug: 'best-lakes-for-families', title: 'Top 5 Irish Hills Lakes for Families with Kids', excerpt: 'Sandy beaches, shallow entry, calm waters - these are the lakes where young families thrive.', date: 'Dec 20, 2024', category: 'Lake Guides', readTime: '5 min read' },
   { id: 6, slug: 'winter-lake-home-prep', title: 'Winterizing Your Lake Home: A Complete Checklist', excerpt: "Closing up for winter? Don't skip these critical steps to protect your investment from freeze damage.", date: 'Dec 8, 2024', category: 'Homeowner Tips', readTime: '4 min read' },
   { id: 7, slug: 'tecumseh-hidden-gem', title: 'Why Tecumseh Is Southeast Michigan\'s Best-Kept Secret', excerpt: 'A walkable downtown, thriving arts scene, and country living minutes away. Here\'s why buyers are discovering Tecumseh.', date: 'Nov 20, 2024', category: 'Area Guides', readTime: '5 min read' },
-  { id: 8, slug: 'farm-property-guide', title: 'Buying Rural Property in the Irish Hills: What You Need to Know', excerpt: 'Well water, pole barns, land surveys, and zoning — the rural buyer\'s guide to southeast Michigan.', date: 'Nov 5, 2024', category: 'Buyer Tips', readTime: '6 min read' },
+  { id: 8, slug: 'farm-property-guide', title: 'Buying Rural Property in the Irish Hills: What You Need to Know', excerpt: 'Well water, pole barns, land surveys, and zoning - the rural buyer\'s guide to southeast Michigan.', date: 'Nov 5, 2024', category: 'Buyer Tips', readTime: '6 min read' },
 ];

@@ -1,4 +1,4 @@
-# Irish Hills Lakes — Holly Griewahn / Foundation Realty
+# Irish Hills Lakes - Holly Griewahn / Foundation Realty
 
 Waterfront real estate site covering 58 lakes in Michigan's Irish Hills region.
 
@@ -23,8 +23,8 @@ npx vercel
 
 ## Structure
 
-- `src/App.jsx` — Full single-page app (lake directory + individual lake pages)
-- `public/images/` — Holly's cutout photo + Foundation Realty logo
+- `src/App.jsx` - Full single-page app (lake directory + individual lake pages)
+- `public/images/` - Holly's cutout photo + Foundation Realty logo
 - Amenity data for 3 proof-of-concept lakes (Devils Lake, Clark Lake, Vineyard Lake)
 
 ## To Add
