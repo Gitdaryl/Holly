@@ -41,13 +41,13 @@ const Icons = {
 function AmenitySection({ title, icon, items, type }) {
   if (type === 'list') {
     return (
-      <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{ marginBottom: '1rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {icon} {title}
         </h3>
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
+        <div style={{ display: 'grid', gap: '0.4rem' }}>
           {items.map((item, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.45rem 0.85rem', background: '#f8f7f5', borderRadius: '8px', border: '1px solid #e8e4df' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1a2332' }}>{item.name}</div>
                 <div style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>{item.type}</div>
@@ -119,7 +119,7 @@ function RegionMap({ region }) {
         style={{ border: 0, display: 'block' }}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        src={`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${lat},${lng}&zoom=13&maptype=satellite`}
+        src={`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${lat},${lng}&zoom=13&maptype=roadmap`}
       />
     </div>
   );
