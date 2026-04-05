@@ -1,0 +1,17 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import App from './App.jsx';
+import BlogPage from './pages/BlogPage.jsx';
+import ArticlePage from './pages/ArticlePage.jsx';
+
+export default function Router() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/blog/:slug" element={<ArticlePage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/*" element={<App />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
