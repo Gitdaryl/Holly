@@ -644,18 +644,18 @@ export default function IrishHillsRealty() {
       </section>
 
       {/* Contact Form */}
-      <section id="contact" style={{ padding: '6rem 2rem', background: '#faf9f7' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'start' }}>
+      <section id="contact" style={{ padding: '4rem 2rem', background: 'white' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'start' }}>
           {/* Left: trust signals */}
           <div>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.2 }}>
               Ready to find your<br />place on the water?
             </h2>
             <div style={{ width: '40px', height: '3px', background: '#e84393', borderRadius: '2px', marginBottom: '1.5rem' }} />
-            <p style={{ color: '#6b7a8d', fontSize: '1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p style={{ color: '#6b7a8d', fontSize: '1rem', lineHeight: 1.8, marginBottom: '1.75rem' }}>
               Holly knows every lake, road, and neighbor in the Irish Hills. Drop her a note and she'll get back to you fast - usually the same day.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
                 { icon: <Icons.waves />, title: '50+ lakes covered', sub: 'Private, all-sports, no-wake - Holly knows them all' },
                 { icon: <Icons.home />, title: '30+ years of deals', sub: 'Lakefront, farm, cottage, village - every property type' },
@@ -754,7 +754,7 @@ export default function IrishHillsRealty() {
       </section>
 
       {/* Blog Preview */}
-      <section style={{ padding: '5rem 2rem', background: '#faf9f7' }}>
+      <section style={{ padding: '4rem 2rem 5rem', background: '#faf9f7' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Local Knowledge Blog</h2>
