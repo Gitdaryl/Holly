@@ -136,6 +136,9 @@ export default function IrishHillsRealty() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeAmenityTab, setActiveAmenityTab] = useState('schools');
   const [highlightedLake, setHighlightedLake] = useState(null);
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+  const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -160,6 +163,26 @@ export default function IrishHillsRealty() {
 
   const navigateToBlog = () => {
     window.location.href = '/blog';
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus('sending');
+    setFormError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      setFormStatus('success');
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      setFormStatus('error');
+      setFormError(err.message);
+    }
   };
 
   // Smart search: matches regions, lakes, towns, property types
@@ -218,6 +241,7 @@ export default function IrishHillsRealty() {
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .region-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
     .region-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(26,35,50,0.12); }
     .region-card:hover .region-card-cta { background: #1a2332; color: #faf9f7; letter-spacing: 1.5px; }
@@ -619,6 +643,116 @@ export default function IrishHillsRealty() {
         </div>
       </section>
 
+      {/* Contact Form */}
+      <section id="contact" style={{ padding: '6rem 2rem', background: '#faf9f7' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'start' }}>
+          {/* Left: trust signals */}
+          <div>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.2 }}>
+              Ready to find your<br />place on the water?
+            </h2>
+            <div style={{ width: '40px', height: '3px', background: '#e84393', borderRadius: '2px', marginBottom: '1.5rem' }} />
+            <p style={{ color: '#6b7a8d', fontSize: '1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+              Holly knows every lake, road, and neighbor in the Irish Hills. Drop her a note and she'll get back to you fast - usually the same day.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {[
+                { icon: <Icons.waves />, title: '50+ lakes covered', sub: 'Private, all-sports, no-wake - Holly knows them all' },
+                { icon: <Icons.home />, title: '30+ years of deals', sub: 'Lakefront, farm, cottage, village - every property type' },
+                { icon: <Icons.phone />, title: 'Fast response', sub: 'Usually same-day. Call (517) 403-3413 if urgent.' },
+              ].map(({ icon, title, sub }) => (
+                <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ flexShrink: 0, width: 40, height: 40, borderRadius: '10px', background: 'rgba(232,67,147,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e84393' }}>
+                    {icon}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#1a2332', fontSize: '0.95rem' }}>{title}</div>
+                    <div style={{ color: '#6b7a8d', fontSize: '0.85rem', marginTop: '0.2rem' }}>{sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: form */}
+          <div style={{ background: 'white', borderRadius: '20px', padding: '2.5rem', border: '1px solid #e8e4df', boxShadow: '0 8px 40px rgba(26,35,50,0.06)' }}>
+            {formStatus === 'success' ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(232,67,147,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.75rem' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e84393" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', color: '#1a2332', marginBottom: '0.75rem' }}>Message sent!</h3>
+                <p style={{ color: '#6b7a8d', lineHeight: 1.7, marginBottom: '1.5rem' }}>Holly will be in touch soon. In the meantime, feel free to browse the regions above.</p>
+                <button onClick={() => setFormStatus('idle')} style={{ padding: '0.6rem 1.5rem', background: 'transparent', border: '2px solid #e84393', borderRadius: '8px', color: '#e84393', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'inherit' }}>
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', color: '#1a2332', marginBottom: '1.75rem' }}>Talk to Holly</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>First Name *</label>
+                    <input type="text" required value={formData.firstName} onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
+                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                      onFocus={e => e.target.style.borderColor = '#e84393'}
+                      onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Last Name</label>
+                    <input type="text" value={formData.lastName} onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
+                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                      onFocus={e => e.target.style.borderColor = '#e84393'}
+                      onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                    />
+                  </div>
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Email *</label>
+                  <input type="email" required value={formData.email} onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.borderColor = '#e84393'}
+                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                  />
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Phone</label>
+                  <input type="tel" value={formData.phone} onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))} placeholder="(555) 000-0000"
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.borderColor = '#e84393'}
+                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                  />
+                </div>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Message *</label>
+                  <textarea required rows={4} value={formData.message} onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                    placeholder="Tell Holly what you're looking for - lake, property type, budget, timeline..."
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.6 }}
+                    onFocus={e => e.target.style.borderColor = '#e84393'}
+                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                  />
+                </div>
+                {formStatus === 'error' && (
+                  <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>
+                    {formError}
+                  </div>
+                )}
+                <button type="submit" disabled={formStatus === 'sending'}
+                  style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#6b7a8d' : '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                  {formStatus === 'sending' ? (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                      Sending...
+                    </>
+                  ) : 'Send Message'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Blog Preview */}
       <section style={{ padding: '5rem 2rem', background: '#faf9f7' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -716,6 +850,7 @@ export default function IrishHillsRealty() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <button onClick={navigateHome} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Regions</button>
             <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
+            <button onClick={() => { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Contact</button>
             <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
               <Icons.phone /> <span className="phone-text">(517) 403-3413</span>
             </a>
@@ -747,7 +882,7 @@ export default function IrishHillsRealty() {
             <h3 style={{ fontFamily: "'Playfair Display', serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Explore</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {['All Regions', 'Lakefront Properties', 'Rural & Farm Properties', 'Blog', 'Contact Holly'].map(link => (
-                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); }}
+                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
                   style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#e84393'}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
