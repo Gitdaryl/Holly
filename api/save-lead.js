@@ -13,11 +13,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name or email required' });
   }
 
-  const token = process.env.NOTION_TOKEN_HOLLY;
+  const token = process.env.NOTION_TOKEN_HOLLY || process.env.NOTION_TOKEN_DISPATCH;
   const dbId = process.env.NOTION_DB_HOLLY_LEADS;
 
   if (!token || !dbId) {
-    console.error('Notion lead DB not configured (NOTION_TOKEN_HOLLY / NOTION_DB_HOLLY_LEADS)');
+    console.error('Notion lead DB not configured (NOTION_DB_HOLLY_LEADS missing)');
     return res.status(500).json({ error: 'Lead storage not configured' });
   }
 
