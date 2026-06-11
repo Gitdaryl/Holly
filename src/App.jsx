@@ -372,6 +372,16 @@ export default function IrishHillsRealty() {
                         <span style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>{lake.fishSpecies.join(' · ')}</span>
                       </div>
                     )}
+                    <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      <a href={`/lakes/${lake.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#e84393', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid rgba(232,67,147,0.3)', paddingBottom: '1px' }}>
+                        Full lake details
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                      </a>
+                      <a href={`/listings?region=${currentRegion.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#6b7a8d', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid #e8e4df', paddingBottom: '1px' }}>
+                        Browse properties
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -859,6 +869,7 @@ export default function IrishHillsRealty() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <button onClick={navigateHome} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Regions</button>
             <button onClick={() => { window.location.href = '/listings'; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Listings</button>
+            <button onClick={() => { window.location.href = '/cma'; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Home Value</button>
             <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
             <button onClick={() => { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Contact</button>
             <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
@@ -891,8 +902,8 @@ export default function IrishHillsRealty() {
           <div>
             <h3 style={{ fontFamily: "'Playfair Display', serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Explore</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {['All Regions', 'Lakefront Properties', 'Rural & Farm Properties', 'Blog', 'Contact Holly'].map(link => (
-                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
+              {['All Regions', 'Lakefront Properties', 'Rural & Farm Properties', 'Browse Listings', 'What\'s My Home Worth?', 'Blog', 'Contact Holly'].map(link => (
+                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Browse Listings') window.location.href = '/listings'; if (link === "What's My Home Worth?") window.location.href = '/cma'; if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
                   style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#e84393'}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
