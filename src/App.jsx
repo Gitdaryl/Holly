@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { regions } from './data/regions';
 import { lakes, lakeSearchIndex } from './data/lakes';
 import { amenityData, propertiesData, testimonials, blogPosts, propertyTypes } from './data/amenities';
+import ChatWidget from './components/ChatWidget';
 
 // ═══════════════════════════════════════════════════════════
 // ICONS LIBRARY
@@ -478,6 +479,14 @@ export default function IrishHillsRealty() {
                   </div>
                 ))}
               </div>
+              <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <a href={`/listings?region=${currentView}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#e84393', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none', padding: '0.65rem 1.25rem', border: '2px solid #e84393', borderRadius: '10px', transition: 'all 0.2s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#e84393'; e.currentTarget.style.color = 'white'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#e84393'; }}>
+                  View All Listings in {currentRegion?.name}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              </div>
             </div>
           )}
 
@@ -849,6 +858,7 @@ export default function IrishHillsRealty() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <button onClick={navigateHome} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Regions</button>
+            <button onClick={() => { window.location.href = '/listings'; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Listings</button>
             <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
             <button onClick={() => { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Contact</button>
             <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
@@ -908,6 +918,8 @@ export default function IrishHillsRealty() {
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>All listings and information deemed reliable but not guaranteed.</p>
         </div>
       </footer>
+
+      <ChatWidget />
     </div>
   );
 }

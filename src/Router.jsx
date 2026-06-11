@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import ArticlePage from './pages/ArticlePage.jsx';
+import ListingsPage from './pages/ListingsPage.jsx';
+import PropertyPage from './pages/PropertyPage.jsx';
 
 export default function Router() {
   return (
@@ -10,6 +12,8 @@ export default function Router() {
       <Routes>
         <Route path="/blog/:slug" element={<ArticlePage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/listings" element={<ListingsPage />} />
+        <Route path="/property/:id" element={<PropertyPage />} />
         <Route path="/*" element={<App />} />
       </Routes>
     </BrowserRouter>

@@ -1,0 +1,129 @@
+{
+  "agent": {
+    "name": "Holly Griewahn",
+    "title": "Real Estate Agent",
+    "brokerage": "Foundation Realty",
+    "phone": "(517) 403-3413",
+    "experience": "30+ years in Irish Hills real estate",
+    "specialty": "Irish Hills, Devils Lake, Clark Lake, Lake Columbia, southern Michigan lakes, rural farms, historic homes",
+    "territory": "Lenawee, Jackson, Hillsdale, and Washtenaw County — roughly from Grass Lake south to Posey Lake, Cambridge west to Tecumseh"
+  },
+  "regions": [
+    {
+      "slug": "manitou-beach",
+      "name": "Manitou Beach / Devils Lake",
+      "description": "Heart of the Irish Hills. Devils Lake and Round Lake total over 1,800 acres — the largest connected lake system in Lenawee County. Year-round community with yacht club, golf course, and strong local roots.",
+      "priceRange": "$195K – $625K+",
+      "propertyTypes": ["lakefront", "lake-access", "rural", "cottage"],
+      "lakes": ["Devils Lake (1,400 acres, all-sports)", "Round Lake (connected via channel)"],
+      "highlights": ["Devils Lake Yacht Club", "DNR public boat launch", "Devils Lake Golf Course", "Year-round community"],
+      "commute": "Jackson 25 min, Ann Arbor 45 min, Detroit 90 min"
+    },
+    {
+      "slug": "clark-lake",
+      "name": "Clark Lake",
+      "description": "Clark Lake is one of the most popular all-sports lakes in Jackson County — 1,000+ acres, clear water, busy summer community. Brooklyn village is a mile away with shops and restaurants.",
+      "priceRange": "$200K – $700K+",
+      "propertyTypes": ["lakefront", "lake-access", "cottage"],
+      "lakes": ["Clark Lake (1,082 acres, all-sports)"],
+      "highlights": ["Largest all-sports lake in Jackson County", "Brooklyn village nearby", "Michigan International Speedway 3 miles"],
+      "commute": "Jackson 18 min, Ann Arbor 50 min"
+    },
+    {
+      "slug": "brooklyn-columbia",
+      "name": "Brooklyn & Lake Columbia",
+      "description": "Lake Columbia is the largest private lake in Michigan — 840 acres, gated community, no public access. Brooklyn village has great restaurants and is 1 mile from the lake.",
+      "priceRange": "$250K – $800K+",
+      "propertyTypes": ["lakefront", "lake-access", "residential"],
+      "lakes": ["Lake Columbia (840 acres, private, all-sports)"],
+      "highlights": ["Largest private lake in Michigan", "Gated community", "MIS nearby", "Active HOA"],
+      "commute": "Jackson 20 min, Ann Arbor 50 min"
+    },
+    {
+      "slug": "onsted-hayes",
+      "name": "Onsted & Hayes State Park",
+      "description": "W.J. Hayes State Park and Wamplers Lake — one of the most popular recreation lakes in southern Michigan. Round Lake connects for peaceful fishing.",
+      "priceRange": "$225K – $500K+",
+      "propertyTypes": ["lakefront", "lake-access", "rural", "cottage"],
+      "lakes": ["Wamplers Lake (780 acres, all-sports)", "Round Lake (no-wake, fishing)"],
+      "highlights": ["Hayes State Park with beach & camping", "Family-friendly", "Onsted village nearby"]
+    },
+    {
+      "slug": "cambridge-corridor",
+      "name": "Cambridge & US-12 Corridor",
+      "description": "A string of lakes along the scenic US-12 through Cambridge Township — Sand Lake, Evans Lake, Allen Lake, and the planned community of Loch Erin.",
+      "priceRange": "$185K – $475K+",
+      "propertyTypes": ["lakefront", "lake-access", "rural", "farm", "cottage"],
+      "lakes": ["Sand Lake (440 acres)", "Evans Lake", "Allen Lake", "Loch Erin (planned community)"],
+      "highlights": ["Walker Tavern Historic State Park", "MIS 8 miles", "Hidden Lake Gardens (MSU) 8 miles"]
+    },
+    {
+      "slug": "jerome-somerset",
+      "name": "Jerome & Somerset",
+      "description": "Lake LeAnn is a premier private lake community — controlled access, well-maintained, quiet. Farwell Lake and Round Lake round out this western cluster near the Hillsdale County line.",
+      "priceRange": "$175K – $550K+",
+      "propertyTypes": ["lakefront", "lake-access", "farm", "rural"],
+      "lakes": ["Lake LeAnn (private community)", "Farwell Lake", "Round Lake (Somerset)"],
+      "highlights": ["Hillsdale College 12 miles", "Rural character", "Farm properties available"]
+    },
+    {
+      "slug": "southern-lakes",
+      "name": "Southern Lakes",
+      "description": "Vineyard Lake, Iron Lake, and Posey Lake — the southern edge of Holly's territory. More affordable lakefront, quieter communities, great for first-time lake buyers.",
+      "priceRange": "$150K – $400K+",
+      "propertyTypes": ["lakefront", "lake-access", "cottage"],
+      "lakes": ["Vineyard Lake", "Iron Lake", "Posey Lake"],
+      "highlights": ["Most affordable lakefront in the territory", "Quiet no-wake lakes", "Southern Lenawee County"]
+    },
+    {
+      "slug": "grass-lake-michigan-center",
+      "name": "Grass Lake & Michigan Center",
+      "description": "Northern edge of Holly's territory. The Grass Lake chain and Wolf Lake chain offer more casual lake living near I-94 corridor.",
+      "priceRange": "$150K – $350K+",
+      "propertyTypes": ["lakefront", "lake-access", "residential"],
+      "lakes": ["Grass Lake", "Wolf Lake chain"],
+      "highlights": ["I-94 access", "Jackson County schools", "More affordable"]
+    },
+    {
+      "slug": "tecumseh-eastern",
+      "name": "Tecumseh & Eastern Lenawee",
+      "description": "No lakes here — but historic homes, walkable downtown Tecumseh, strong local economy, and rural acreage. Great for buyers who want country living without a lake price tag.",
+      "priceRange": "$150K – $450K+",
+      "propertyTypes": ["historic", "rural", "residential", "farm"],
+      "lakes": [],
+      "highlights": ["Historic downtown Tecumseh", "Tecumseh Products (manufacturing hub)", "Good schools", "Rural farms and acreage"]
+    }
+  ],
+  "propertyTypes": {
+    "lakefront": "Direct waterfront with private shoreline and usually a dock",
+    "lake-access": "Deeded access to the lake, typically a short walk or shared beach — more affordable than lakefront",
+    "rural": "Country properties with land, no lake",
+    "farm": "Agricultural or hobby farm properties, often with barns and outbuildings",
+    "cottage": "Smaller seasonal or year-round lake properties",
+    "historic": "Architecturally significant or period homes, mostly in Tecumseh",
+    "residential": "Village or subdivision homes"
+  },
+  "buyingFAQ": [
+    {
+      "q": "What's the difference between lakefront and lake access?",
+      "a": "Lakefront means your property directly touches the water — you own the shoreline and typically have a dock. Lake access means you have a legal right to use the lake (deeded access, shared beach, or association access) but your property doesn't touch the water. Lake access properties are usually 30-60% cheaper."
+    },
+    {
+      "q": "Do I need a special inspection for lake property?",
+      "a": "Yes — Holly always recommends a lake-specific inspection that covers the seawall condition, dock structure, depth and clarity, and any restrictions on shoreline modification. Septic systems are also critical — most lake properties use septic, not municipal sewer."
+    },
+    {
+      "q": "What is an all-sports lake?",
+      "a": "An all-sports lake allows motorized boats including jet skis. No-wake or quiet lakes limit motor speed, which is great for kayaking and fishing but not for tubing or waterskiing."
+    },
+    {
+      "q": "Are there HOA fees on lakes like Lake Columbia?",
+      "a": "Private lakes like Lake Columbia have homeowner associations with annual dues — usually $500–$2,000/year — that maintain roads, common areas, and lake quality. Public lakes like Devils Lake have no HOA."
+    },
+    {
+      "q": "How competitive is the market?",
+      "a": "Lakefront inventory is always tight in the Irish Hills. Good properties in the $300K–$500K range move fast — sometimes within days. Holly can set you up with real-time alerts and preview pre-list properties she hears about through her network."
+    }
+  ],
+  "leadCaptureGoal": "After helping the user, always try to get: their name, email or phone number, and what they're specifically looking for (lake/region, property type, budget, timeline). Be natural about it — ask in the flow of conversation, not as a form."
+}
