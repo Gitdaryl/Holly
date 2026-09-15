@@ -1,6 +1,8 @@
 // POST /api/save-lead
 // Accepts: { name, email, phone, interest, region, sessionId }
 // Saves to Notion Holly Leads DB + emails via Resend as fallback
+import { saveLeadToNotion } from './lib/leads.js';
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
   }
 
   const results = await Promise.allSettled([
-    saveToNotion({ name, email, phone, interest, region, sessionId }),
+    saveLeadToNotion({ name, email, phone, interest, region, sessionId, source: 'AI Chat Widget' }),
     emailViaResend({ name, email, phone, interest, region }),
   ]);
 
@@ -29,37 +31,6 @@ export default async function handler(req, res) {
   }
 
   return res.status(200).json({ success: true, notion: notionOk, email: emailOk });
-}
-
-async function saveToNotion({ name, email, phone, interest, region, sessionId }) {
-  const token = process.env.NOTION_TOKEN_HOLLY || process.env.NOTION_TOKEN_DISPATCH;
-  const dbId = process.env.NOTION_DB_HOLLY_LEADS;
-  if (!token || !dbId) throw new Error('Notion not configured');
-
-  const body = {
-    parent: { database_id: dbId },
-    properties: {
-      Name: { title: [{ text: { content: name || 'Unknown' } }] },
-      ...(email && { Email: { email } }),
-      ...(phone && { Phone: { phone_number: phone } }),
-      ...(interest && { Interest: { rich_text: [{ text: { content: interest.slice(0, 2000) } }] } }),
-      ...(region && { Region: { select: { name: region } } }),
-      Source: { select: { name: 'AI Chat Widget' } },
-      ...(sessionId && { 'Session ID': { rich_text: [{ text: { content: sessionId } }] } }),
-    },
-  };
-
-  const res = await fetch('https://api.notion.com/v1/pages', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'Notion-Version': '2022-06-28',
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) throw new Error(await res.text());
 }
 
 async function emailViaResend({ name, email, phone, interest, region }) {

@@ -2,26 +2,39 @@
 // Accepts: { firstName, lastName, email, phone, message }
 // Sends email to Holly via Resend
 
+import { saveLeadToNotion } from './lib/leads.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { firstName, lastName, email, phone, message } = req.body || {};
+  const { firstName, lastName, email, phone, message, region } = req.body || {};
 
   if (!firstName || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
+  }
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ');
+
+  // Persist before notify: the lead is in Notion even if email is down or unconfigured.
+  let savedToNotion = false;
+  try {
+    await saveLeadToNotion({ name: fullName, email, phone, interest: message, region, source: 'Contact Form' });
+    savedToNotion = true;
+  } catch (err) {
+    console.error('Contact form Notion save failed:', err.message);
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.HOLLY_CONTACT_EMAIL || 'admin@yetigroove.com';
 
   if (!apiKey) {
-    console.error('RESEND_API_KEY not set');
-    return res.status(500).json({ error: 'Email service not configured.' });
+    console.error('RESEND_API_KEY not set; lead saved to Notion only');
+    return savedToNotion
+      ? res.status(200).json({ success: true, notion: true, email: false })
+      : res.status(500).json({ error: 'Could not deliver your message. Please call Holly directly.' });
   }
-
-  const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
   const htmlBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
@@ -59,7 +72,7 @@ export default async function handler(req, res) {
         from: 'Holly Site <noreply@yetigroove.com>',
         to: [toEmail],
         reply_to: email,
-        subject: `New inquiry from ${fullName} - Irish Hills Lakes`,
+        subject: `New inquiry from ${fullName}${region ? ` (${region})` : ''} - Irish Hills Lakes`,
         html: htmlBody,
       }),
     });
@@ -67,6 +80,7 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const err = await response.text();
       console.error('Resend error:', err);
+      if (savedToNotion) return res.status(200).json({ success: true, notion: true, email: false });
       return res.status(500).json({ error: 'Failed to send message. Please call Holly directly.' });
     }
 

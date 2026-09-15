@@ -130,6 +130,78 @@ function RegionMap({ region }) {
 // MAIN APPLICATION
 // ═══════════════════════════════════════════════════════════
 
+// Lightbox contact form used by the region-page "Email Holly" button.
+// Posts to /api/contact with the region so Holly knows what they were looking at.
+function ContactModal({ region, onClose }) {
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, region }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      setStatus('success');
+    } catch (err) {
+      setStatus('error');
+      setError(err.message);
+    }
+  };
+
+  const field = (key) => ({ value: form[key], onChange: (e) => setForm(p => ({ ...p, [key]: e.target.value })) });
+
+  return (
+    <div className="contact-modal-backdrop" onClick={onClose}>
+      <div className="contact-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Email Holly">
+        <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: '0.9rem', right: '0.9rem', background: 'none', border: 'none', fontSize: '1.4rem', lineHeight: 1, color: '#94a3b8', cursor: 'pointer' }}>&times;</button>
+        {status === 'success' ? (
+          <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>&#10003;</div>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.5rem' }}>Sent to Holly</h3>
+            <p style={{ color: '#6b7a8d', fontSize: '0.9rem', marginBottom: '1.25rem' }}>She usually replies within a few hours. If it can't wait, call (517) 403-3413.</p>
+            <button onClick={onClose} style={{ padding: '0.65rem 1.4rem', background: '#1a2332', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit' }}>Done</button>
+          </div>
+        ) : (
+          <form onSubmit={submit}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.25rem' }}>Email Holly</h3>
+            <p style={{ color: '#6b7a8d', fontSize: '0.85rem', marginBottom: '1.25rem' }}>About {region}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.9rem' }}>
+              <div><label>First Name *</label><input type="text" required {...field('firstName')} /></div>
+              <div><label>Last Name</label><input type="text" {...field('lastName')} /></div>
+            </div>
+            <div style={{ marginBottom: '0.9rem' }}><label>Email *</label><input type="email" required {...field('email')} /></div>
+            <div style={{ marginBottom: '0.9rem' }}><label>Phone</label><input type="tel" placeholder="Your phone number" {...field('phone')} /></div>
+            <div style={{ marginBottom: '1.1rem' }}>
+              <label>Message *</label>
+              <textarea required rows={4} placeholder="What you're looking for: lake, property type, budget, timeline" {...field('message')} style={{ resize: 'vertical', lineHeight: 1.6 }} />
+            </div>
+            {status === 'error' && (
+              <div style={{ marginBottom: '0.9rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>
+            )}
+            <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
+              {status === 'sending' ? 'Sending...' : 'Send to Holly'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function IrishHillsRealty() {
   const [currentView, setCurrentView] = useState('home');
   const [activeFilter, setActiveFilter] = useState('all');
@@ -137,6 +209,7 @@ export default function IrishHillsRealty() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeAmenityTab, setActiveAmenityTab] = useState('schools');
   const [highlightedLake, setHighlightedLake] = useState(null);
+  const [contactRegion, setContactRegion] = useState(null); // non-null opens the Email Holly lightbox
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
   const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
   const [formError, setFormError] = useState('');
@@ -245,7 +318,13 @@ export default function IrishHillsRealty() {
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .region-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
     .region-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(26,35,50,0.12); }
-    .region-card:hover .region-card-cta { background: #1a2332; color: #faf9f7; letter-spacing: 1.5px; }
+    .region-card:hover .region-card-cta { background: #1a2332; color: #faf9f7 !important; letter-spacing: 1.5px; }
+    .hero-back:hover { background: rgba(255,255,255,0.28) !important; }
+    .contact-modal-backdrop { position: fixed; inset: 0; background: rgba(26,35,50,0.6); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .contact-modal { background: white; border-radius: 16px; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 1.75rem; position: relative; }
+    .contact-modal input, .contact-modal textarea { width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #e8e4df; font-size: 0.9rem; outline: none; font-family: inherit; box-sizing: border-box; }
+    .contact-modal input:focus, .contact-modal textarea:focus { border-color: #e84393; }
+    .contact-modal label { display: block; font-size: 0.78rem; font-weight: 600; color: #6b7a8d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
     .lake-chip { transition: all 0.3s ease; cursor: pointer; }
     .lake-chip:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(26,35,50,0.15); }
     .property-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
@@ -273,10 +352,10 @@ export default function IrishHillsRealty() {
         <div style={{ height: '50vh', minHeight: '420px', position: 'relative', background: currentRegion.gradient, overflow: 'hidden' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%)' }} />
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-            <div style={{ textAlign: 'center', maxWidth: '800px' }}>
-              <button onClick={navigateHome} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '2rem', transition: 'all 0.3s ease' }}>
-                <Icons.back /> All Regions
-              </button>
+            <button className="hero-back" onClick={navigateHome} style={{ position: 'absolute', top: '92px', left: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.3s ease', zIndex: 2 }}>
+              <Icons.back /> All Regions
+            </button>
+            <div style={{ textAlign: 'center', maxWidth: '800px', paddingTop: '72px' }}>
               <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: 'white', marginBottom: '0.75rem', fontFamily: "'Playfair Display', serif" }}>{currentRegion.name}</h1>
               <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', color: 'rgba(255,255,255,0.85)', fontWeight: 300, marginBottom: '1rem' }}>{currentRegion.subtitle}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
@@ -507,10 +586,10 @@ export default function IrishHillsRealty() {
               Holly has 30+ years of expertise in this area. Get the inside scoop on properties, communities, and what it's really like to live here.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem' }}>
+              <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
                 <Icons.phone /> Call Holly
-              </button>
-              <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem' }}>
+              </a>
+              <button onClick={() => setContactRegion(currentRegion.name)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', fontFamily: 'inherit' }}>
                 <Icons.mail /> Email Holly
               </button>
             </div>
@@ -930,6 +1009,7 @@ export default function IrishHillsRealty() {
         </div>
       </footer>
 
+      {contactRegion && <ContactModal region={contactRegion} onClose={() => setContactRegion(null)} />}
       <ChatWidget />
     </div>
   );
