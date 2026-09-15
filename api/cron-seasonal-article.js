@@ -97,9 +97,11 @@ function listingsSummary() {
 }
 
 function coverFor(month) {
-  const withImage = propertiesData.filter(p => p.image);
-  if (!withImage.length) return null;
-  return `${SITE_URL}${withImage[month % withImage.length].image}`;
+  // Prefer a lake photo over a storefront for the cover.
+  const lake = propertiesData.filter(p => p.image && (p.type === 'lakefront' || p.type === 'lake-access'));
+  const pool = lake.length ? lake : propertiesData.filter(p => p.image);
+  if (!pool.length) return null;
+  return `${SITE_URL}${pool[month % pool.length].image}`;
 }
 
 export async function buildSeasonalArticle(now = new Date()) {

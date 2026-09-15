@@ -5,7 +5,8 @@ const CATEGORIES = ['All', 'Lake Living', 'Real Estate Tips', 'Area Guide', 'Sea
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
+  // Date-only strings parse as UTC midnight, which is the previous evening in Michigan.
+  const d = new Date(dateStr.length === 10 ? `${dateStr}T12:00:00` : dateStr);
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
