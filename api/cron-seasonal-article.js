@@ -125,7 +125,7 @@ ${corpus}
 7. 900-1300 words. One CTA near the end using the CTA links.
 8. Structure, in this order:
    - Opening: what ${monthName} feels like around Devils Lake and the Irish Hills (use the SEASON NOTE, in your own words).
-   - "What's the market doing this month?": seasonal, qualitative advice for buyers and sellers. Then a short "What I have listed right now" list: one bulleted_list_item per listing, format "Title, Price: one-line summary" and mention readers can see photos at the listing url path.
+   - "What's the market doing this month?": seasonal, qualitative advice for buyers and sellers. Then a short "What I have listed right now" list: one bulleted_list_item per listing, format "Title, Price: one-line summary". Do not put URL paths in the bullets; after the list, add one paragraph saying all of them are on the Listings page with photos.
    - "What's happening around the lake?": the upcoming EVENTS as bulleted_list_item entries with name, date, time, and place; one line of why it's worth going. Close this section by pointing readers to ${EVENTS_PAGE} for the full calendar. If EVENTS is empty, write a short paragraph about the season instead and still point to the calendar.
    - "A note from Holly": 3-4 sentences about who she is and how she works, drawn from BRAND POSITIONING. Personal, not a resume.
    - CTA paragraph.
