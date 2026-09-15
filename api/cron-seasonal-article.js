@@ -163,7 +163,11 @@ Write the ${monthName} ${year} article.`;
     messages: [{ role: 'user', content: userPrompt }],
   });
 
-  const article = JSON.parse(repairJson(message.content[0].text));
+  const text = message.content.find(b => b.type === 'text')?.text;
+  if (!text) {
+    throw new Error(`No text block in model response (stop_reason=${message.stop_reason}, blocks=${message.content.map(b => b.type).join(',')})`);
+  }
+  const article = JSON.parse(repairJson(text));
   return { slug, article, monthName, year, events, listings, coverImageUrl: coverFor(month) };
 }
 
