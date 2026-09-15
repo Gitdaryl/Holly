@@ -13,6 +13,10 @@
     {
       "path": "/api/cron-seller-report",
       "schedule": "0 13 * * 5"
+    },
+    {
+      "path": "/api/cron-seasonal-article",
+      "schedule": "0 13 1 * *"
     }
   ]
 }
