@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
+import { useEngagement } from '../lib/useEngagement';
 
 export default function PropertyPage() {
   const { id } = useParams();
@@ -18,7 +19,9 @@ export default function PropertyPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const property = propertiesData.find(p => String(p.id) === String(id));
+  const property = propertiesData.find(p => p.slug === id || String(p.id) === String(id));
+  // Hook must run before the not-found early return.
+  const { counts, saved, toggleSave } = useEngagement(property?.slug);
   const region = property ? regions[property.region] : null;
 
   const handleSubmit = async (e) => {
@@ -26,12 +29,16 @@ export default function PropertyPage() {
     setFormStatus('sending');
     setFormError('');
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(`/api/showing?slug=${encodeURIComponent(property.slug)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          message: `Property Inquiry: ${property?.title} (${property?.price})\n\nPreferred time: ${formData.preferredTime}\n\n${formData.message}`,
+          name: [formData.firstName, formData.lastName].filter(Boolean).join(' '),
+          phone: formData.phone,
+          email: formData.email,
+          preferred: formData.preferredTime,
+          message: formData.message,
+          title: `${property.title} (${property.price})`,
         }),
       });
       const data = await res.json();
@@ -97,15 +104,17 @@ export default function PropertyPage() {
       {/* Photo Hero */}
       <div style={{
         height: '55vh', minHeight: '380px',
-        background: property.gradient,
+        background: property.image ? `url(${property.image}) center / cover no-repeat` : property.gradient,
         display: 'flex', alignItems: 'flex-end',
         padding: '0 2rem 2.5rem',
         position: 'relative',
       }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.12 }}>
-          <svg width="120" height="120" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
-        </div>
+        {!property.image && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.12 }}>
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
+          </div>
+        )}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
@@ -116,10 +125,10 @@ export default function PropertyPage() {
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
             {property.title}
           </h1>
-          {region && (
+          {(property.address || region) && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              {region.name}
+              {property.address || region.name}
             </div>
           )}
         </div>
@@ -147,13 +156,16 @@ export default function PropertyPage() {
               <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#e84393', fontFamily: "'Playfair Display', serif", marginBottom: '1rem' }}>
                 {property.price}
               </div>
-              {property.beds && (
+              {(property.beds || property.sqft || property.lot) && (
                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                   {[
                     { label: 'Bedrooms', value: property.beds },
                     { label: 'Bathrooms', value: property.baths },
                     { label: 'Sq Ft', value: property.sqft },
-                  ].map(({ label, value }) => (
+                    { label: 'Lot', value: property.lot },
+                    { label: 'Year Built', value: property.yearBuilt },
+                    { label: 'MLS #', value: property.mls },
+                  ].filter(f => f.value).map(({ label, value }) => (
                     <div key={label}>
                       <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a2332' }}>{value}</div>
                       <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</div>
@@ -162,6 +174,17 @@ export default function PropertyPage() {
                 </div>
               )}
             </div>
+
+            {/* Photos */}
+            {property.photos?.length > 1 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.6rem', marginBottom: '1.5rem' }}>
+                {property.photos.slice(1).map((src, i) => (
+                  <a key={src} href={src} target="_blank" rel="noopener" style={{ display: 'block', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16 / 10', background: '#e8e4df' }}>
+                    <img src={src} alt={`${property.title} photo ${i + 2}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  </a>
+                ))}
+              </div>
+            )}
 
             {/* Description */}
             <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
@@ -212,6 +235,24 @@ export default function PropertyPage() {
           {/* Sidebar - Request a Showing form */}
           <div className="property-sidebar" style={{ width: '340px', flexShrink: 0, position: 'sticky', top: '90px' }}>
             <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
+              <button
+                type="button"
+                onClick={toggleSave}
+                aria-pressed={saved}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  background: saved ? '#e84393' : 'white', color: saved ? 'white' : '#1a2332',
+                  border: '1px solid ' + (saved ? '#e84393' : '#e8e4df'), borderRadius: '10px',
+                  padding: '0.7rem 1rem', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'inherit',
+                  cursor: 'pointer', marginBottom: '1.25rem', transition: 'all 0.2s ease',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e84393'} strokeWidth="2">
+                  <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/>
+                </svg>
+                {saved ? 'Saved' : 'Save this home'}
+              </button>
+
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.25rem' }}>Request a Showing</h3>
               <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginBottom: '1.25rem' }}>Holly will get back to you within a few hours.</p>
 
@@ -295,11 +336,12 @@ export default function PropertyPage() {
                       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(26,35,50,0.1)'; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                     >
-                      <div style={{ height: '140px', background: p.gradient }} />
+                      <div style={{ height: '140px', background: p.image ? `url(${p.image}) center / cover no-repeat` : p.gradient }} />
                       <div style={{ padding: '1rem' }}>
                         <div style={{ fontWeight: 700, color: '#e84393', fontSize: '1.1rem', marginBottom: '0.25rem' }}>{p.price}</div>
                         <div style={{ fontWeight: 600, color: '#1a2332', fontSize: '0.9rem', marginBottom: '0.25rem' }}>{p.title}</div>
-                        {p.beds && <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{p.beds} bed · {p.baths} bath · {p.sqft} sqft</div>}
+                        {p.beds ? <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{p.beds} bed · {p.baths} bath · {p.sqft} sqft</div>
+                          : <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{p.lot || (p.sqft && `${p.sqft} sqft`)}</div>}
                       </div>
                     </div>
                   </Link>

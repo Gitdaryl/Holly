@@ -257,7 +257,7 @@ export default function LakePage() {
                     onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(26,35,50,0.1)'; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                   >
-                    <div style={{ height: '130px', background: p.gradient }} />
+                    <div style={{ height: '130px', background: p.image ? `url(${p.image}) center / cover no-repeat` : p.gradient }} />
                     <div style={{ padding: '0.9rem' }}>
                       <div style={{ fontWeight: 800, color: '#e84393', fontSize: '1.05rem', marginBottom: '0.2rem' }}>{p.price}</div>
                       <div style={{ fontWeight: 600, color: '#1a2332', fontSize: '0.88rem', marginBottom: '0.25rem' }}>{p.title}</div>

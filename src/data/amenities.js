@@ -401,20 +401,86 @@ export const propertyTypes = {
   farm: { label: 'Farms & Barns', description: 'Agricultural properties, hobby farms, barns' },
   cottage: { label: 'Cottages', description: 'Seasonal or year-round cottages' },
   historic: { label: 'Historic Homes', description: 'Architecturally significant or period homes' },
+  commercial: { label: 'Commercial', description: 'Inns, storefronts, and income properties' },
+  land: { label: 'Land & Lots', description: 'Buildable lots and acreage' },
 };
 
-// Sample properties (will be replaced by MLS feed)
+// Holly's active listings, pulled from her MLS feed (MiRealSource) on 2026-09-15.
+// Each listing carries a stable `slug`: it keys every engagement blob and the
+// seller report, so it must never change once a listing is live.
+// listedOn (YYYY-MM-DD) drives days-on-market. sellerEmail opts the listing
+// into the weekly seller report; null means no report is generated.
+// `image` is the card/hero cover; `photos` feeds the property-page gallery.
+// Photos live in /public/listings/<slug>/ so the site never depends on MLS CDN URLs.
+const photoSet = (slug, n) => Array.from({ length: n }, (_, i) => `/listings/${slug}/${String(i + 1).padStart(2, '0')}.webp`);
+
 export const propertiesData = [
-  { id: 1, region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront', title: 'Lakefront Colonial', price: '$549,000', beds: 4, baths: 3, sqft: '2,800', description: '80ft of sandy frontage with private dock on Devils Lake', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-  { id: 2, region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront', title: 'Modern Lake Retreat', price: '$425,000', beds: 3, baths: 2, sqft: '2,200', description: 'Updated kitchen, panoramic Devils Lake views', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-  { id: 3, region: 'manitou-beach', lake: 'devils-lake', type: 'lake-access', title: 'Charming Cape Cod', price: '$289,000', beds: 3, baths: 2, sqft: '1,600', description: 'Deeded lake access, 2-minute walk to beach', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-  { id: 4, region: 'clark-lake', lake: 'clark-lake', type: 'lakefront', title: 'Waterfront Bungalow', price: '$375,000', beds: 3, baths: 2, sqft: '1,800', description: '60ft frontage, updated dock & seawall', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-  { id: 5, region: 'clark-lake', lake: 'clark-lake', type: 'lakefront', title: 'Premium Lake Estate', price: '$625,000', beds: 5, baths: 4, sqft: '3,400', description: '120ft frontage, in-ground pool, guest house', gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-  { id: 6, region: 'southern-lakes', lake: 'vineyard-lake', type: 'lakefront', title: 'Cozy Lake Cottage', price: '$249,000', beds: 2, baths: 1, sqft: '1,100', description: 'Perfect starter lake home, sandy beach', gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
-  { id: 7, region: 'southern-lakes', lake: 'vineyard-lake', type: 'lake-access', title: 'Family Ranch Home', price: '$195,000', beds: 3, baths: 2, sqft: '1,400', description: 'Shared beach access, large fenced yard', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
-  { id: 8, region: 'jerome-somerset', lake: null, type: 'farm', title: 'Historic Farmstead on 15 Acres', price: '$325,000', beds: 4, baths: 2, sqft: '2,400', description: 'Restored farmhouse, barn, pasture, and pond', gradient: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)' },
-  { id: 9, region: 'tecumseh-eastern', lake: null, type: 'historic', title: 'Victorian in Downtown Tecumseh', price: '$289,000', beds: 3, baths: 2, sqft: '2,100', description: 'Beautifully restored, walkable to shops and dining', gradient: 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)' },
-  { id: 10, region: 'tecumseh-eastern', lake: null, type: 'rural', title: '10-Acre Country Retreat', price: '$275,000', beds: 3, baths: 2, sqft: '1,800', description: 'Private setting, pole barn, woods and meadow', gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)' },
+  {
+    id: 1, slug: '7296-walnut-hill-road-manitou-beach', mls: '50212587',
+    region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
+    title: '7296 Walnut Hill Road', address: '7296 Walnut Hill Road, Manitou Beach, MI 49253',
+    price: '$849,000', beds: 4, baths: 3, sqft: '1,700', yearBuilt: 1942,
+    summary: 'Fully renovated 2021 Devils Lake retreat with walkout basement and a finished barn',
+    description: "Welcome to your Devils Lake retreat! This beautifully updated 4-bedroom, 3-bathroom home offers the perfect blend of modern amenities, functional living space, and the lake lifestyle you've been dreaming about. Completely renovated in 2021, this move-in-ready home features stylish finishes, updated mechanicals, and a thoughtfully designed layout that provides plenty of room for family and guests. The spacious main living areas are ideal for entertaining, while the walkout basement offers additional living space, easy outdoor access, and endless possibilities for recreation, a home office, or guest accommodations. Storage and parking are abundant with ample driveway space, attached storage options, and a large barn perfect for boats, lake toys, vehicles, workshop space, or hobby enthusiasts. The barn has been finished into additional entertaining space with a split unit for AC and heat. Located in the heart of Manitou Beach, you'll enjoy easy access to all that the Irish Hills has to offer, including boating, fishing, dining, local events, and charming lakeside attractions.",
+    image: '/listings/7296-walnut-hill-road-manitou-beach/01.webp', photos: photoSet('7296-walnut-hill-road-manitou-beach', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: '2026-08-06', status: 'active', sellerName: null, sellerEmail: null,
+  },
+  {
+    id: 2, slug: '4834-round-lake-highway-devils-lake', mls: '50208730',
+    region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
+    title: '4834 Round Lake Highway', address: '4834 Round Lake Highway, Manitou Beach, MI 49253',
+    price: '$549,900', beds: 3, baths: 1, sqft: '709', yearBuilt: 1940,
+    summary: 'Turnkey furnished lakefront cottage on all-sports Devils Lake, pontoon and dock included',
+    description: "Welcome to 4834 Round Lake Hwy in beautiful Manitou Beach on all-sports Devils Lake! This charming lakefront retreat offers breathtaking water views, endless opportunities for lake living, and the perfect place to relax and make lifelong memories. Featuring 3 bedrooms and 1 bathroom, this cozy cottage blends classic lake charm with everything you need to start enjoying summer immediately. The home is efficiently heated and cooled with a mini-split system. Being sold fully furnished and turnkey, this property is truly move-in ready: just bring your suitcase and start enjoying lake life! Everything stays, including a 2003 Sweetwater pontoon boat and a 2024 aluminum Ultimate dock system. This property also offers a strong rental history, creating excellent investment potential for those seeking a vacation rental, weekend getaway, or income-producing lakefront property. Conveniently located near local restaurants, entertainment, golf courses, and the charm of Manitou Beach.",
+    image: '/listings/4834-round-lake-highway-devils-lake/01.webp', photos: photoSet('4834-round-lake-highway-devils-lake', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: '2026-09-04', status: 'active', sellerName: null, sellerEmail: null,
+  },
+  {
+    id: 3, slug: 'devils-lake-inn-103-walnut-street', mls: '50210955',
+    region: 'manitou-beach', lake: null, type: 'commercial',
+    title: 'Devils Lake Inn', address: '103 Walnut Street, Manitou Beach, MI 49253',
+    price: '$325,000', beds: null, baths: null, sqft: '2,006', yearBuilt: 1900,
+    summary: 'Turn-key boutique inn in the walkable heart of Manitou Beach, with leased retail space',
+    description: "Turn-Key Boutique Inn Opportunity in the Heart of Manitou Beach. Welcome to Devils Lake Inn, a rare investment opportunity located in the heart of Manitou Beach, often referred to as the \"Saugatuck of the Irish Hills.\" Nestled within a charming walkable village filled with local shops, restaurants, galleries, and year-round recreation, this established boutique inn offers the perfect blend of hospitality and small-town lake living. The property features beautifully designed custom-themed guest suites with upscale finishes, modern conveniences, and thoughtfully curated decor that has created a loyal following of repeat visitors. The sale includes the established business website, all furniture, decor, bedding, and appliances, allowing the next owner to seamlessly continue operations from day one. In addition, the building includes a retail space currently leased on a month-to-month basis. 103 Walnut Street can also be purchased together with the neighboring Devils Lake Inn Too at 175 Walnut Street (see MLS# 50197252).",
+    image: '/listings/devils-lake-inn-103-walnut-street/01.webp', photos: photoSet('devils-lake-inn-103-walnut-street', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: '2026-08-17', status: 'active', sellerName: null, sellerEmail: null,
+  },
+  {
+    id: 4, slug: 'devils-lake-inn-too-175-walnut-street', mls: '50210959',
+    region: 'manitou-beach', lake: null, type: 'commercial',
+    title: 'Devils Lake Inn Too', address: '175 Walnut Street, Manitou Beach, MI 49253',
+    price: '$325,000', beds: null, baths: null, sqft: '2,128', yearBuilt: 1920,
+    summary: 'Operating boutique inn steps from Devils Lake, with a separate leased apartment',
+    description: "Introducing Devils Lake Inn Too, a fully operational boutique hospitality property located in the heart of Manitou Beach, known as the \"Saugatuck of the Irish Hills.\" Just steps from Devils Lake, local restaurants, boutiques, galleries, and year-round entertainment, this unique property offers an incredible opportunity to own a thriving hospitality business in a premier lake community. The property features beautifully appointed custom-themed guest suites designed with upscale finishes and modern amenities. In addition, the building includes a separate apartment leased through September 2026, providing immediate rental income and future flexibility for an owner-occupant, manager's quarters, or additional rental opportunity. The sale includes the established website, all furniture, decor, bedding, and appliances. 175 Walnut Street is also available as part of a package with the neighboring Devils Lake Inn at 103 Walnut Street (see MLS# 50197252). Sale does not include lawnmower or personal items located in the shed.",
+    image: '/listings/devils-lake-inn-too-175-walnut-street/01.webp', photos: photoSet('devils-lake-inn-too-175-walnut-street', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: '2026-09-15', status: 'active', sellerName: null, sellerEmail: null,
+  },
+  {
+    id: 5, slug: 'devils-lake-inns-portfolio-walnut-street', mls: '50197252',
+    region: 'manitou-beach', lake: null, type: 'commercial',
+    title: 'Devils Lake Inn + Inn Too (Both Properties)', address: '103 & 175 Walnut Street, Manitou Beach, MI 49253',
+    price: '$625,000', beds: null, baths: null, sqft: '4,134', yearBuilt: 1920,
+    summary: 'Two operating boutique inns sold together: six themed suites, retail space, and an apartment',
+    description: "A rare, turn-key hospitality opportunity in the heart of Manitou Beach, often referred to as the \"Saugatuck of the Irish Hills.\" This offering includes two fully operational boutique inns: Devils Lake Inn (103 Walnut St) and Devils Lake Inn Too (175 Walnut St). Located in the walkable village setting surrounded by shops, restaurants, galleries, and year-round recreation. Together, the properties feature six custom-themed guest suites, a retail space (month-to-month lease), and a separate apartment currently rented through September 2026, providing immediate income with future owner-occupant or rental flexibility. The sale includes both properties, established website, and all furniture, decor, bedding, and appliances, making this a true turn-key business. Ideal for investors or owner-operators seeking a proven hospitality asset in one of Southern Michigan's most desirable lake communities. Sale does not include lawnmower or personal items in the shed.",
+    image: '/listings/devils-lake-inns-portfolio-walnut-street/01.webp', photos: photoSet('devils-lake-inns-portfolio-walnut-street', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: '2026-04-16', status: 'active', sellerName: null, sellerEmail: null,
+  },
+  {
+    id: 6, slug: '10314-ferris-court-lake-somerset', mls: '50204928',
+    region: 'jerome-somerset', lake: null, type: 'land',
+    title: '10314 Ferris Court', address: '10314 Ferris Court, Somerset, MI 49233',
+    price: '$48,900', beds: null, baths: null, sqft: null, lot: '1.76 acres (4 lots)', yearBuilt: null,
+    summary: '1.76 acres across four lots with association access and boating privileges on Lake Somerset',
+    description: "Build your dream home on 1.76 acres (4 lots) with association access on Lake Somerset with boating privileges! Enjoy the association parks, playgrounds, fireworks, picnics, and so much more.",
+    image: '/listings/10314-ferris-court-lake-somerset/01.webp', photos: photoSet('10314-ferris-court-lake-somerset', 8),
+    gradient: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 100%)',
+    listedOn: null, status: 'active', sellerName: null, sellerEmail: null,
+  },
 ];
 
 export const testimonials = [

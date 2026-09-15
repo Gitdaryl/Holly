@@ -64,7 +64,11 @@ function PropertyCard({ property }) {
         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
       >
         {/* Photo / Gradient */}
-        <div style={{ height: '200px', background: property.gradient, position: 'relative', flexShrink: 0 }}>
+        <div style={{ height: '200px', background: property.gradient, position: 'relative', flexShrink: 0, overflow: 'hidden' }}>
+          {property.image && (
+            <img src={property.image} alt={property.title} loading="lazy"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          )}
           <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
             <span style={{
               background: 'rgba(232,67,147,0.92)', color: 'white',
@@ -77,22 +81,24 @@ function PropertyCard({ property }) {
           {property.status && (
             <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
               <span style={{
-                background: property.status === 'Active' ? 'rgba(34,197,94,0.9)' : 'rgba(100,116,139,0.9)',
-                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700,
+                background: property.status.toLowerCase() === 'active' ? 'rgba(34,197,94,0.9)' : 'rgba(100,116,139,0.9)',
+                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'capitalize',
               }}>
-                {property.status || 'Active'}
+                {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
               </span>
             </div>
           )}
-          <div style={{
-            position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            opacity: 0.3,
-          }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="white" stroke="none">
-              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22" fill="white"/>
-            </svg>
-          </div>
+          {!property.image && (
+            <div style={{
+              position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              opacity: 0.3,
+            }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="white" stroke="none">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22" fill="white"/>
+              </svg>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -110,8 +116,14 @@ function PropertyCard({ property }) {
             </div>
           )}
           <div style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '1rem', lineHeight: 1.5, flex: 1 }}>
-            {property.description}
+            {property.summary || property.description}
           </div>
+          {!property.beds && (property.sqft || property.lot) && (
+            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#64748b', borderTop: '1px solid #f0eee9', paddingTop: '0.75rem' }}>
+              {property.sqft && <span style={{ fontWeight: 600 }}>{property.sqft} <span style={{ fontWeight: 400 }}>sqft</span></span>}
+              {property.lot && <span style={{ fontWeight: 600 }}>{property.lot}</span>}
+            </div>
+          )}
           {property.beds && (
             <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#64748b', borderTop: '1px solid #f0eee9', paddingTop: '0.75rem' }}>
               <span style={{ fontWeight: 600 }}>{property.beds} <span style={{ fontWeight: 400 }}>bed</span></span>
@@ -206,11 +218,11 @@ export default function ListingsPage() {
         </div>
       </div>
 
-      {/* IDX Notice Banner */}
+      {/* Holly's listings notice */}
       <div style={{ background: 'linear-gradient(90deg, rgba(232,67,147,0.08), rgba(232,67,147,0.04))', borderBottom: '1px solid rgba(232,67,147,0.15)', padding: '0.75rem 2rem', textAlign: 'center' }}>
         <p style={{ fontSize: '0.82rem', color: '#6b7a8d' }}>
-          <span style={{ color: '#e84393', fontWeight: 700 }}>Live MLS listings coming soon.</span>
-          {' '}Currently showing sample properties. For full MLS access, call Holly at{' '}
+          <span style={{ color: '#e84393', fontWeight: 700 }}>These are Holly's own listings.</span>
+          {' '}Looking for something else? Holly can show you any home for sale in the Irish Hills. Call{' '}
           <a href="tel:5174033413" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>
         </p>
       </div>
