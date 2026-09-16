@@ -1,3 +1,26 @@
+import { put } from '@vercel/blob'
+import { todayISO } from './engage-store.js'
+
+// Durable copy of every lead, written BEFORE Notion, email or SMS are tried.
+// Layout: leads/_<kind>/<YYYY-MM-DD>/<stamp>-<uuid>.json  (kind: contact, chat,
+// cma). Listing-attributed showing requests live under leads/<slug>/ instead.
+// Returns the pathname, or null if Blob itself failed (logged, never thrown):
+// the caller decides whether Notion/email can still make the request succeed.
+export async function persistLead(kind, lead) {
+  const receivedAt = new Date().toISOString()
+  try {
+    const stamp = receivedAt.replace(/[:.]/g, '-')
+    const path = `leads/_${kind}/${todayISO()}/${stamp}-${crypto.randomUUID()}.json`
+    await put(path, JSON.stringify({ kind, receivedAt, ...lead }, null, 2), {
+      access: 'public', addRandomSuffix: false, contentType: 'application/json',
+    })
+    return path
+  } catch (err) {
+    console.error(`persistLead(${kind}) failed:`, err.message)
+    return null
+  }
+}
+
 // Persist a lead to the Holly Leads Notion DB. Every intake endpoint calls this
 // BEFORE it tries to notify anyone, so a Resend outage never loses a lead.
 export async function saveLeadToNotion({ name, email, phone, interest, region, source, sessionId }) {

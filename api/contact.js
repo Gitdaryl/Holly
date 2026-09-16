@@ -2,7 +2,7 @@
 // Accepts: { firstName, lastName, email, phone, message }
 // Sends email to Holly via Resend
 
-import { saveLeadToNotion } from './lib/leads.js';
+import { saveLeadToNotion, persistLead } from './lib/leads.js';
 import { notifyHolly } from './lib/sms.js';
 
 export default async function handler(req, res) {
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
-  // Persist before notify: the lead is in Notion even if email is down or unconfigured.
+  // Persist before notify: Blob first (always available), then Notion.
+  const blobPath = await persistLead('contact', { name: fullName, email, phone, message, region });
   let savedToNotion = false;
   try {
     await saveLeadToNotion({ name: fullName, email, phone, interest: message, region, source: 'Contact Form' });
@@ -35,8 +36,8 @@ export default async function handler(req, res) {
 
   if (!apiKey) {
     console.error('RESEND_API_KEY not set; lead saved to Notion only');
-    return savedToNotion
-      ? res.status(200).json({ success: true, notion: true, email: false })
+    return (savedToNotion || blobPath)
+      ? res.status(200).json({ success: true, notion: savedToNotion, blob: Boolean(blobPath), email: false })
       : res.status(500).json({ error: 'Could not deliver your message. Please call Holly directly.' });
   }
 

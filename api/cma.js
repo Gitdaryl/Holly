@@ -3,6 +3,7 @@
 // Also saves to Notion Holly Leads DB as "CMA Request" source
 
 import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js';
+import { persistLead } from './lib/leads.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -18,6 +19,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Address and name are required' });
   }
 
+  const blobPath = await persistLead('cma', { address, region, type, beds, baths, sqft, yearBuilt, condition, timeline, extras, name, email, phone, notes });
+
   const results = await Promise.allSettled([
     emailViaResend({ address, region, type, beds, baths, sqft, yearBuilt, condition, timeline, extras, name, email, phone, notes }),
     saveToNotion({ address, region, type, timeline, name, email, phone, notes }),
@@ -29,7 +32,7 @@ export default async function handler(req, res) {
   if (!emailOk) console.error('CMA email failed:', results[0].reason);
   if (!notionOk) console.error('CMA Notion save failed:', results[1].reason);
 
-  if (!emailOk && !notionOk) {
+  if (!emailOk && !notionOk && !blobPath) {
     return res.status(500).json({ error: 'Failed to process CMA request' });
   }
 

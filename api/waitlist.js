@@ -111,7 +111,7 @@ async function post(req, res) {
   ].filter(Boolean).join('. ')
 
   const [notion, sms, reply, count] = await Promise.all([
-    saveLeadToNotion({ name: entry.name, email: entry.email, phone: entry.phone, interest, region: entry.lakeName, source: 'Lake Waitlist' })
+    saveLeadToNotion({ name: entry.name, email: entry.email, phone: entry.phone, interest, region: lakes[lake].region, source: 'Lake Waitlist' })
       .then(() => true).catch((err) => { console.error('Waitlist Notion save failed:', err.message); return false }),
     notifyHolly(`WAITLIST ${entry.lakeName}: ${entry.name} ${entry.phone || entry.email}${entry.budget ? `\n${entry.budget}` : ''}${entry.timing ? `, ${entry.timing}` : ''}`),
     entry.phone

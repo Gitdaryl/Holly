@@ -1,7 +1,7 @@
 // POST /api/save-lead
 // Accepts: { name, email, phone, interest, region, sessionId }
 // Saves to Notion Holly Leads DB + emails via Resend as fallback
-import { saveLeadToNotion } from './lib/leads.js';
+import { saveLeadToNotion, persistLead } from './lib/leads.js';
 import { notifyHolly } from './lib/sms.js';
 
 
@@ -16,6 +16,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name or email required' });
   }
 
+  const blobPath = await persistLead('chat', { name, email, phone, interest, region, sessionId });
+
   const results = await Promise.allSettled([
     saveLeadToNotion({ name, email, phone, interest, region, sessionId, source: 'AI Chat Widget' }),
     emailViaResend({ name, email, phone, interest, region }),
@@ -27,13 +29,13 @@ export default async function handler(req, res) {
   if (!notionOk) console.error('Notion save failed:', results[0].reason);
   if (!emailOk) console.error('Resend email failed:', results[1].reason);
 
-  if (!notionOk && !emailOk) {
+  if (!notionOk && !emailOk && !blobPath) {
     return res.status(500).json({ error: 'Failed to save lead via any channel' });
   }
 
   notifyHolly(`Chat lead: ${name || '?'} ${phone || email || ''}${region ? ` (${region})` : ''}${interest ? `\n${String(interest).slice(0, 160)}` : ''}`).catch(() => {});
 
-  return res.status(200).json({ success: true, notion: notionOk, email: emailOk });
+  return res.status(200).json({ success: true, notion: notionOk, email: emailOk, blob: Boolean(blobPath) });
 }
 
 async function emailViaResend({ name, email, phone, interest, region }) {
