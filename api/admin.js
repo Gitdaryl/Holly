@@ -195,7 +195,7 @@ async function texts() {
   const msgs = await readJson(blobs)
   const threads = {}
   for (const { pathname, data } of msgs) {
-    const key = pathname.split('/')[1]
+    const key = pathname.split('/')[1].slice(-10) // early inbound blobs used 11 digits
     if (!threads[key]) threads[key] = { phone: key, messages: [] }
     threads[key].messages.push(data)
   }
