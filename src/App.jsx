@@ -130,6 +130,33 @@ function RegionMap({ region }) {
 // MAIN APPLICATION
 // ═══════════════════════════════════════════════════════════
 
+// Muted looping background clip for heroes. Falls back to the poster when the
+// viewer prefers reduced motion, and to the gradient when a region has no footage.
+function HeroVideo({ video, poster, gradient, dim = 0.45 }) {
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduceMotion(mq.matches);
+    const onChange = (e) => setReduceMotion(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  if (!video) return null;
+  return (
+    <>
+      {reduceMotion ? (
+        <img src={poster} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        <video autoPlay muted loop playsInline preload="metadata" poster={poster}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', background: gradient }}>
+          <source src={video} type="video/mp4" />
+        </video>
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, rgba(15,41,64,${dim}) 0%, rgba(15,41,64,${dim + 0.25}) 100%)` }} />
+    </>
+  );
+}
+
 // Lightbox contact form used by the region-page "Email Holly" button.
 // Posts to /api/contact with the region so Holly knows what they were looking at.
 function ContactModal({ region, onClose }) {
@@ -350,7 +377,8 @@ export default function IrishHillsRealty() {
       <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
         {/* Region Hero */}
         <div style={{ height: '50vh', minHeight: '420px', position: 'relative', background: currentRegion.gradient, overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%)' }} />
+          <HeroVideo video={currentRegion.video} poster={currentRegion.poster} gradient={currentRegion.gradient} />
+          {!currentRegion.video && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%)' }} />}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
             <button className="hero-back" onClick={navigateHome} style={{ position: 'absolute', top: '92px', left: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.3s ease', zIndex: 2 }}>
               <Icons.back /> All Regions
@@ -608,6 +636,7 @@ export default function IrishHillsRealty() {
     <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
       {/* Hero */}
       <div style={{ height: '85vh', position: 'relative', background: 'linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)', overflow: 'hidden' }}>
+        <HeroVideo video="/regions/home/hero.mp4" poster="/regions/home/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
@@ -685,7 +714,7 @@ export default function IrishHillsRealty() {
                   background: 'white', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer',
                   border: '1px solid #e8e4df', animation: `fadeUp 0.6s ease-out ${i * 0.06}s both`, opacity: 0
                 }}>
-                  <div style={{ height: '160px', background: region.gradient, position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '1.25rem' }}>
+                  <div style={{ height: '160px', background: region.image ? `linear-gradient(to bottom, rgba(26,35,50,0) 30%, rgba(26,35,50,0.65) 100%), url(${region.image}) center / cover no-repeat` : region.gradient, position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '1.25rem' }}>
                     <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                       <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.72rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.county} County</span>
                       <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.72rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.priceRange}</span>
