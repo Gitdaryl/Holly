@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import { isSold, isActive, soldBadge, soldStats, fmtPrice, trackRecord } from '../lib/listing-stats';
+import { coverFor } from '../lib/cover';
 
 const PRICE_RANGES = [
   { label: 'Any Price', min: 0, max: Infinity },
@@ -57,11 +58,11 @@ export function PropertyCard({ property }) {
       >
         {/* Photo / Gradient */}
         <div style={{ height: '200px', background: property.gradient, position: 'relative', flexShrink: 0, overflow: 'hidden' }}>
-          {property.image && (
-            <img src={property.image} alt={property.title} loading="lazy"
+          {coverFor(property) && (
+            <img src={coverFor(property)} alt={property.title} loading="lazy"
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           )}
-          <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
+          {property.type && <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
             <span style={{
               background: 'rgba(232,67,147,0.92)', color: 'white',
               padding: '0.3rem 0.75rem', borderRadius: '20px',
@@ -69,7 +70,7 @@ export function PropertyCard({ property }) {
             }}>
               {propertyTypes[property.type]?.label || property.type}
             </span>
-          </div>
+          </div>}
           {property.status && (
             <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
               <span style={{
@@ -80,7 +81,7 @@ export function PropertyCard({ property }) {
               </span>
             </div>
           )}
-          {!property.image && (
+          {!coverFor(property) && (
             <div style={{
               position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
               opacity: 0.3,

@@ -66,12 +66,14 @@ export default function SoldPage() {
             Sold by Holly
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1rem', maxWidth: '560px', lineHeight: 1.6, marginBottom: '1.75rem' }}>
-            Every sale stays on this site with the two numbers that matter to a seller: how fast, and how close to asking.
+            Every sale stays on this site with the numbers that matter to a seller: how fast, and for how much.
           </p>
           <div className="sold-tiles">
             <Tile value={record.sold} label="Homes sold" />
-            <Tile value={record.avgDays === null ? '—' : record.avgDays} label="Avg days to sell" />
-            <Tile value={record.avgPct ? `${record.avgPct}%` : '—'} label="Avg % of list price" />
+            <Tile value={record.avgDays === null ? '—' : record.avgDays} label="Avg days to sell (listings)" />
+            {record.avgPct
+              ? <Tile value={`${record.avgPct}%`} label="Avg % of list price" />
+              : <Tile value={record.listSides} label="As listing agent" />}
             <Tile value={record.volume ? `$${(record.volume / 1e6).toFixed(1)}M` : '—'} label="Sold volume" />
           </div>
         </div>
@@ -96,7 +98,7 @@ export default function SoldPage() {
                     <Link to={groupLink(key)} style={{ color: '#1a2332', textDecoration: 'none' }}>{groupLabel(key)}</Link>
                   </h2>
                   <div style={{ fontSize: '0.82rem', color: '#6b7a8d', fontWeight: 600 }}>
-                    {r.sold} sold{r.avgDays !== null ? ` · avg ${r.avgDays} days` : ''}{r.avgPct ? ` · ${r.avgPct}% of list` : ''}{r.volume ? ` · ${fmtPrice(r.volume)}` : ''}
+                    {r.sold} sold{r.avgDays !== null ? ` · avg ${r.avgDays} days to sell` : ''}{r.avgPct ? ` · ${r.avgPct}% of list` : ''}{r.volume ? ` · ${fmtPrice(r.volume)}` : ''}
                   </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>

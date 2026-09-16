@@ -30,7 +30,10 @@ export function soldStats(p) {
   const listPrice = parsePrice(p.price)
   const soldPrice = parsePrice(p.soldPrice) || null // unknown stays unknown, never "100%"
   return {
-    days: daysBetween(p.listedOn, p.soldOn),
+    // Paragon exports carry DOM directly (list to pending); listings the site
+    // tracked itself derive it from the dates.
+    days: Number.isInteger(p.dom) ? p.dom : daysBetween(p.listedOn, p.soldOn),
+    side: p.side || 'list',
     pctOfList: listPrice && soldPrice ? Math.round((soldPrice / listPrice) * 1000) / 10 : null,
     soldPrice,
     listPrice,
@@ -43,6 +46,8 @@ export function soldStats(p) {
 export function soldBadge(p) {
   const s = soldStats(p)
   if (!s) return null
+  if (s.side === 'buyer') return 'Bought with Holly'
+  if (s.days === 0) return 'Sold day one'
   const parts = ['Sold']
   if (s.days !== null) parts.push(`in ${s.days} ${s.days === 1 ? 'day' : 'days'}`)
   if (s.pctOfList) parts.push(`at ${s.pctOfList}% of list`)
@@ -54,12 +59,14 @@ export function soldBadge(p) {
 // does not drag the mean to zero.
 export function trackRecord(list) {
   const sold = list.filter(isSold).map(soldStats)
-  const withDays = sold.filter((s) => s.days !== null)
+  // Days-to-sell is a listing-agent number, so buyer-side sales stay out of it.
+  const withDays = sold.filter((s) => s.days !== null && s.side !== 'buyer')
   const withPct = sold.filter((s) => s.pctOfList)
   const volume = sold.reduce((sum, s) => sum + (s.soldPrice || 0), 0)
   return {
     sold: sold.length,
     active: list.filter(isActive).length,
+    listSides: sold.filter((s) => s.side !== 'buyer').length,
     avgDays: withDays.length ? Math.round(withDays.reduce((a, s) => a + s.days, 0) / withDays.length) : null,
     avgPct: withPct.length ? Math.round((withPct.reduce((a, s) => a + s.pctOfList, 0) / withPct.length) * 10) / 10 : null,
     volume,

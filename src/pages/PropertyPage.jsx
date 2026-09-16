@@ -4,6 +4,7 @@ import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import { useEngagement } from '../lib/useEngagement';
 import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
+import { coverFor, isAerial } from '../lib/cover';
 
 export default function PropertyPage() {
   const { id } = useParams();
@@ -26,6 +27,7 @@ export default function PropertyPage() {
   const region = property ? regions[property.region] : null;
   const sold = property ? isSold(property) : false;
   const stats = property ? soldStats(property) : null;
+  const cover = property ? coverFor(property, { w: 1280, h: 720 }) : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,22 +107,22 @@ export default function PropertyPage() {
       {/* Photo Hero */}
       <div style={{
         height: '55vh', minHeight: '380px',
-        background: property.image ? `url(${property.image}) center / cover no-repeat` : property.gradient,
+        background: cover ? `url(${cover}) center / cover no-repeat` : property.gradient,
         display: 'flex', alignItems: 'flex-end',
         padding: '0 2rem 2.5rem',
         position: 'relative',
       }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)' }} />
-        {!property.image && (
+        {!cover && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.12 }}>
             <svg width="120" height="120" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
           </div>
         )}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            {property.type && <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {propertyTypes[property.type]?.label || property.type}
-            </span>
+            </span>}
             {sold ? (
               <span style={{ background: 'rgba(26,35,50,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
             ) : (
@@ -212,9 +214,15 @@ export default function PropertyPage() {
             )}
 
             {/* Description */}
-            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
+            {(property.description || region) && <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '1rem', color: '#1a2332' }}>About This Property</h2>
-              <p style={{ color: '#4a5568', lineHeight: 1.8, fontSize: '0.95rem' }}>{property.description}</p>
+              {property.description ? (
+                <p style={{ color: '#4a5568', lineHeight: 1.8, fontSize: '0.95rem' }}>{property.description}</p>
+              ) : (
+                <p style={{ color: '#6b7a8d', lineHeight: 1.8, fontSize: '0.92rem' }}>
+                  {isAerial(property) ? 'Aerial view of the property. ' : ''}This sale closed {stats?.soldOn ? new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : 'recently'}{stats?.side === 'buyer' ? ' with Holly representing the buyer.' : stats?.side === 'both' ? ' with Holly representing both sides.' : ' with Holly as the listing agent.'} Details of past sales are available on request.
+                </p>
+              )}
               {region && (
                 <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
                   <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Location</div>
@@ -222,7 +230,7 @@ export default function PropertyPage() {
                   <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{region.county} County — {region.priceRange}</div>
                 </div>
               )}
-            </div>
+            </div>}
 
             {/* Region Context */}
             {region && (
@@ -248,7 +256,7 @@ export default function PropertyPage() {
                 <div style={{ borderRadius: '12px', overflow: 'hidden', height: '300px' }}>
                   <iframe
                     title="Property Location"
-                    src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}&q=${region.coordinates.lat},${region.coordinates.lng}&zoom=13&maptype=satellite`}
+                    src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}&q=${property.address ? encodeURIComponent(property.address) : `${region.coordinates.lat},${region.coordinates.lng}`}&zoom=${property.address ? 17 : 13}&maptype=satellite`}
                     style={{ width: '100%', height: '100%', border: 'none' }}
                     allowFullScreen
                   />
@@ -262,7 +270,7 @@ export default function PropertyPage() {
             {sold ? (
               <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
                 <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>Holly sold it{stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.</h3>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>{stats?.side === 'buyer' ? "Holly's buyer got this one." : stats?.days === 0 ? 'Holly sold it on day one.' : `Holly sold it${stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.`}</h3>
                 <p style={{ fontSize: '0.85rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1.25rem' }}>
                   Own a place {region?.name ? `near ${region.name}` : 'on the lake'}? Find out what the same buyers would pay for yours, or get on the list for the next one before it hits the market.
                 </p>
