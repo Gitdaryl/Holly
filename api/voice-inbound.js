@@ -50,9 +50,10 @@ const twiml = (res, inner) => {
 }
 
 async function log(from, entry) {
+  const key = String(from).replace(/\D/g, '').slice(-10) || 'unknown'
   try {
     const receivedAt = new Date().toISOString()
-    await put(`sms/${String(from).replace(/\D/g, '').slice(-10)}/${todayISO()}/${receivedAt.replace(/[:.]/g, '-')}-call.json`,
+    await put(`sms/${key}/${todayISO()}/${receivedAt.replace(/[:.]/g, '-')}-call.json`,
       JSON.stringify({ direction: 'in', kind: 'call', from, receivedAt, ...entry }, null, 2),
       { access: 'public', addRandomSuffix: false, contentType: 'application/json' })
   } catch (err) {
@@ -66,7 +67,10 @@ export default async function handler(req, res) {
   const url = `https://${req.headers['x-forwarded-host'] || req.headers.host}${req.url}`
   if (!validSignature(req, url, params)) return res.status(403).end()
 
-  const from = params.From || ''
+  // Recording/transcription callbacks do not carry the caller's number, so the
+  // Dial leg bakes it into their URLs (Twilio signs the full URL, query included).
+  const qs = new URL(url).searchParams
+  const from = params.From || qs.get('from') || ''
   const holly = toE164(process.env.HOLLY_SMS_PHONE)
 
   // Screening leg, on Holly's side of the call. Carrier voicemail "answers"
@@ -119,9 +123,10 @@ export default async function handler(req, res) {
     if (missed) {
       await notifyHolly(`Missed call on the site number from ${prettyPhone(from)}. Call back or reply from the Texts tab.`)
       const base = url.split('?')[0]
+      const who = `&from=${encodeURIComponent(from)}`
       const transcription = process.env.DEEPGRAM_API_KEY
-        ? `recordingStatusCallback="${base}?ready=1" recordingStatusCallbackEvent="completed" recordingStatusCallbackMethod="POST"`
-        : `transcribe="true" transcribeCallback="${base}?transcript=1"`
+        ? `recordingStatusCallback="${base}?ready=1${who}" recordingStatusCallbackEvent="completed" recordingStatusCallbackMethod="POST"`
+        : `transcribe="true" transcribeCallback="${base}?transcript=1${who}"`
       return twiml(res, `<Say voice="Polly.Joanna">Holly is with a client right now. She has your number and will call you back shortly. Leave a message after the tone, or text this number.</Say><Record maxLength="120" playBeep="true" timeout="5" ${transcription} action="${base}?recorded=1" method="POST" /><Say voice="Polly.Joanna">Thanks, Holly will be in touch.</Say>`)
     }
     return twiml(res, '')
