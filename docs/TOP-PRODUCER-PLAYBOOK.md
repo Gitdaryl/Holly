@@ -100,3 +100,17 @@ recording: /api/admin?view=transcribe&rec=RE... with the admin bearer. Missed ca
 voicemails log into the caller's thread in the Texts tab. Code:
 api/voice-inbound.js (Dial + screen + Record + transcribeCallback).
 Holly should save 517-300-8226 in her contacts so it is not flagged as spam.
+
+## 8. Follow-up that runs itself (api/cron-followup.js, hourly at :15)
+
+- **Holly nudges.** A lead still "New" in her desk after 1 hour gets her one
+  reminder text, another at 24 hours, then it stops. Several waiting -> one
+  summary text. Flipping the status in the desk stops the nudges.
+- **Buyer check-ins.** Waitlist buyers get a text from Holly on day 3 and
+  day 14 ("anything new on your Devils Lake search?").
+- **Seller nurture.** Home-value requesters get a 30/60/90-day check-in.
+- Automation never texts anyone who has already texted back or whom Holly
+  has replied to from the desk, and never anyone marked Client or Dead.
+- Quiet hours 9pm-8am Eastern. Twilio handles STOP replies automatically.
+- Preview without sending: /api/cron-followup?dry=1 with the admin bearer.
+- /api/admin?action=purge-tests (POST {phones:[...]}) removes test records.
