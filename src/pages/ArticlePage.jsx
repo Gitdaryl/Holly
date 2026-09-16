@@ -146,6 +146,7 @@ export default function ArticlePage() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
           <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.95rem' }}>Holly Griewahn</span>
         </Link>
         <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
