@@ -546,9 +546,9 @@ export default function IrishHillsRealty() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {filteredProperties.map(prop => (
-                  <div key={prop.id} className="property-card" style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer' }}>
-                    <div style={{ height: '160px', background: prop.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Icons.home />
+                  <a key={prop.id} href={`/property/${prop.id}`} className="property-card" style={{ display: 'block', background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
+                    <div style={{ height: '180px', background: prop.image ? `url(${prop.image}) center / cover no-repeat` : prop.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {!prop.image && <Icons.home />}
                     </div>
                     <div style={{ padding: '1.25rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
@@ -558,14 +558,18 @@ export default function IrishHillsRealty() {
                         </span>
                       </div>
                       <div style={{ fontSize: '1rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.5rem' }}>{prop.title}</div>
-                      <div style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '0.75rem' }}>{prop.description}</div>
-                      {prop.beds && (
+                      <div style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '0.75rem', lineHeight: 1.5 }}>{prop.summary || prop.description}</div>
+                      {prop.beds ? (
                         <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#94a3b8' }}>
                           <span>{prop.beds} bed</span><span>{prop.baths} bath</span><span>{prop.sqft} sqft</span>
                         </div>
+                      ) : (prop.sqft || prop.lot) && (
+                        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+                          {prop.sqft && <span>{prop.sqft} sqft</span>}{prop.lot && <span>{prop.lot}</span>}
+                        </div>
                       )}
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
               <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
