@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { lakes } from '../data/lakes';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
+import LakeWaitlist from '../components/LakeWaitlist';
+import { trackRecord, isActive, isSold, soldBadge } from '../lib/listing-stats';
 
 const TYPE_COLOR = {
   'all-sports': { bg: 'rgba(59,130,246,0.1)', text: '#2563eb', label: 'All-Sports Lake' },
@@ -40,8 +42,12 @@ export default function LakePage() {
   const lake = lakes[slug];
   const region = lake ? regions[lake.region] : null;
   const nearbyProps = lake
-    ? propertiesData.filter(p => p.region === lake.region).slice(0, 3)
+    ? propertiesData.filter(p => p.region === lake.region && isActive(p)).slice(0, 3)
     : [];
+  // Holly's own history on this specific lake: the number a seller cares about.
+  const onLake = lake ? propertiesData.filter(p => p.lake === lake.slug) : [];
+  const record = trackRecord(onLake);
+  const recentSold = onLake.filter(isSold).sort((a, b) => String(b.soldOn || '').localeCompare(String(a.soldOn || ''))).slice(0, 3);
 
   useEffect(() => {
     if (lake) {
@@ -164,6 +170,37 @@ export default function LakePage() {
           )}
         </div>
 
+        {/* Holly on this lake */}
+        {(record.sold > 0 || record.active > 0) && (
+          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>Holly on {lake.name}</h2>
+              {record.sold > 0 && <Link to="/sold" style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Full track record →</Link>}
+            </div>
+            <div className="lake-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+              <StatCard label="Sold here" value={record.sold} />
+              <StatCard label="Avg days to sell" value={record.avgDays === null ? '—' : record.avgDays} />
+              <StatCard label="Of list price" value={record.avgPct ? `${record.avgPct}%` : '—'} />
+              <StatCard label="For sale now" value={record.active} />
+            </div>
+            {recentSold.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '1rem' }}>
+                {recentSold.map(p => (
+                  <Link key={p.id} to={`/property/${p.slug}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.85rem', textDecoration: 'none', color: '#1a2332', padding: '0.5rem 0', borderTop: '1px solid #f0eee9' }}>
+                    <span style={{ fontWeight: 600 }}>{p.title}</span>
+                    <span style={{ color: '#6b7a8d', whiteSpace: 'nowrap' }}>{soldBadge(p)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Buyer waitlist */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <LakeWaitlist lake={lake.slug} lakeName={lake.name} />
+        </div>
+
         {/* Two columns: fishing + rules */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
 
@@ -250,7 +287,7 @@ export default function LakePage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
               {nearbyProps.map(p => (
-                <Link key={p.id} to={`/property/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link key={p.id} to={`/property/${p.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', transition: 'all 0.25s ease' }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(26,35,50,0.1)'; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}

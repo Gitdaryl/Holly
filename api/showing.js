@@ -1,5 +1,6 @@
 import { put } from '@vercel/blob'
 import { sanitizeSlug, todayISO } from './lib/engage-store.js'
+import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
 
 // Showing requests, attributed to a listing.
 // PERSIST FIRST, notify second: the lead is written to Blob before any email
@@ -42,15 +43,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Could not save your request. Please call or text Holly directly.' })
   }
 
-  // 2. Notify. Failure is logged but never loses the lead.
-  let notified = false
-  try {
-    notified = await emailHolly(lead)
-  } catch (err) {
-    console.error('Lead notify failed (lead IS saved):', err)
-  }
+  // 2. Notify. Failure is logged but never loses the lead. SMS first: the
+  //    text is what Holly actually sees within the minute, email is the record.
+  const first = lead.name.split(' ')[0]
+  const [sms, reply, emailed] = await Promise.all([
+    notifyHolly(`Showing request: ${lead.name} ${lead.phone}\n${lead.listing || lead.slug}${lead.preferred ? `\nWants: ${lead.preferred}` : ''}${lead.message ? `\n"${lead.message.slice(0, 160)}"` : ''}`),
+    textLead(lead.phone, `Hi ${first}, this is Holly Griewahn with Foundation Realty. Got your request to see ${lead.listing || 'the listing'}. I'll call you shortly to set it up. Anything urgent, text me here or call ${HOLLY_PRETTY}.`),
+    emailHolly(lead).catch((err) => { console.error('Lead email failed (lead IS saved):', err); return false }),
+  ])
 
-  return res.status(200).json({ success: true, notified })
+  return res.status(200).json({ success: true, notified: emailed || sms.ok, sms: sms.ok, autoReply: reply.ok })
 }
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

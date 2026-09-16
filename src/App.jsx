@@ -637,7 +637,7 @@ export default function IrishHillsRealty() {
               </div>
             </div>
             <div style={{ flex: '0 0 auto', display: 'none', paddingLeft: '0.5rem' }} className="holly-photo-container">
-              <img src="/images/holly-cutout.png" alt="Holly Griewahn - Foundation Realty" style={{
+              <img src="/images/holly-cutout.webp" alt="Holly Griewahn - Foundation Realty" style={{
                 height: '500px', maxHeight: '70vh', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))',
               }} />
             </div>

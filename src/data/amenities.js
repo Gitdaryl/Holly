@@ -410,6 +410,14 @@ export const propertyTypes = {
 // seller report, so it must never change once a listing is live.
 // listedOn (YYYY-MM-DD) drives days-on-market. sellerEmail opts the listing
 // into the weekly seller report; null means no report is generated.
+//
+// When a listing sells, DO NOT delete it. Set status: 'sold', soldOn: 'YYYY-MM-DD',
+// soldPrice: '$…' and leave everything else in place. The page flips to a
+// "Sold in N days at X% of list" badge, joins /sold, and feeds the lake track
+// record. Sold pages are the proof Holly texts before a listing appointment.
+// Past sales from before this site existed can be added the same way with a
+// minimal record (slug, title, address, lake, region, type, price, listedOn,
+// soldOn, soldPrice, image optional).
 // `image` is the card/hero cover; `photos` feeds the property-page gallery.
 // Photos live in /public/listings/<slug>/ so the site never depends on MLS CDN URLs.
 const photoSet = (slug, n) => Array.from({ length: n }, (_, i) => `/listings/${slug}/${String(i + 1).padStart(2, '0')}.webp`);

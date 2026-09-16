@@ -1,5 +1,6 @@
 import crypto from 'node:crypto'
 import { propertiesData } from '../../src/data/amenities.js'
+import { lakes } from '../../src/data/lakes.js'
 import { listAll, countInWindow, dailySeries, windowDays, todayISO } from './engage-store.js'
 
 export const SITE = process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app'
@@ -47,10 +48,14 @@ export async function buildReport(property, days = 7) {
   const thisWindow = windowDays(end, days)
   const priorWindow = windowDays(thisWindow[0], days + 1).slice(0, days)
 
-  const [views, saved, leads] = await Promise.all([
+  // Buyers registered for this listing's lake: the one number on the report
+  // that no portal can show a seller.
+  const lake = property.lake && lakes[property.lake] ? lakes[property.lake] : null
+  const [views, saved, leads, waitlist] = await Promise.all([
     listAll(`engage/${slug}/views/`),
     listAll(`engage/${slug}/events/saved/`),
     listAll(`leads/${slug}/`),
+    lake ? listAll(`waitlist/${property.lake}/`) : Promise.resolve({ paths: [], capped: false }),
   ])
 
   const win = (paths) => countInWindow(paths, thisWindow[0], thisWindow[days - 1])
@@ -70,6 +75,7 @@ export async function buildReport(property, days = 7) {
       views: { period: win(views.paths), prior: prior(views.paths), total: views.paths.length },
       saves: { period: win(saved.paths), prior: prior(saved.paths), total: saved.paths.length },
       showings: { period: win(leads.paths), prior: prior(leads.paths), total: leads.paths.length },
+      waitlist: lake ? { period: win(waitlist.paths), total: waitlist.paths.length, lakeName: lake.name } : null,
     },
     series: dailySeries(views.paths, thisWindow),
     leadPaths: leads.paths,
@@ -195,6 +201,7 @@ export function renderReportHtml(report, { audience = 'seller' } = {}) {
         <tr><td style="font-size:14px;color:${BRAND.navy};padding:4px 0">Total page views</td><td align="right" style="font-size:14px;font-weight:700;color:${BRAND.navy}">${m.views.total}</td></tr>
         <tr><td style="font-size:14px;color:${BRAND.navy};padding:4px 0">Total saves</td><td align="right" style="font-size:14px;font-weight:700;color:${BRAND.navy}">${m.saves.total}</td></tr>
         <tr><td style="font-size:14px;color:${BRAND.navy};padding:4px 0">Total showing requests</td><td align="right" style="font-size:14px;font-weight:700;color:${BRAND.navy}">${m.showings.total}</td></tr>
+        ${m.waitlist ? `<tr><td style="font-size:14px;color:${BRAND.navy};padding:4px 0">Buyers registered for ${esc(m.waitlist.lakeName)}${m.waitlist.period ? ` <span style="color:${BRAND.muted};font-size:12px">(+${m.waitlist.period} this week)</span>` : ''}</td><td align="right" style="font-size:14px;font-weight:700;color:${BRAND.navy}">${m.waitlist.total}</td></tr>` : ''}
       </table>
     </td></tr>
   </table>

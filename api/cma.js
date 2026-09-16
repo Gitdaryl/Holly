@@ -2,6 +2,8 @@
 // Receives seller inquiry, emails Holly with all details via Resend
 // Also saves to Notion Holly Leads DB as "CMA Request" source
 
+import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -31,7 +33,14 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to process CMA request' });
   }
 
-  return res.status(200).json({ success: true });
+  // Seller leads are the ones worth the most; Holly hears about them by text.
+  const first = String(name).split(' ')[0];
+  const [sms, reply] = await Promise.all([
+    notifyHolly(`HOME VALUE request: ${name} ${phone || email || ''}\n${address}${timeline ? `\nTimeline: ${TIMELINE_LABELS[timeline] || timeline}` : ''}`),
+    phone ? textLead(phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). Got your request for a value on ${address}. I'll pull the recent lake sales and reach out shortly. Questions in the meantime? Text me here or call ${HOLLY_PRETTY}.`) : Promise.resolve({ ok: false }),
+  ]);
+
+  return res.status(200).json({ success: true, sms: sms.ok, autoReply: reply.ok });
 }
 
 const CONDITION_LABELS = {

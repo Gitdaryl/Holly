@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import { useEngagement } from '../lib/useEngagement';
+import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
 
 export default function PropertyPage() {
   const { id } = useParams();
@@ -23,6 +24,8 @@ export default function PropertyPage() {
   // Hook must run before the not-found early return.
   const { counts, saved, toggleSave } = useEngagement(property?.slug);
   const region = property ? regions[property.region] : null;
+  const sold = property ? isSold(property) : false;
+  const stats = property ? soldStats(property) : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -118,7 +121,11 @@ export default function PropertyPage() {
             <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {propertyTypes[property.type]?.label || property.type}
             </span>
-            <span style={{ background: 'rgba(34,197,94,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>Active</span>
+            {sold ? (
+              <span style={{ background: 'rgba(26,35,50,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
+            ) : (
+              <span style={{ background: 'rgba(34,197,94,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>Active</span>
+            )}
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
             {property.title}
@@ -138,9 +145,15 @@ export default function PropertyPage() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           Call Holly
         </a>
-        <a href="#request-tour" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1a2332' }}>
-          Request Tour
-        </a>
+        {sold ? (
+          <Link to="/cma" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1a2332' }}>
+            My Home's Value
+          </Link>
+        ) : (
+          <a href="#request-tour" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1a2332' }}>
+            Request Tour
+          </a>
+        )}
       </div>
 
       {/* Content */}
@@ -151,9 +164,23 @@ export default function PropertyPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Price + Stats */}
             <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#e84393', fontFamily: "'Playfair Display', serif", marginBottom: '1rem' }}>
-                {property.price}
-              </div>
+              {sold && stats ? (
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#1a2332', fontFamily: "'Playfair Display', serif" }}>{stats.soldPrice ? fmtPrice(stats.soldPrice) : property.price}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{stats.soldPrice ? 'sold price' : 'list price'}{stats.soldPrice && stats.listPrice && stats.listPrice !== stats.soldPrice ? <> · listed at <span style={{ textDecoration: 'line-through' }}>{property.price}</span></> : null}</div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
+                    {stats.days !== null && <span style={{ background: '#1a2332', color: 'white', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.days} days on market</span>}
+                    {stats.pctOfList && <span style={{ background: 'rgba(232,67,147,0.1)', color: '#e84393', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.pctOfList}% of list price</span>}
+                    {stats.soldOn && <span style={{ background: '#f0eee9', color: '#4a5568', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600 }}>Closed {new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</span>}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#e84393', fontFamily: "'Playfair Display', serif", marginBottom: '1rem' }}>
+                  {property.price}
+                </div>
+              )}
               {(property.beds || property.sqft || property.lot) && (
                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                   {[
@@ -232,6 +259,19 @@ export default function PropertyPage() {
 
           {/* Sidebar - Request a Showing form */}
           <div className="property-sidebar" style={{ width: '340px', flexShrink: 0, position: 'sticky', top: '90px' }}>
+            {sold ? (
+              <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>Holly sold it{stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.</h3>
+                <p style={{ fontSize: '0.85rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                  Own a place {region?.name ? `near ${region.name}` : 'on the lake'}? Find out what the same buyers would pay for yours, or get on the list for the next one before it hits the market.
+                </p>
+                <Link to="/cma" style={{ display: 'block', textAlign: 'center', background: '#e84393', color: 'white', padding: '0.8rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.6rem' }}>What's my home worth?</Link>
+                {property.lake && (
+                  <Link to={`/lakes/${property.lake}#waitlist`} style={{ display: 'block', textAlign: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem', border: '2px solid #1a2332' }}>Get first look at the next one</Link>
+                )}
+              </div>
+            ) : (
             <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
               <button
                 type="button"
@@ -303,6 +343,7 @@ export default function PropertyPage() {
                 </form>
               )}
             </div>
+            )}
 
             {/* Agent card */}
             <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>

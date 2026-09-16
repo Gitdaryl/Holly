@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
+import { isSold, isActive, soldBadge, soldStats, fmtPrice, trackRecord } from '../lib/listing-stats';
 
 const PRICE_RANGES = [
   { label: 'Any Price', min: 0, max: Infinity },
@@ -15,7 +16,7 @@ function parsePrice(str) {
   return parseInt(str.replace(/[$,+]/g, ''), 10) || 0;
 }
 
-function NavBar({ scrolled }) {
+export function NavBar({ scrolled }) {
   return (
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
@@ -42,7 +43,7 @@ function NavBar({ scrolled }) {
   );
 }
 
-function PropertyCard({ property }) {
+export function PropertyCard({ property }) {
   const region = regions[property.region];
   return (
     <Link to={`/property/${property.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
@@ -72,10 +73,10 @@ function PropertyCard({ property }) {
           {property.status && (
             <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
               <span style={{
-                background: property.status.toLowerCase() === 'active' ? 'rgba(34,197,94,0.9)' : 'rgba(100,116,139,0.9)',
-                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'capitalize',
+                background: isActive(property) ? 'rgba(34,197,94,0.9)' : isSold(property) ? 'rgba(26,35,50,0.92)' : 'rgba(100,116,139,0.9)',
+                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700,
               }}>
-                {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
+                {isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
               </span>
             </div>
           )}
@@ -94,8 +95,9 @@ function PropertyCard({ property }) {
 
         {/* Content */}
         <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#e84393', marginBottom: '0.35rem', fontFamily: "'Playfair Display', serif" }}>
-            {property.price}
+          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: isSold(property) ? '#1a2332' : '#e84393', marginBottom: '0.35rem', fontFamily: "'Playfair Display', serif" }}>
+            {isSold(property) ? (fmtPrice(soldStats(property).soldPrice) || property.price) : property.price}
+            {isSold(property) && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#94a3b8', marginLeft: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>sold</span>}
           </div>
           <div style={{ fontSize: '1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.4rem', lineHeight: 1.3 }}>
             {property.title}
@@ -136,6 +138,8 @@ export default function ListingsPage() {
   const [activePriceIdx, setActivePriceIdx] = useState(0);
   const [activeRegion, setActiveRegion] = useState(searchParams.get('region') || 'all');
   const [minBeds, setMinBeds] = useState(0);
+  const [status, setStatus] = useState(searchParams.get('status') === 'sold' ? 'sold' : 'active');
+  const record = trackRecord(propertiesData);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -146,6 +150,7 @@ export default function ListingsPage() {
   const priceRange = PRICE_RANGES[activePriceIdx];
 
   const filtered = propertiesData.filter(p => {
+    if (status === 'sold' ? !isSold(p) : !isActive(p)) return false;
     if (activeType !== 'all' && p.type !== activeType) return false;
     if (activeRegion !== 'all' && p.region !== activeRegion) return false;
     if (minBeds > 0 && (p.beds || 0) < minBeds) return false;
@@ -288,6 +293,21 @@ export default function ListingsPage() {
 
         {/* Results */}
         <div style={{ flex: 1, minWidth: 0 }}>
+          {/* For sale / Sold */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'inline-flex', background: 'white', border: '1px solid #e8e4df', borderRadius: '10px', padding: '0.25rem' }}>
+              {[{ key: 'active', label: 'For Sale' }, { key: 'sold', label: `Sold${record.sold ? ` (${record.sold})` : ''}` }].map(t => (
+                <button key={t.key} onClick={() => setStatus(t.key)} style={{
+                  padding: '0.45rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.82rem', fontWeight: 700,
+                  background: status === t.key ? '#1a2332' : 'transparent', color: status === t.key ? 'white' : '#6b7a8d', transition: 'all 0.2s ease',
+                }}>{t.label}</button>
+              ))}
+            </div>
+            {status === 'sold' && record.sold > 0 && (
+              <Link to="/sold" style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Holly's track record →</Link>
+            )}
+          </div>
+
           {/* Property type filter bar */}
           <div className="filter-scroll" style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
             {[{ key: 'all', label: 'All Types' }, ...Object.entries(propertyTypes).map(([k, v]) => ({ key: k, label: v.label }))].map(({ key, label }) => (
@@ -323,8 +343,8 @@ export default function ListingsPage() {
           ) : (
             <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'white', borderRadius: '16px', border: '1px solid #e8e4df' }}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" strokeWidth="1.5" style={{ marginBottom: '1rem' }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.5rem' }}>No properties match your filters</h3>
-              <p style={{ color: '#6b7a8d', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Try adjusting your filters or call Holly for off-market properties in this area.</p>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.5rem' }}>{status === 'sold' ? 'Sold listings are on their way' : 'No properties match your filters'}</h3>
+              <p style={{ color: '#6b7a8d', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{status === 'sold' ? 'Ask Holly about recent sales on your lake and what they mean for your home.' : 'Try adjusting your filters or call Holly for off-market properties in this area.'}</p>
               <a href="tel:5174033413" style={{ display: 'inline-block', background: '#e84393', color: 'white', padding: '0.65rem 1.5rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
                 Call Holly — (517) 403-3413
               </a>
