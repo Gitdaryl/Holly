@@ -93,7 +93,10 @@ A call to (517) 300-8226 rings Holly's cell showing the site number as caller
 ID. She hears "Holly, a call from your website. Press 1 to take it." Voicemail
 cannot press 1, so an unanswered call never lands in her carrier mailbox:
 the caller hears a short message, leaves a voicemail (up to 2 min), and
-Holly gets a text with the transcript and an audio link. Missed calls and
+Holly gets a text with the transcript (Deepgram Nova-3 via DEEPGRAM_API_KEY,
+Twilio's own transcription as fallback) and a signed audio link served by
+/api/voicemail (Twilio's media URLs are auth-walled). Re-transcribe any
+recording: /api/admin?view=transcribe&rec=RE... with the admin bearer. Missed calls and
 voicemails log into the caller's thread in the Texts tab. Code:
 api/voice-inbound.js (Dial + screen + Record + transcribeCallback).
 Holly should save 517-300-8226 in her contacts so it is not flagged as spam.
