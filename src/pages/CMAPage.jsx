@@ -150,13 +150,13 @@ export default function CMAPage() {
 
       {/* Hero */}
       <div style={{
-        minHeight: '40vh',
+        minHeight: '44vh',
         background: 'linear-gradient(135deg, #1a2332 0%, #2c3e50 50%, #3d5a73 100%)',
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-        padding: '0 2rem 3rem', position: 'relative', overflow: 'hidden',
+        padding: '120px 1.25rem 4rem', position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 70% 30%, rgba(232,67,147,0.12) 0%, transparent 55%)' }} />
-        <div style={{ maxWidth: '640px', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '640px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(232,67,147,0.15)', border: '1px solid rgba(232,67,147,0.3)', padding: '0.3rem 0.8rem', borderRadius: '20px', marginBottom: '1rem' }}>
             <span style={{ width: 6, height: 6, background: '#e84393', borderRadius: '50%' }} />
             <span style={{ color: '#e84393', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free Home Valuation</span>
@@ -171,7 +171,7 @@ export default function CMAPage() {
       </div>
 
       {/* Form card */}
-      <div style={{ maxWidth: '640px', margin: '-2rem auto 4rem', padding: '0 1.25rem' }}>
+      <div style={{ maxWidth: '640px', margin: '-2rem auto 4rem', padding: '0 1.25rem', position: 'relative', zIndex: 2 }}>
         <div style={{ background: 'white', borderRadius: '20px', boxShadow: '0 20px 60px rgba(26,35,50,0.12)', border: '1px solid #e8e4df', overflow: 'hidden' }}>
 
           {/* Progress bar */}
