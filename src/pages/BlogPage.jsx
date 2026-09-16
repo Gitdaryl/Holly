@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import HeroVideo from '../components/HeroVideo';
 
 const CATEGORIES = ['All', 'Lake Living', 'Real Estate Tips', 'Area Guide', 'Seasonal', 'Buyer Education', 'Community'];
 
@@ -168,7 +169,7 @@ export default function BlogPage() {
         padding: '0 2rem 3rem',
         position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 70% 40%, rgba(232,67,147,0.08) 0%, transparent 50%)' }} />
+        <HeroVideo video="/regions/blog/hero.mp4" poster="/regions/blog/poster.webp" gradient="linear-gradient(135deg, #1a2332 0%, #2c4a6e 50%, #1a3a4a 100%)" dim={0.35} />
         <div style={{ maxWidth: '800px', position: 'relative', zIndex: 1 }}>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
             Irish Hills Lakes
