@@ -1,4 +1,4 @@
-import { list, put } from '@vercel/blob'
+import { list, put, del } from '@vercel/blob'
 import { propertiesData } from '../src/data/amenities.js'
 import { lakes } from '../src/data/lakes.js'
 import { regions } from '../src/data/regions.js'
@@ -37,6 +37,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST' && action === 'status') return setStatus(req, res)
     if (req.method === 'POST' && action === 'review') return askReview(req, res)
     if (req.method === 'POST' && action === 'reply') return reply(req, res)
+    if (req.method === 'POST' && action === 'purge-tests') return purgeTests(req, res)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
@@ -79,7 +80,7 @@ function session(req, res) {
 
 const MAX_LEADS = 200
 
-async function allBlobs(prefix) {
+export async function allBlobs(prefix) {
   const out = []
   let cursor
   do {
@@ -159,7 +160,7 @@ function normalize({ pathname, data }) {
     detail: [data.preferred, data.message].filter(Boolean).join(' · '), link: prop ? `/property/${prop.slug}` : null }
 }
 
-async function inbox() {
+export async function inbox() {
   const [leadBlobs, waitBlobs, status, asked] = await Promise.all([allBlobs('leads/'), allBlobs('waitlist/'), statusMap(), reviewAskedMap()])
   const blobs = [...leadBlobs, ...waitBlobs]
     .filter((b) => b.pathname.endsWith('.json'))
@@ -232,6 +233,27 @@ async function reply(req, res) {
   const r = await textLead(to, String(body).trim().slice(0, 1500), { author: 'holly' })
   if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
   return res.status(200).json({ ok: true })
+}
+
+// Remove everything created while testing: leads, waitlist entries, texts and
+// calls from Yeti's number, plus their status markers. Matches on the name
+// ("test", "delete me") or on the phone numbers passed in. Admin only.
+async function purgeTests(req, res) {
+  const phones = (req.body?.phones || []).map((p) => String(p).replace(/\D/g, '').slice(-10)).filter(Boolean)
+  const isTest = (data) => /\b(test|delete me)\b/i.test(String(data?.name || '')) || phones.includes(String(data?.phone || '').replace(/\D/g, '').slice(-10))
+  const removed = []
+  const leadBlobs = [...(await allBlobs('leads/')), ...(await allBlobs('waitlist/'))].filter((b) => b.pathname.endsWith('.json'))
+  const ids = new Set()
+  for (const { pathname, data } of await readJson(leadBlobs)) {
+    if (isTest(data)) { ids.add(idOf(pathname)); removed.push(pathname) }
+  }
+  for (const b of await allBlobs('admin/')) {
+    const id = b.pathname.split('/')[2]
+    if (ids.has(id)) removed.push(b.pathname)
+  }
+  for (const p of phones) for (const b of await allBlobs(`sms/${p}/`)) removed.push(b.pathname)
+  for (let i = 0; i < removed.length; i += 50) await del(removed.slice(i, i + 50))
+  return res.status(200).json({ removed: removed.length, leads: ids.size })
 }
 
 // ── waitlist ────────────────────────────────────────────────────────────
