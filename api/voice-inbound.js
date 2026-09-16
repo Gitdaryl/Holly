@@ -47,6 +47,17 @@ export default async function handler(req, res) {
 
   const from = params.From || ''
   const holly = toE164(process.env.HOLLY_SMS_PHONE)
+
+  // Screening leg, on Holly's side of the call. Carrier voicemail "answers"
+  // a forwarded call and Twilio would count it as completed, so the bridge
+  // only happens when a human presses 1. Voicemail cannot, so the caller falls
+  // through to the missed-call path instead of her mailbox.
+  if (req.url.includes('screen=1')) {
+    if (params.Digits === '1') return twiml(res, '')
+    if (params.Digits) return twiml(res, '<Hangup/>')
+    const base = url.split('?')[0]
+    return twiml(res, `<Gather numDigits="1" timeout="6" action="${base}?screen=1" method="POST"><Say voice="Polly.Joanna">Holly, a call from your website. Press 1 to take it.</Say></Gather><Hangup/>`)
+  }
   if (!holly) return twiml(res, `<Say voice="Polly.Joanna">Thanks for calling Holly Griewahn at Foundation Realty. Please text this number and Holly will get right back to you.</Say>`)
 
   // Second leg: the Dial finished. Anything but "completed" means she missed it.
@@ -61,5 +72,6 @@ export default async function handler(req, res) {
   }
 
   // First leg: ring Holly's cell, then come back here with the result.
-  return twiml(res, `<Dial timeout="25" callerId="${params.To || ''}" action="${url}" method="POST"><Number>${holly}</Number></Dial>`)
+  const base = url.split('?')[0]
+  return twiml(res, `<Dial timeout="25" callerId="${params.To || ''}" action="${base}" method="POST"><Number url="${base}?screen=1" method="POST">${holly}</Number></Dial>`)
 }
