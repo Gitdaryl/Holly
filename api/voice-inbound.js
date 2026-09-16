@@ -25,6 +25,25 @@ function validSignature(req, url, params) {
   return crypto.timingSafeEqual(a, b)
 }
 
+// Pulls the mp3 with the account credentials and sends the bytes to Deepgram.
+async function transcribeWithDeepgram(recordingSid) {
+  const sid = process.env.TWILIO_ACCOUNT_SID
+  const token = process.env.TWILIO_AUTH_TOKEN
+  const audio = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Recordings/${recordingSid}.mp3`, {
+    headers: { Authorization: `Basic ${Buffer.from(`${sid}:${token}`).toString('base64')}` },
+  })
+  if (!audio.ok) throw new Error(`recording fetch ${audio.status}`)
+  const r = await fetch('https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&punctuate=true', {
+    method: 'POST',
+    headers: { Authorization: `Token ${process.env.DEEPGRAM_API_KEY}`, 'Content-Type': 'audio/mpeg' },
+    body: Buffer.from(await audio.arrayBuffer()),
+    signal: AbortSignal.timeout(25000),
+  })
+  if (!r.ok) throw new Error(`deepgram ${r.status}: ${(await r.text()).slice(0, 200)}`)
+  const j = await r.json()
+  return (j.results?.channels?.[0]?.alternatives?.[0]?.transcript || '').trim()
+}
+
 const twiml = (res, inner) => {
   res.setHeader('Content-Type', 'text/xml')
   return res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response>${inner}</Response>`)
@@ -69,7 +88,24 @@ export default async function handler(req, res) {
     await notifyHolly(`Voicemail from ${prettyPhone(from)}${audio ? `, listen: ${audio}` : ''}\nRough transcript: "${text || '(none)'}"`)
     return res.status(200).end()
   }
-  // Recording finished (fires before the transcript): nothing to do but acknowledge.
+  // Recording is downloadable (recordingStatusCallback). With a Deepgram key
+  // the transcript is made here, far more accurately than Twilio's built-in
+  // engine; without one, Twilio's transcribeCallback path above still runs.
+  if (req.url.includes('ready=1')) {
+    if (!process.env.DEEPGRAM_API_KEY || params.RecordingStatus !== 'completed') return res.status(200).end()
+    const rec = params.RecordingSid
+    const audio = rec ? voicemailLink(SITE, rec) : null
+    let text = ''
+    try {
+      text = await transcribeWithDeepgram(rec)
+    } catch (err) {
+      console.error('deepgram failed:', err.message)
+    }
+    await log(from, { kind: 'voicemail', body: text ? `Voicemail: "${text}"` : 'Voicemail (no transcript)', audio, engine: 'deepgram' })
+    await notifyHolly(`Voicemail from ${prettyPhone(from)}${audio ? `, listen: ${audio}` : ''}\n"${text || '(could not transcribe, use the link)'}"`)
+    return res.status(200).end()
+  }
+  // Record's action: the caller is still on the line, just close out politely.
   if (req.url.includes('recorded=1')) return twiml(res, '')
 
   if (!holly) return twiml(res, `<Say voice="Polly.Joanna">Thanks for calling Holly Griewahn at Foundation Realty. Please text this number and Holly will get right back to you.</Say>`)
@@ -83,7 +119,10 @@ export default async function handler(req, res) {
     if (missed) {
       await notifyHolly(`Missed call on the site number from ${prettyPhone(from)}. Call back or reply from the Texts tab.`)
       const base = url.split('?')[0]
-      return twiml(res, `<Say voice="Polly.Joanna">Holly is with a client right now. She has your number and will call you back shortly. Leave a message after the tone, or text this number.</Say><Record maxLength="120" playBeep="true" timeout="5" transcribe="true" transcribeCallback="${base}?transcript=1" action="${base}?recorded=1" method="POST" /><Say voice="Polly.Joanna">Thanks, Holly will be in touch.</Say>`)
+      const transcription = process.env.DEEPGRAM_API_KEY
+        ? `recordingStatusCallback="${base}?ready=1" recordingStatusCallbackEvent="completed" recordingStatusCallbackMethod="POST"`
+        : `transcribe="true" transcribeCallback="${base}?transcript=1"`
+      return twiml(res, `<Say voice="Polly.Joanna">Holly is with a client right now. She has your number and will call you back shortly. Leave a message after the tone, or text this number.</Say><Record maxLength="120" playBeep="true" timeout="5" ${transcription} action="${base}?recorded=1" method="POST" /><Say voice="Polly.Joanna">Thanks, Holly will be in touch.</Say>`)
     }
     return twiml(res, '')
   }
