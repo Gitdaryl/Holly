@@ -55,3 +55,24 @@ invitation, not an empty room.
 appointment. The page shows the live buyer count for that lake, Holly's sold
 numbers, the day-we-list timeline, and a sample Friday seller report. Nothing
 is stored; the page is built from the URL. Pages are noindex.
+
+## 5. Holly's desk (/admin)
+
+hollygriewahn.vercel.app/admin. No password: tap "Text me a login link", a
+15-minute link lands on HOLLY_SMS_PHONE, opening it keeps her signed in on that
+phone for 30 days. Yeti can paste ADMIN_SECRET under "Have a key instead?".
+
+- **Inbox**: every lead from every source (showing, home value, waitlist,
+  contact, chat), newest first, tap to call/text/email, status per lead
+  (New, Called, Showing set, Client, Dead). Status is append-only in Blob
+  (`admin/status/<leadId>/<ts>-<status>`), newest wins.
+- **Waitlist**: buyers per lake with contact buttons. The number she quotes.
+- **Listings**: this week's views/saves/showings/lake buyers per active
+  listing, "Your report" (agent view), "Copy seller link".
+
+Login texts are rate limited (1/min, 10/day) so the public login page cannot
+SMS-bomb her. Rotating ADMIN_SECRET signs every phone out.
+
+Phase 2 (not built): two-way texting from the page (inbound Twilio webhook +
+reply), mark-sold from the Listings tab. Phase 3: text the whole lake
+waitlist about a new listing, blog review tab.
