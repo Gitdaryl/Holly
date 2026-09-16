@@ -4,13 +4,15 @@ import { lakes } from '../src/data/lakes.js'
 import { regions } from '../src/data/regions.js'
 import { buildReport, sellerKeyFor, SITE } from './lib/report.js'
 import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './lib/admin-auth.js'
-import { notifyHolly } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
+import { WRITE_REVIEW_URL } from './reviews.js'
 
 // Holly's admin. One function, four jobs:
 //   POST ?action=login                text Holly a 15-minute login link
 //   GET  ?action=session&t=<link>     trade the link for a 30-day session
 //   GET  ?view=inbox|waitlist|listings   (bearer: session or ADMIN_SECRET)
 //   POST ?action=status  {id, status}    (bearer) flip a lead's status
+//   POST ?action=review  {id, phone, name} (bearer) text the client Holly's Google review link
 //
 // Reads are assembled from the same append-only blobs the intakes write, so
 // the admin never has a second copy of the truth. Lead status is append-only
@@ -30,6 +32,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'POST' && action === 'status') return setStatus(req, res)
+    if (req.method === 'POST' && action === 'review') return askReview(req, res)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
@@ -99,6 +102,16 @@ async function readJson(blobs) {
   return out
 }
 
+async function reviewAskedMap() {
+  const blobs = await allBlobs('admin/review-asked/')
+  const map = {}
+  for (const b of blobs) {
+    const [, , id, ts] = b.pathname.split('/')
+    map[id] = Math.max(map[id] || 0, Number(ts) || 0)
+  }
+  return map
+}
+
 async function statusMap() {
   const blobs = await allBlobs('admin/status/')
   const map = {}
@@ -136,12 +149,12 @@ function normalize({ pathname, data }) {
 }
 
 async function inbox() {
-  const [leadBlobs, waitBlobs, status] = await Promise.all([allBlobs('leads/'), allBlobs('waitlist/'), statusMap()])
+  const [leadBlobs, waitBlobs, status, asked] = await Promise.all([allBlobs('leads/'), allBlobs('waitlist/'), statusMap(), reviewAskedMap()])
   const blobs = [...leadBlobs, ...waitBlobs]
     .filter((b) => b.pathname.endsWith('.json'))
     .sort((a, b) => sortKey(b.pathname).localeCompare(sortKey(a.pathname)))
     .slice(0, MAX_LEADS)
-  const items = (await readJson(blobs)).map(normalize).map((l) => ({ ...l, status: status[l.id]?.status || 'new' }))
+  const items = (await readJson(blobs)).map(normalize).map((l) => ({ ...l, status: status[l.id]?.status || 'new', reviewAskedAt: asked[l.id] || null }))
   const counts = {}
   for (const l of items) counts[l.status] = (counts[l.status] || 0) + 1
   return { items, counts, total: leadBlobs.length + waitBlobs.length, capped: blobs.length === MAX_LEADS }
@@ -153,6 +166,20 @@ async function setStatus(req, res) {
   if (!STATUSES.includes(status)) return res.status(400).json({ error: 'bad status' })
   await put(`admin/status/${id}/${Date.now()}-${status}`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
   return res.status(200).json({ ok: true, id, status })
+}
+
+// One tap at closing: the client gets Holly's review link by text, from the
+// same number that has been texting them all along. Manual on purpose; an
+// automatic ask that lands on the wrong day is how you get a 3-star review.
+async function askReview(req, res) {
+  const { id, phone, name } = req.body || {}
+  if (!/^[0-9a-f-]{36}$/.test(String(id || ''))) return res.status(400).json({ error: 'bad id' })
+  if (!phone) return res.status(400).json({ error: 'This lead has no phone number.' })
+  const first = String(name || '').trim().split(' ')[0] || 'there'
+  const r = await textLead(phone, `Hi ${first}, it's Holly Griewahn. Thank you for trusting me with your sale. If you have two minutes, a Google review helps the next family find me: ${WRITE_REVIEW_URL}  Thank you! ${HOLLY_PRETTY}`)
+  if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
+  await put(`admin/review-asked/${id}/${Date.now()}`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
+  return res.status(200).json({ ok: true })
 }
 
 // ── waitlist ────────────────────────────────────────────────────────────

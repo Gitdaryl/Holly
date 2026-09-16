@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { regions } from './data/regions';
 import { lakes, lakeSearchIndex } from './data/lakes';
-import { amenityData, propertiesData, testimonials, blogPosts, propertyTypes } from './data/amenities';
+import { amenityData, propertiesData, blogPosts, propertyTypes } from './data/amenities';
+import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
 import ChatWidget from './components/ChatWidget';
 import HeroVideo from './components/HeroVideo';
 
@@ -726,27 +727,8 @@ export default function IrishHillsRealty() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section style={{ padding: '6rem 2rem', background: '#1a2332', color: 'white' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>What Clients Say</h2>
-            <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto', borderRadius: '2px' }} />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-            {testimonials.map((t, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '16px', padding: '2.5rem 2rem', border: '1px solid rgba(255,255,255,0.06)', position: 'relative', animation: `fadeUp 0.6s ease-out ${i * 0.15}s both`, opacity: 0 }}>
-                <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem' }}><Icons.quote /></div>
-                <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.8)', marginBottom: '1.5rem', fontStyle: 'italic', position: 'relative' }}>"{t.quote}"</p>
-                <div>
-                  <div style={{ fontWeight: 600, color: 'white' }}>{t.name}</div>
-                  <div style={{ fontSize: '0.82rem', color: '#e84393' }}>{t.location}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Google reviews (live) */}
+      <GoogleReviews limit={3} />
 
       {/* Contact Form */}
       <section id="contact" style={{ padding: '4rem 2rem', background: 'white' }}>
@@ -760,6 +742,7 @@ export default function IrishHillsRealty() {
             <p style={{ color: '#6b7a8d', fontSize: '1rem', lineHeight: 1.8, marginBottom: '1.75rem' }}>
               Holly knows every lake, road, and neighbor in the Irish Hills. Drop her a note and she'll get back to you fast - usually the same day.
             </p>
+            <div style={{ marginBottom: '1.25rem' }}><TrustStrip /></div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
                 { icon: <Icons.waves />, title: '50+ lakes covered', sub: 'Private, all-sports, no-wake - Holly knows them all' },

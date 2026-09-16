@@ -5,6 +5,7 @@ import { regions } from '../data/regions';
 import { propertiesData } from '../data/amenities';
 import HeroVideo from '../components/HeroVideo';
 import { useWaitlistCount } from '../components/LakeWaitlist';
+import { TrustStrip } from '../components/GoogleReviews';
 import { trackRecord, isActive, isSold, soldBadge } from '../lib/listing-stats';
 
 // /plan/<lake>/<address-slug>?for=<first name>
@@ -209,6 +210,7 @@ function Plan({ lakeSlug, addressSlug }) {
           <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: '1rem', maxWidth: '560px', lineHeight: 1.6 }}>
             What happens the day we list, who is already waiting on {lake.name}, and what you will see every week until it closes.
           </p>
+          <div style={{ marginTop: '1rem' }}><TrustStrip dark /></div>
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { lakes } from '../data/lakes';
 import { propertiesData } from '../data/amenities';
 import { NavBar, PropertyCard } from './ListingsPage';
 import { isSold, trackRecord, fmtPrice } from '../lib/listing-stats';
+import { TrustStrip } from '../components/GoogleReviews';
 
 // /sold: the proof page. A sold listing never leaves the site; it becomes a
 // case study with days-on-market and percent-of-list, grouped by lake. This is
@@ -68,6 +69,7 @@ export default function SoldPage() {
           <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1rem', maxWidth: '560px', lineHeight: 1.6, marginBottom: '1.75rem' }}>
             Every sale stays on this site with the numbers that matter to a seller: how fast, and for how much.
           </p>
+          <div style={{ marginBottom: '1.5rem' }}><TrustStrip dark /></div>
           <div className="sold-tiles">
             <Tile value={record.sold} label="Homes sold" />
             <Tile value={record.avgDays === null ? '—' : record.avgDays} label="Avg days to sell (listings)" />

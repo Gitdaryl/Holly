@@ -5,6 +5,7 @@ import { propertiesData, propertyTypes } from '../data/amenities';
 import { useEngagement } from '../lib/useEngagement';
 import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
 import { coverFor, isAerial } from '../lib/cover';
+import { TrustStrip } from '../components/GoogleReviews';
 
 export default function PropertyPage() {
   const { id } = useParams();
@@ -362,6 +363,7 @@ export default function PropertyPage() {
                 <div style={{ fontWeight: 700, color: '#1a2332', fontSize: '0.95rem' }}>Holly Griewahn</div>
                 <div style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>Foundation Realty</div>
                 <a href="tel:5174033413" style={{ fontSize: '0.82rem', color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>
+                <div style={{ marginTop: '0.4rem' }}><TrustStrip /></div>
               </div>
             </div>
           </div>

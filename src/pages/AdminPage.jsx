@@ -145,6 +145,14 @@ function Login({ onSession }) {
 function LeadCard({ lead, session, onStatus }) {
   const st = STATUS[lead.status] || STATUS.new;
   const [busy, setBusy] = useState(false);
+  const [asked, setAsked] = useState(Boolean(lead.reviewAskedAt));
+  const askReview = async () => {
+    if (!window.confirm(`Text ${lead.name} Holly's Google review link now?`)) return;
+    setBusy(true);
+    try { await api('/api/admin?action=review', { method: 'POST', session, body: { id: lead.id, phone: lead.phone, name: lead.name } }); setAsked(true); }
+    catch (err) { alert(err.message); }
+    setBusy(false);
+  };
   const change = async (e) => {
     const status = e.target.value;
     setBusy(true);
@@ -172,6 +180,11 @@ function LeadCard({ lead, session, onStatus }) {
         {lead.phone && <a className="adm-btn pink" href={`tel:${digits(lead.phone)}`}>Call</a>}
         {lead.phone && <a className="adm-btn" href={`sms:${digits(lead.phone)}`}>Text</a>}
         {lead.email && <a className="adm-btn" href={`mailto:${lead.email}`}>Email</a>}
+        {lead.phone && lead.status === 'client' && (
+          <button className="adm-btn" disabled={busy || asked} onClick={askReview} style={{ opacity: asked ? 0.6 : 1 }}>
+            {asked ? 'Review link sent' : 'Ask for a review'}
+          </button>
+        )}
         {!lead.phone && !lead.email && <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>No contact details</span>}
       </div>
     </div>

@@ -760,13 +760,7 @@ export const propertiesData = [
   },
 ];
 
-export const testimonials = [
-  { quote: "Holly found us the perfect lakefront home on Devils Lake. Her knowledge of every lake in the area is unmatched.", name: "The Peterson Family", location: "Devils Lake" },
-  { quote: "We were from out of state and Holly made the entire process seamless. She knows every detail about these communities.", name: "Mark & Susan Chen", location: "Clark Lake" },
-  { quote: "Holly's expertise saved us from buying a property with hidden issues. She's not just a realtor, she's the Irish Hills authority.", name: "The Williams Family", location: "Vineyard Lake" },
-  { quote: "We wanted a farmstead, not lakefront, and Holly knew every back road and property in the area. Found us exactly what we wanted.", name: "The Garcia Family", location: "Jerome" },
-];
-
+// Testimonials come live from Google (api/reviews.js); no canned quotes on the site.
 export const blogPosts = [
   { id: 1, slug: 'buying-lakefront-michigan', title: 'What to Know Before Buying Lakefront in Michigan', excerpt: 'From septic inspections to seawall conditions, here are the top things every lake buyer needs to check before making an offer.', date: 'Feb 10, 2025', category: 'Buyer Tips', readTime: '5 min read' },
   { id: 2, slug: 'devils-lake-fishing-guide', title: 'The Complete Fishing Guide to Devils Lake', excerpt: "Devils Lake is the largest lake in Lenawee County and home to trophy bass, bluegill, and perch. Here's everything you need to know.", date: 'Jan 28, 2025', category: 'Lake Guides', readTime: '7 min read' },
