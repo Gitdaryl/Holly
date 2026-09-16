@@ -58,6 +58,18 @@ export default async function handler(req, res) {
     const base = url.split('?')[0]
     return twiml(res, `<Gather numDigits="1" timeout="6" action="${base}?screen=1" method="POST"><Say voice="Polly.Joanna">Holly, a call from your website. Press 1 to take it.</Say></Gather><Hangup/>`)
   }
+  // Transcription callback: Twilio posts the text a minute or so after the
+  // recording ends. Store it in the thread and text it to Holly.
+  if (req.url.includes('transcript=1')) {
+    const text = (params.TranscriptionText || '').trim()
+    const audio = params.RecordingUrl ? `${params.RecordingUrl}.mp3` : null
+    await log(from, { kind: 'voicemail', body: text ? `Voicemail: "${text}"` : 'Voicemail (no transcript)', audio, status: params.TranscriptionStatus || null })
+    await notifyHolly(`Voicemail from ${prettyPhone(from)}:\n"${text || '(could not transcribe)'}"${audio ? `\nListen: ${audio}` : ''}`)
+    return res.status(200).end()
+  }
+  // Recording finished (fires before the transcript): nothing to do but acknowledge.
+  if (req.url.includes('recorded=1')) return twiml(res, '')
+
   if (!holly) return twiml(res, `<Say voice="Polly.Joanna">Thanks for calling Holly Griewahn at Foundation Realty. Please text this number and Holly will get right back to you.</Say>`)
 
   // Second leg: the Dial finished. Anything but "completed" means she missed it.
@@ -68,7 +80,8 @@ export default async function handler(req, res) {
     await log(from, { status: params.DialCallStatus, duration: Number(params.DialCallDuration || 0), body: missed ? 'Missed call' : `Call, ${params.DialCallDuration || 0}s` })
     if (missed) {
       await notifyHolly(`Missed call on the site number from ${prettyPhone(from)}. Call back or reply from the Texts tab.`)
-      return twiml(res, `<Say voice="Polly.Joanna">Holly is with a client right now. She has your number and will call you back shortly. You can also text this number.</Say>`)
+      const base = url.split('?')[0]
+      return twiml(res, `<Say voice="Polly.Joanna">Holly is with a client right now. She has your number and will call you back shortly. Leave a message after the tone, or text this number.</Say><Record maxLength="120" playBeep="true" timeout="5" transcribe="true" transcribeCallback="${base}?transcript=1" action="${base}?recorded=1" method="POST" /><Say voice="Polly.Joanna">Thanks, Holly will be in touch.</Say>`)
     }
     return twiml(res, '')
   }
