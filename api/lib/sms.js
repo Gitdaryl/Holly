@@ -62,10 +62,24 @@ export async function notifyHolly(text) {
 
 // Leads opted in by typing their number into a form asking Holly to contact
 // them; one confirmation text is the expected response, not marketing.
-export async function textLead(phone, text) {
+// Every outbound lead text is also stored so the Texts tab shows both sides.
+export async function textLead(phone, text, { author = 'auto' } = {}) {
   const to = toE164(phone)
   if (!to) return { ok: false, error: 'lead has no usable phone' }
-  return send(to, text)
+  const r = await send(to, text)
+  if (r.ok) {
+    try {
+      const { put } = await import('@vercel/blob')
+      const { todayISO } = await import('./engage-store.js')
+      const receivedAt = new Date().toISOString()
+      await put(`sms/${normalizePhone(to)}/${todayISO()}/${receivedAt.replace(/[:.]/g, '-')}-out.json`,
+        JSON.stringify({ direction: 'out', to, from: process.env.TWILIO_PHONE || null, body: text, author, receivedAt }, null, 2),
+        { access: 'public', addRandomSuffix: false, contentType: 'application/json' })
+    } catch (err) {
+      console.error('sms: could not store outbound copy', err.message)
+    }
+  }
+  return r
 }
 
 export const HOLLY_PRETTY = '(517) 403-3413'

@@ -13,6 +13,8 @@ import { WRITE_REVIEW_URL } from './reviews.js'
 //   GET  ?view=inbox|waitlist|listings   (bearer: session or ADMIN_SECRET)
 //   POST ?action=status  {id, status}    (bearer) flip a lead's status
 //   POST ?action=review  {id, phone, name} (bearer) text the client Holly's Google review link
+//   GET  ?view=texts                    (bearer) every SMS thread, newest first
+//   POST ?action=reply   {to, body}     (bearer) send a text from the site number
 //
 // Reads are assembled from the same append-only blobs the intakes write, so
 // the admin never has a second copy of the truth. Lead status is append-only
@@ -33,12 +35,14 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'POST' && action === 'status') return setStatus(req, res)
     if (req.method === 'POST' && action === 'review') return askReview(req, res)
+    if (req.method === 'POST' && action === 'reply') return reply(req, res)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
     if (view === 'inbox') return res.status(200).json(await inbox())
     if (view === 'waitlist') return res.status(200).json(await waitlist())
     if (view === 'listings') return res.status(200).json(await listings())
+    if (view === 'texts') return res.status(200).json(await texts())
     return res.status(400).json({ error: 'unknown view' })
   } catch (err) {
     console.error('admin failed:', err)
@@ -179,6 +183,47 @@ async function askReview(req, res) {
   const r = await textLead(phone, `Hi ${first}, it's Holly Griewahn. Thank you for trusting me with your sale. If you have two minutes, a Google review helps the next family find me: ${WRITE_REVIEW_URL}  Thank you! ${HOLLY_PRETTY}`)
   if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
   await put(`admin/review-asked/${id}/${Date.now()}`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
+  return res.status(200).json({ ok: true })
+}
+
+// ── texts ───────────────────────────────────────────────────────────────
+
+// Threads keyed by the other party's number. Names come from the inbox: if a
+// lead form carried that phone, the thread shows who it is.
+async function texts() {
+  const blobs = (await allBlobs('sms/')).filter((b) => b.pathname.endsWith('.json'))
+  const msgs = await readJson(blobs)
+  const threads = {}
+  for (const { pathname, data } of msgs) {
+    const key = pathname.split('/')[1]
+    if (!threads[key]) threads[key] = { phone: key, messages: [] }
+    threads[key].messages.push(data)
+  }
+  const list = Object.values(threads)
+  for (const t of list) {
+    t.messages.sort((a, b) => String(a.receivedAt).localeCompare(String(b.receivedAt)))
+    t.last = t.messages[t.messages.length - 1]
+    t.unanswered = t.last.direction === 'in'
+  }
+  list.sort((a, b) => String(b.last.receivedAt).localeCompare(String(a.last.receivedAt)))
+
+  // Attach names from lead records that carried the same phone.
+  const leadBlobs = [...(await allBlobs('leads/')), ...(await allBlobs('waitlist/'))].filter((b) => b.pathname.endsWith('.json'))
+  const leads = await readJson(leadBlobs)
+  const names = {}
+  for (const { data } of leads) {
+    const d = String(data.phone || '').replace(/\D/g, '').slice(-10)
+    if (d && data.name && !names[d]) names[d] = data.name
+  }
+  for (const t of list) t.name = names[t.phone.slice(-10)] || null
+  return { threads: list }
+}
+
+async function reply(req, res) {
+  const { to, body } = req.body || {}
+  if (!to || !String(body || '').trim()) return res.status(400).json({ error: 'Number and message are required.' })
+  const r = await textLead(to, String(body).trim().slice(0, 1500), { author: 'holly' })
+  if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
   return res.status(200).json({ ok: true })
 }
 

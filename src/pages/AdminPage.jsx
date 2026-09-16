@@ -50,7 +50,7 @@ const digits = (p) => String(p || '').replace(/\D/g, '');
 // ── shells ─────────────────────────────────────────────────────────────
 
 function Shell({ children, tab, setTab, onLogout }) {
-  const tabs = [['inbox', 'Inbox'], ['waitlist', 'Waitlist'], ['listings', 'Listings']];
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings']];
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
@@ -221,6 +221,80 @@ function Inbox({ session }) {
   );
 }
 
+// ── texts ──────────────────────────────────────────────────────────────
+
+const pretty = (p) => { const d = digits(p).slice(-10); return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : p; };
+
+function Thread({ thread, session, onSent, onBack }) {
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const send = async (e) => {
+    e.preventDefault();
+    if (!text.trim()) return;
+    setBusy(true);
+    try { await api('/api/admin?action=reply', { method: 'POST', session, body: { to: thread.phone, body: text.trim() } }); onSent(thread.phone, text.trim()); setText(''); }
+    catch (err) { alert(err.message); }
+    setBusy(false);
+  };
+  return (
+    <div className="adm-card" style={{ padding: 0, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderBottom: `1px solid ${LINE}` }}>
+        <button onClick={onBack} className="adm-btn" style={{ padding: '0.35rem 0.6rem' }}>←</button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 700 }}>{thread.name || pretty(thread.phone)}</div>
+          {thread.name && <div style={{ fontSize: '0.75rem', color: MUTED }}>{pretty(thread.phone)}</div>}
+        </div>
+        <a className="adm-btn pink" href={`tel:${digits(thread.phone)}`} style={{ padding: '0.45rem 0.7rem' }}>Call</a>
+      </div>
+      <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '55vh', overflowY: 'auto', background: CREAM }}>
+        {thread.messages.map((m, i) => (
+          <div key={i} style={{ alignSelf: m.direction === 'in' ? 'flex-start' : 'flex-end', maxWidth: '82%' }}>
+            <div style={{ background: m.direction === 'in' ? 'white' : NAVY, color: m.direction === 'in' ? NAVY : 'white', border: m.direction === 'in' ? `1px solid ${LINE}` : 'none', borderRadius: m.direction === 'in' ? '14px 14px 14px 4px' : '14px 14px 4px 14px', padding: '0.6rem 0.85rem', fontSize: '0.9rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.body}{m.media?.length ? m.media.map((u, j) => <div key={j}><a href={u} target="_blank" rel="noopener" style={{ color: 'inherit' }}>photo {j + 1}</a></div>) : null}</div>
+            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '0.2rem', textAlign: m.direction === 'in' ? 'left' : 'right' }}>{m.direction === 'out' ? (m.author === 'holly' ? 'Holly' : 'Auto') + ' · ' : ''}{ago(m.receivedAt)}</div>
+          </div>
+        ))}
+      </div>
+      <form onSubmit={send} style={{ display: 'flex', gap: '0.5rem', padding: '0.75rem', borderTop: `1px solid ${LINE}` }}>
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Reply as Holly" style={{ flex: 1, padding: '0.7rem 0.85rem', borderRadius: '10px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.92rem' }} />
+        <button className="adm-btn pink" type="submit" disabled={busy || !text.trim()}>{busy ? '…' : 'Send'}</button>
+      </form>
+    </div>
+  );
+}
+
+function Texts({ session }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [open, setOpen] = useState(null);
+  useEffect(() => { api('/api/admin?view=texts', { session }).then(setData).catch((e) => setError(e.message)); }, [session]);
+  if (error) return <ErrorBox error={error} />;
+  if (!data) return <Loading />;
+  const onSent = (phone, body) => setData((d) => ({ ...d, threads: d.threads.map((t) => t.phone === phone ? { ...t, unanswered: false, messages: [...t.messages, { direction: 'out', body, author: 'holly', receivedAt: new Date().toISOString() }] } : t) }));
+  const thread = data.threads.find((t) => t.phone === open);
+  if (thread) return <Thread thread={thread} session={session} onSent={onSent} onBack={() => setOpen(null)} />;
+  if (!data.threads.length) return <Empty title="No texts yet" body="Every text to (517) 300-8226, and every auto-reply the site sends, shows up here as a conversation you can answer from this page." />;
+  const waiting = data.threads.filter((t) => t.unanswered).length;
+  return (
+    <>
+      <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.25rem' }}>{waiting ? `${waiting} waiting on you` : 'Texts'}</div>
+      <p style={{ fontSize: '0.82rem', color: MUTED, marginBottom: '1rem' }}>Conversations on (517) 300-8226. Replies go out from that number.</p>
+      <div style={{ display: 'grid', gap: '0.6rem' }}>
+        {data.threads.map((t) => (
+          <button key={t.phone} onClick={() => setOpen(t.phone)} className="adm-card" style={{ textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', gap: '0.75rem', alignItems: 'center', borderLeft: t.unanswered ? `4px solid ${PINK}` : `1px solid ${LINE}` }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 700, color: NAVY }}>{t.name || pretty(t.phone)}</span>
+                <span style={{ fontSize: '0.72rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{ago(t.last.receivedAt)}</span>
+              </div>
+              <div style={{ fontSize: '0.85rem', color: t.unanswered ? NAVY : MUTED, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '0.15rem' }}>{t.last.direction === 'out' ? 'You: ' : ''}{t.last.body}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
 // ── waitlist ───────────────────────────────────────────────────────────
 
 function Waitlist({ session }) {
@@ -369,6 +443,7 @@ export default function AdminPage() {
     <Shell tab={tab} setTab={setTab} onLogout={logout}>
       <SessionGuard session={session} onExpired={logout}>
         {tab === 'inbox' && <Inbox session={session} />}
+        {tab === 'texts' && <Texts session={session} />}
         {tab === 'waitlist' && <Waitlist session={session} />}
         {tab === 'listings' && <Listings session={session} />}
       </SessionGuard>

@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
 import { put } from '@vercel/blob'
 import { todayISO } from './lib/engage-store.js'
-import { notifyHolly, prettyPhone } from './lib/sms.js'
+import { notifyHolly, prettyPhone, normalizePhone } from './lib/sms.js'
 
 // Twilio webhook for texts sent TO Holly's number (517-300-8226).
 // Persist first (sms/<from digits>/<date>/<stamp>.json, one blob per message,
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
   try {
     const stamp = msg.receivedAt.replace(/[:.]/g, '-')
-    await put(`sms/${from.replace(/\D/g, '')}/${todayISO()}/${stamp}-in.json`, JSON.stringify(msg, null, 2), {
+    await put(`sms/${normalizePhone(from)}/${todayISO()}/${stamp}-in.json`, JSON.stringify(msg, null, 2), {
       access: 'public', addRandomSuffix: false, contentType: 'application/json',
     })
   } catch (err) {
