@@ -86,3 +86,14 @@ signature verified), are stored under sms/<10 digits>/, and are forwarded to
 HOLLY_SMS_PHONE. The Texts tab in /admin shows every thread with both sides,
 names threads from lead records, flags ones waiting on Holly, and replies go
 out from the site number. Voice on that number is not wired yet.
+
+## 7. Calls to the site number
+
+A call to (517) 300-8226 rings Holly's cell showing the site number as caller
+ID. She hears "Holly, a call from your website. Press 1 to take it." Voicemail
+cannot press 1, so an unanswered call never lands in her carrier mailbox:
+the caller hears a short message, leaves a voicemail (up to 2 min), and
+Holly gets a text with the transcript and an audio link. Missed calls and
+voicemails log into the caller's thread in the Texts tab. Code:
+api/voice-inbound.js (Dial + screen + Record + transcribeCallback).
+Holly should save 517-300-8226 in her contacts so it is not flagged as spam.
