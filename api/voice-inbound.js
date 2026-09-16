@@ -2,6 +2,8 @@ import crypto from 'node:crypto'
 import { put } from '@vercel/blob'
 import { todayISO } from './lib/engage-store.js'
 import { notifyHolly, prettyPhone, toE164 } from './lib/sms.js'
+import { voicemailLink } from './voicemail.js'
+import { SITE } from './lib/report.js'
 
 // Twilio voice webhook for calls TO Holly's site number (517-300-8226).
 // Rings her cell for 25 seconds; if she does not pick up the caller hears a
@@ -62,9 +64,9 @@ export default async function handler(req, res) {
   // recording ends. Store it in the thread and text it to Holly.
   if (req.url.includes('transcript=1')) {
     const text = (params.TranscriptionText || '').trim()
-    const audio = params.RecordingUrl ? `${params.RecordingUrl}.mp3` : null
+    const audio = params.RecordingSid ? voicemailLink(SITE, params.RecordingSid) : null
     await log(from, { kind: 'voicemail', body: text ? `Voicemail: "${text}"` : 'Voicemail (no transcript)', audio, status: params.TranscriptionStatus || null })
-    await notifyHolly(`Voicemail from ${prettyPhone(from)}:\n"${text || '(could not transcribe)'}"${audio ? `\nListen: ${audio}` : ''}`)
+    await notifyHolly(`Voicemail from ${prettyPhone(from)}${audio ? `, listen: ${audio}` : ''}\nRough transcript: "${text || '(none)'}"`)
     return res.status(200).end()
   }
   // Recording finished (fires before the transcript): nothing to do but acknowledge.
