@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to save lead via any channel' });
   }
 
-  notifyHolly(`Chat lead: ${name || '?'} ${phone || email || ''}${region ? ` (${region})` : ''}${interest ? `\n${String(interest).slice(0, 160)}` : ''}`).catch(() => {});
+  await notifyHolly(`Chat lead: ${name || '?'} ${phone || email || ''}${region ? ` (${region})` : ''}${interest ? `\n${String(interest).slice(0, 160)}` : ''}`).catch(() => {});
 
   return res.status(200).json({ success: true, notion: notionOk, email: emailOk, blob: Boolean(blobPath) });
 }

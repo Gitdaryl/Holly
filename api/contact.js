@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   }
 
   // Best-effort text so the lead does not sit in Notion unread.
-  notifyHolly(`Contact form: ${fullName} ${phone || email}\n"${String(message).slice(0, 200)}"`).catch(() => {});
+  await notifyHolly(`Contact form: ${fullName} ${phone || email}\n"${String(message).slice(0, 200)}"`).catch(() => {});
 
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.HOLLY_CONTACT_EMAIL || 'admin@yetigroove.com';
