@@ -26,7 +26,7 @@ function validSignature(req, url, params) {
 }
 
 // Pulls the mp3 with the account credentials and sends the bytes to Deepgram.
-async function transcribeWithDeepgram(recordingSid) {
+export async function transcribeWithDeepgram(recordingSid) {
   const sid = process.env.TWILIO_ACCOUNT_SID
   const token = process.env.TWILIO_AUTH_TOKEN
   const audio = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Recordings/${recordingSid}.mp3`, {

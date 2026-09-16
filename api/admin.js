@@ -6,6 +6,7 @@ import { buildReport, sellerKeyFor, SITE } from './lib/report.js'
 import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './lib/admin-auth.js'
 import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
 import { WRITE_REVIEW_URL } from './reviews.js'
+import { transcribeWithDeepgram } from './voice-inbound.js'
 
 // Holly's admin. One function, four jobs:
 //   POST ?action=login                text Holly a 15-minute login link
@@ -43,6 +44,12 @@ export default async function handler(req, res) {
     if (view === 'waitlist') return res.status(200).json(await waitlist())
     if (view === 'listings') return res.status(200).json(await listings())
     if (view === 'texts') return res.status(200).json(await texts())
+    if (view === 'transcribe') {
+      // Re-run a voicemail through Deepgram: ?view=transcribe&rec=RE...
+      if (!/^RE[0-9a-f]{32}$/.test(String(req.query.rec || ''))) return res.status(400).json({ error: 'bad recording id' })
+      if (!process.env.DEEPGRAM_API_KEY) return res.status(500).json({ error: 'DEEPGRAM_API_KEY not set' })
+      return res.status(200).json({ rec: req.query.rec, text: await transcribeWithDeepgram(req.query.rec) })
+    }
     return res.status(400).json({ error: 'unknown view' })
   } catch (err) {
     console.error('admin failed:', err)
