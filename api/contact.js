@@ -3,7 +3,7 @@
 // Sends email to Holly via Resend
 
 import { saveLeadToNotion, persistLead } from './lib/leads.js';
-import { notifyHolly } from './lib/sms.js';
+import { notifyHolly, prettyPhone } from './lib/sms.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   }
 
   // Best-effort text so the lead does not sit in Notion unread.
-  await notifyHolly(`Contact form: ${fullName} ${phone || email}\n"${String(message).slice(0, 200)}"`).catch(() => {});
+  await notifyHolly(`${fullName} sent a message through your site:\n"${String(message).slice(0, 220)}"\n${phone ? `Call: ${prettyPhone(phone)}` : `Reply by email: ${email}`}`).catch(() => {});
 
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.HOLLY_CONTACT_EMAIL || 'admin@yetigroove.com';

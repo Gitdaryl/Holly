@@ -1,6 +1,6 @@
 import { put } from '@vercel/blob'
 import { sanitizeSlug, todayISO } from './lib/engage-store.js'
-import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js'
 
 // Showing requests, attributed to a listing.
 // PERSIST FIRST, notify second: the lead is written to Blob before any email
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
   //    text is what Holly actually sees within the minute, email is the record.
   const first = lead.name.split(' ')[0]
   const [sms, reply, emailed] = await Promise.all([
-    notifyHolly(`Showing request: ${lead.name} ${lead.phone}\n${lead.listing || lead.slug}${lead.preferred ? `\nWants: ${lead.preferred}` : ''}${lead.message ? `\n"${lead.message.slice(0, 160)}"` : ''}`),
+    notifyHolly(`${lead.name} wants to see ${lead.listing || lead.slug}${lead.preferred ? `, ${lead.preferred.toLowerCase()}` : ''}.${lead.message ? `\n"${lead.message.slice(0, 180)}"` : ''}\nCall: ${prettyPhone(lead.phone)}`),
     textLead(lead.phone, `Hi ${first}, this is Holly Griewahn with Foundation Realty. Got your request to see ${lead.listing || 'the listing'}. I'll call you shortly to set it up. Anything urgent, text me here or call ${HOLLY_PRETTY}.`),
     emailHolly(lead).catch((err) => { console.error('Lead email failed (lead IS saved):', err); return false }),
   ])

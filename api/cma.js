@@ -2,7 +2,7 @@
 // Receives seller inquiry, emails Holly with all details via Resend
 // Also saves to Notion Holly Leads DB as "CMA Request" source
 
-import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js';
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js';
 import { persistLead } from './lib/leads.js';
 
 export default async function handler(req, res) {
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
   // Seller leads are the ones worth the most; Holly hears about them by text.
   const first = String(name).split(' ')[0];
   const [sms, reply] = await Promise.all([
-    notifyHolly(`HOME VALUE request: ${name} ${phone || email || ''}\n${address}${timeline ? `\nTimeline: ${TIMELINE_LABELS[timeline] || timeline}` : ''}`),
+    notifyHolly(`Seller lead: ${name} wants a value on ${address}${timeline ? `, ${(TIMELINE_LABELS[timeline] || timeline).toLowerCase()}` : ''}.${phone ? ` Call: ${prettyPhone(phone)}` : email ? ` Email: ${email}` : ''}`),
     phone ? textLead(phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). Got your request for a value on ${address}. I'll pull the recent lake sales and reach out shortly. Questions in the meantime? Text me here or call ${HOLLY_PRETTY}.`) : Promise.resolve({ ok: false }),
   ]);
 

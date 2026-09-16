@@ -46,6 +46,15 @@ const ago = (iso) => {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 const digits = (p) => String(p || '').replace(/\D/g, '');
+// Absolute time in Holly's zone (Eastern), whatever the phone or server is set to.
+const ET = { timeZone: 'America/Detroit' };
+const when = (iso) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const sameDay = d.toLocaleDateString('en-US', ET) === new Date().toLocaleDateString('en-US', ET);
+  const t = d.toLocaleTimeString('en-US', { ...ET, hour: 'numeric', minute: '2-digit' });
+  return sameDay ? t : `${d.toLocaleDateString('en-US', { ...ET, month: 'short', day: 'numeric' })}, ${t}`;
+};
 
 // ── shells ─────────────────────────────────────────────────────────────
 
@@ -168,7 +177,7 @@ function LeadCard({ lead, session, onStatus }) {
           <div style={{ fontSize: '0.75rem', color: MUTED, marginTop: '0.15rem' }}>
             <span style={{ fontWeight: 700, color: PINK }}>{lead.source}</span>
             {lead.about ? <> · {lead.link ? <Link to={lead.link} style={{ color: MUTED }}>{lead.about}</Link> : lead.about}</> : null}
-            {' · '}{ago(lead.when)}
+            {' · '}<span title={when(lead.when)}>{ago(lead.when)}</span>
           </div>
         </div>
         <select className="adm-status" value={lead.status} onChange={change} disabled={busy} style={{ background: st.bg, color: st.fg, backgroundColor: st.bg }}>
@@ -250,7 +259,7 @@ function Thread({ thread, session, onSent, onBack }) {
         {thread.messages.map((m, i) => (
           <div key={i} style={{ alignSelf: m.direction === 'in' ? 'flex-start' : 'flex-end', maxWidth: '82%' }}>
             <div style={{ background: m.direction === 'in' ? 'white' : NAVY, color: m.direction === 'in' ? NAVY : 'white', border: m.direction === 'in' ? `1px solid ${LINE}` : 'none', borderRadius: m.direction === 'in' ? '14px 14px 14px 4px' : '14px 14px 4px 14px', padding: '0.6rem 0.85rem', fontSize: '0.9rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.body}{m.media?.length ? m.media.map((u, j) => <div key={j}><a href={u} target="_blank" rel="noopener" style={{ color: 'inherit' }}>photo {j + 1}</a></div>) : null}</div>
-            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '0.2rem', textAlign: m.direction === 'in' ? 'left' : 'right' }}>{m.direction === 'out' ? (m.author === 'holly' ? 'Holly' : 'Auto') + ' · ' : ''}{ago(m.receivedAt)}</div>
+            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '0.2rem', textAlign: m.direction === 'in' ? 'left' : 'right' }}>{m.direction === 'out' ? (m.author === 'holly' ? 'Holly' : 'Auto') + ' · ' : ''}{when(m.receivedAt)}</div>
           </div>
         ))}
       </div>

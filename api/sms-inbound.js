@@ -67,7 +67,7 @@ export default async function handler(req, res) {
 
   // Forward. Holly replies from her own phone for now; the Texts tab will let
   // her answer from the site number instead.
-  await notifyHolly(`Text from ${prettyPhone(from)}:\n${body || (media ? `(${media} photo${media > 1 ? 's' : ''})` : '(empty)')}`)
+  await notifyHolly(`${prettyPhone(from)} texted your site line:\n"${body || (media ? `(${media} photo${media > 1 ? 's' : ''})` : '(empty)')}"\nReply in your desk or call them back.`)
 
   res.setHeader('Content-Type', 'text/xml')
   return res.status(200).send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>')

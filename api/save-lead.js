@@ -2,7 +2,7 @@
 // Accepts: { name, email, phone, interest, region, sessionId }
 // Saves to Notion Holly Leads DB + emails via Resend as fallback
 import { saveLeadToNotion, persistLead } from './lib/leads.js';
-import { notifyHolly } from './lib/sms.js';
+import { notifyHolly, prettyPhone } from './lib/sms.js';
 
 
 export default async function handler(req, res) {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to save lead via any channel' });
   }
 
-  await notifyHolly(`Chat lead: ${name || '?'} ${phone || email || ''}${region ? ` (${region})` : ''}${interest ? `\n${String(interest).slice(0, 160)}` : ''}`).catch(() => {});
+  await notifyHolly(`${name || 'Someone'} left their details in the site chat${region ? ` (${region})` : ''}.${interest ? `\n"${String(interest).slice(0, 180)}"` : ''}\n${phone ? `Call: ${prettyPhone(phone)}` : email ? `Email: ${email}` : ''}`).catch(() => {});
 
   return res.status(200).json({ success: true, notion: notionOk, email: emailOk, blob: Boolean(blobPath) });
 }

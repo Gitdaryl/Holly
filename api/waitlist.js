@@ -2,7 +2,7 @@ import { put, list } from '@vercel/blob'
 import { lakes } from '../src/data/lakes.js'
 import { sanitizeSlug, todayISO, listAll } from './lib/engage-store.js'
 import { saveLeadToNotion } from './lib/leads.js'
-import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js'
 import { audienceFor } from './lib/report.js'
 
 // Buyer waitlist per lake. "Tell me when something comes up on Clark Lake."
@@ -113,7 +113,7 @@ async function post(req, res) {
   const [notion, sms, reply, count] = await Promise.all([
     saveLeadToNotion({ name: entry.name, email: entry.email, phone: entry.phone, interest, region: lakes[lake].region, source: 'Lake Waitlist' })
       .then(() => true).catch((err) => { console.error('Waitlist Notion save failed:', err.message); return false }),
-    notifyHolly(`WAITLIST ${entry.lakeName}: ${entry.name} ${entry.phone || entry.email}${entry.budget ? `\n${entry.budget}` : ''}${entry.timing ? `, ${entry.timing}` : ''}`),
+    notifyHolly(`New buyer on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `, ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\nWants: ${entry.notes.slice(0, 160)}` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`),
     entry.phone
       ? textLead(entry.phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). You're on my ${entry.lakeName} list. When something comes up you'll hear from me before it hits the market. Anything specific you're after? Text me here or call ${HOLLY_PRETTY}.`)
       : Promise.resolve({ ok: false }),

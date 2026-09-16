@@ -89,7 +89,7 @@ export default async function handler(req, res) {
     const text = (params.TranscriptionText || '').trim()
     const audio = params.RecordingSid ? voicemailLink(SITE, params.RecordingSid) : null
     await log(from, { kind: 'voicemail', body: text ? `Voicemail: "${text}"` : 'Voicemail (no transcript)', audio, status: params.TranscriptionStatus || null })
-    await notifyHolly(`Voicemail from ${prettyPhone(from)}${audio ? `, listen: ${audio}` : ''}\nRough transcript: "${text || '(none)'}"`)
+    await notifyHolly(`Voicemail from ${prettyPhone(from)}:\n"${text || '(could not transcribe)'}"${audio ? `\nListen: ${audio}` : ''}`)
     return res.status(200).end()
   }
   // Recording is downloadable (recordingStatusCallback). With a Deepgram key
@@ -106,7 +106,7 @@ export default async function handler(req, res) {
       console.error('deepgram failed:', err.message)
     }
     await log(from, { kind: 'voicemail', body: text ? `Voicemail: "${text}"` : 'Voicemail (no transcript)', audio, engine: 'deepgram' })
-    await notifyHolly(`Voicemail from ${prettyPhone(from)}${audio ? `, listen: ${audio}` : ''}\n"${text || '(could not transcribe, use the link)'}"`)
+    await notifyHolly(`Voicemail from ${prettyPhone(from)}:\n"${text || '(could not transcribe, use the link)'}"${audio ? `\nListen: ${audio}` : ''}`)
     return res.status(200).end()
   }
   // Record's action: the caller is still on the line, just close out politely.
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
     const missed = params.DialCallStatus !== 'completed' || params.DialBridged === 'false'
     await log(from, { status: params.DialCallStatus, duration: Number(params.DialCallDuration || 0), body: missed ? 'Missed call' : `Call, ${params.DialCallDuration || 0}s` })
     if (missed) {
-      await notifyHolly(`Missed call on the site number from ${prettyPhone(from)}. Call back or reply from the Texts tab.`)
+      await notifyHolly(`Missed call on your site line from ${prettyPhone(from)}. If they leave a message you'll get it next.`)
       const base = url.split('?')[0]
       const who = `&from=${encodeURIComponent(from)}`
       const transcription = process.env.DEEPGRAM_API_KEY
