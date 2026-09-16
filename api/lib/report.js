@@ -2,6 +2,7 @@ import crypto from 'node:crypto'
 import { propertiesData } from '../../src/data/amenities.js'
 import { lakes } from '../../src/data/lakes.js'
 import { listAll, countInWindow, dailySeries, windowDays, todayISO } from './engage-store.js'
+import { verify as verifyAdminToken } from './admin-auth.js'
 
 export const SITE = process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app'
 
@@ -33,6 +34,10 @@ export function audienceFor(slug, key) {
   if (!key) return null
   const admin = process.env.ADMIN_SECRET
   if (admin && crypto.timingSafeEqual(Buffer.from(pad(key)), Buffer.from(pad(admin)))) return 'agent'
+  // A signed admin session (from /admin) opens the agent view too, so Holly
+  // never has to see or paste ADMIN_SECRET.
+  const session = verifyAdminToken(key)
+  if (session && session.k === 'session') return 'agent'
   const expected = sellerKeyFor(slug)
   if (expected && crypto.timingSafeEqual(Buffer.from(pad(key)), Buffer.from(pad(expected)))) return 'seller'
   return null

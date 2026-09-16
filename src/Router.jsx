@@ -9,6 +9,7 @@ import LakePage from './pages/LakePage.jsx';
 import CMAPage from './pages/CMAPage.jsx';
 import SoldPage from './pages/SoldPage.jsx';
 import PlanPage from './pages/PlanPage.jsx';
+import AdminPage from './pages/AdminPage.jsx';
 
 export default function Router() {
   return (
@@ -21,6 +22,7 @@ export default function Router() {
         <Route path="/lakes/:slug" element={<LakePage />} />
         <Route path="/cma" element={<CMAPage />} />
         <Route path="/sold" element={<SoldPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/plan" element={<PlanPage />} />
         <Route path="/plan/:lake/:address" element={<PlanPage />} />
         <Route path="/*" element={<App />} />
