@@ -76,3 +76,13 @@ SMS-bomb her. Rotating ADMIN_SECRET signs every phone out.
 Phase 2 (not built): two-way texting from the page (inbound Twilio webhook +
 reply), mark-sold from the Listings tab. Phase 3: text the whole lake
 waitlist about a new listing, blog review tab.
+
+## 6. Texts (two-way SMS on 517-300-8226)
+
+Holly's site number is (517) 300-8226, attached to the Manitou Beach
+Messaging Service (verified 10DLC campaign). Outbound lead alerts and
+auto-replies come from it. Inbound texts hit /api/sms-inbound (Twilio
+signature verified), are stored under sms/<10 digits>/, and are forwarded to
+HOLLY_SMS_PHONE. The Texts tab in /admin shows every thread with both sides,
+names threads from lead records, flags ones waiting on Holly, and replies go
+out from the site number. Voice on that number is not wired yet.
