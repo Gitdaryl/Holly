@@ -994,7 +994,7 @@ export default function IrishHillsRealty() {
           </div>
         </div>
         <div style={{ paddingTop: '2rem', borderTop: '1px solid rgba(232,67,147,0.2)', textAlign: 'center', fontSize: '0.9rem' }}>
-          <p>&copy; 2025 Holly Griewahn | Foundation Realty | Irish Hills Real Estate</p>
+          <p>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>All listings and information deemed reliable but not guaranteed.</p>
         </div>
       </footer>

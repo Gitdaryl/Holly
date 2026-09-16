@@ -409,7 +409,7 @@ export default function PropertyPage() {
 
       {/* Footer */}
       <footer style={{ background: '#0f1923', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>&copy; 2025 Holly Griewahn | Foundation Realty | Irish Hills Real Estate</p>
+        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
         <p style={{ color: '#475569', fontSize: '0.75rem', marginTop: '0.4rem' }}>All listings and information deemed reliable but not guaranteed.</p>
       </footer>
     </div>

@@ -291,7 +291,7 @@ function Plan({ lakeSlug, addressSlug }) {
       </div>
 
       <footer style={{ background: '#0f1923', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>Holly Griewahn | Foundation Realty | Irish Hills Real Estate</p>
+        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
       </footer>
     </div>
   );

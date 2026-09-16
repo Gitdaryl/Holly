@@ -192,7 +192,7 @@ export default function ListingsPage() {
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 30% 60%, rgba(232,67,147,0.1) 0%, transparent 50%)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '640px' }}>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-            Irish Hills Real Estate
+            Lakes of the Irish Hills
           </p>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '1.5rem' }}>
             Find Your Irish Hills Home
@@ -374,7 +374,7 @@ export default function ListingsPage() {
       {/* Footer */}
       <footer style={{ background: '#0f1923', padding: '2rem', marginTop: '2rem', textAlign: 'center' }}>
         <p style={{ color: '#64748b', fontSize: '0.82rem' }}>
-          &copy; 2025 Holly Griewahn | Foundation Realty | Irish Hills Real Estate
+          &copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan
         </p>
         <p style={{ color: '#475569', fontSize: '0.75rem', marginTop: '0.4rem' }}>
           All listings and information deemed reliable but not guaranteed.
