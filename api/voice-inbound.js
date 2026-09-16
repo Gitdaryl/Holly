@@ -62,7 +62,9 @@ export default async function handler(req, res) {
 
   // Second leg: the Dial finished. Anything but "completed" means she missed it.
   if (params.DialCallStatus) {
-    const missed = params.DialCallStatus !== 'completed'
+    // DialBridged is false when the screen hung up before connecting (voicemail
+    // answered, or nobody pressed 1), even though Twilio calls that "completed".
+    const missed = params.DialCallStatus !== 'completed' || params.DialBridged === 'false'
     await log(from, { status: params.DialCallStatus, duration: Number(params.DialCallDuration || 0), body: missed ? 'Missed call' : `Call, ${params.DialCallDuration || 0}s` })
     if (missed) {
       await notifyHolly(`Missed call on the site number from ${prettyPhone(from)}. Call back or reply from the Texts tab.`)
