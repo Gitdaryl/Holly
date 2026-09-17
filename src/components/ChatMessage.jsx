@@ -1,5 +1,13 @@
 import React from 'react';
 
+// Assistant replies carry plain URLs (lake pages, home value); make them tappable.
+function linkify(text, isUser) {
+  const parts = String(text).split(/(https?:\/\/[^\s)]+)/g);
+  return parts.map((part, i) => /^https?:\/\//.test(part)
+    ? <a key={i} href={part.replace(/^https?:\/\/[^/]+/, '')} style={{ color: isUser ? 'white' : '#e84393', fontWeight: 600 }}>{part.replace(/^https?:\/\/[^/]+/, '').replace(/^\/$/, 'home')}</a>
+    : part);
+}
+
 export default function ChatMessage({ role, content, timestamp }) {
   const isUser = role === 'user';
 
@@ -36,7 +44,7 @@ export default function ChatMessage({ role, content, timestamp }) {
         whiteSpace: 'pre-wrap',
         wordBreak: 'break-word',
       }}>
-        {content}
+        {isUser ? content : linkify(content, isUser)}
       </div>
     </div>
   );
