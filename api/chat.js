@@ -126,7 +126,9 @@ export default async function handler(req, res) {
       messages: safeMessages,
     });
 
-    const reply = response.content[0]?.text || "I'm not sure about that one. Call Holly directly at (517) 403-3413 and she'll have the answer.";
+    const reply = response.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim()
+      || "I'm not sure about that one. Call Holly directly at (517) 403-3413 and she'll have the answer.";
+    if (!response.content.some((b) => b.type === 'text')) console.error('chat: no text block', JSON.stringify(response.content).slice(0, 300), response.stop_reason);
     return res.status(200).json({ reply });
   } catch (err) {
     console.error('Chat API error:', err.message);
