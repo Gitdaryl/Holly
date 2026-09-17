@@ -114,3 +114,13 @@ Holly should save 517-300-8226 in her contacts so it is not flagged as spam.
 - Quiet hours 9pm-8am Eastern. Twilio handles STOP replies automatically.
 - Preview without sending: /api/cron-followup?dry=1 with the admin bearer.
 - /api/admin?action=purge-tests (POST {phones:[...]}) removes test records.
+
+## 9. The chat widget
+
+api/chat.js builds its knowledge from the same files the site renders
+(lakes.js, regions.js, listings and sales in amenities.js), so the chat
+cannot disagree with the pages. Rules that matter: only Holly's own listings
+are "for sale", prices are quoted verbatim or not at all, unknowns get
+"I'm not sure, want Holly to text you?" Runs on Sonnet with the facts block
+prompt-cached. To teach it something new, put the fact in the data files,
+not in the prompt.
