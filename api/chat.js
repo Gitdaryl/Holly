@@ -29,7 +29,7 @@ function buildFacts() {
       l.access === 'private' ? 'private access' : 'public access',
       l.wakeHours ? `wake hours ${l.wakeHours}` : null,
       l.association ? `association: ${l.association}${l.annualDues ? ` (${l.annualDues})` : ''}` : null,
-      l.avgPrice ? `typical lakefront ${l.avgPrice}` : null,
+      l.avgPrice ? `typical lakefront sale price ${l.avgPrice} (market context, says nothing about what is for sale)` : null,
       l.fishSpecies?.length ? `fish: ${l.fishSpecies.join(', ')}` : null,
       rec.sold ? `Holly sold ${rec.sold} here in 2026` : null,
       rec.active ? `${rec.active} for sale now` : null,
@@ -51,7 +51,7 @@ function buildFacts() {
     return `- ${p.title}, ${(p.address || '').split(', ')[1] || ''}: ${money(s.soldPrice)}, ${s.side === 'buyer' ? "Holly's buyer" : s.days === 0 ? 'sold day one' : `${s.days} days on market`}${p.lake ? `, ${lakes[p.lake]?.name}` : ''}`;
   });
 
-  const regionLines = Object.values(regions).map((r) => `- ${r.name}: ${r.subtitle}. ${r.description} Typical prices ${r.priceRange || 'vary'}. Lakes: ${r.lakes.map((s) => lakes[s]?.name).filter(Boolean).join(', ') || 'none'}.`);
+  const regionLines = Object.values(regions).map((r) => `- ${r.name}: ${r.subtitle}. ${r.description} Typical sale prices ${r.priceRange || 'vary'} (market context only). Lakes: ${r.lakes.map((s) => lakes[s]?.name).filter(Boolean).join(', ') || 'none'}.`);
 
   return `## Lakes Holly covers (sorted by size)
 ${lakeLines.join('\n')}
@@ -61,7 +61,7 @@ Size facts, get these right: the biggest lake in the territory is ${biggest.name
 ## Regions
 ${regionLines.join('\n')}
 
-## Holly's listings for sale right now (${active.length})
+## Holly's listings for sale right now (exactly ${active.length}; this is the complete list, nothing else is for sale through this site)
 ${active.join('\n') || '- none at the moment'}
 
 ## Holly's 2026 sales (${rec.sold} homes, ${money(rec.volume)}, ${rec.listSides} as listing agent${rec.avgDays !== null ? `, listings sold in ${rec.avgDays} days on average` : ''})
@@ -120,7 +120,7 @@ export default async function handler(req, res) {
       .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content.slice(0, 2000) }));
 
     const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-sonnet-5',
       max_tokens: 500,
       system: systemBlocks(),
       messages: safeMessages,
