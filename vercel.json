@@ -22,5 +22,25 @@
       "path": "/api/cron-followup",
       "schedule": "15 * * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/cron-seller-report.js": {
+      "maxDuration": 120
+    },
+    "api/cron-followup.js": {
+      "maxDuration": 60
+    },
+    "api/seller-report.js": {
+      "maxDuration": 30
+    },
+    "api/seller-report-send.js": {
+      "maxDuration": 30
+    },
+    "api/admin.js": {
+      "maxDuration": 30
+    },
+    "api/voice-inbound.js": {
+      "maxDuration": 30
+    }
+  }
 }

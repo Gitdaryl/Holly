@@ -11,6 +11,9 @@ import { marketFor } from '../../src/lib/market.js'
 // Monday is the email the seller receives when she clicks send.
 
 const money = (n) => (n ? `$${Math.round(n).toLocaleString('en-US')}` : '')
+// Page counters exist from the day the site's storage went live; a listing
+// older than that has history the numbers cannot see.
+const TRACKING_SINCE = '2026-09-16'
 
 function facts(property, report) {
   const m = report.metrics
@@ -24,7 +27,7 @@ function facts(property, report) {
     : []
   const month = new Date().toLocaleDateString('en-US', { month: 'long', timeZone: 'America/Detroit' })
   return `Listing: ${property.title}, ${property.address || ''}. List price ${property.price}. ${property.beds ? `${property.beds} bed / ${property.baths} bath. ` : ''}${lake ? `On ${lake.name} (${lake.type}${lake.acres ? `, ${lake.acres} acres` : ''}). ` : ''}Days on market: ${report.daysOnMarket ?? 'unknown'}. Month: ${month}.
-This week on the listing page: ${m.views.period} views (prior week ${m.views.prior}), ${m.saves.period} saves (prior ${m.saves.prior}), ${m.showings.period} showing requests (prior ${m.showings.prior}). Since listed: ${m.views.total} views, ${m.saves.total} saves, ${m.showings.total} showing requests.
+This week on the listing page: ${m.views.period} views (prior week ${m.views.prior}), ${m.saves.period} saves (prior ${m.saves.prior}), ${m.showings.period} showing requests (prior ${m.showings.prior}). Since page counting began on ${TRACKING_SINCE}${property.listedOn && property.listedOn < TRACKING_SINCE ? ` (the listing went live ${property.listedOn}, before counting started, so earlier activity is not in these numbers and the totals must not be read as a slow start)` : ''}: ${m.views.total} views, ${m.saves.total} saves, ${m.showings.total} showing requests.
 ${m.waitlist ? `Buyers registered on Holly's ${m.waitlist.lakeName} waitlist: ${m.waitlist.total} (${m.waitlist.period} new this week).` : ''}
 Holly's ${new Date().getFullYear()} sales ${scopeName ? `in ${scopeName}` : ''}: ${scope ? `${scope.sold} sold, median ${money(scope.median)}, range ${money(scope.low)} to ${money(scope.high)}, ${scope.avgDays !== null ? `${scope.avgDays} days average to sell` : ''}, ${scope.dayOne} sold day one.` : 'none recorded.'}
 ${soldLines.length ? `Recent: ${soldLines.join('; ')}.` : ''}
@@ -42,9 +45,12 @@ export async function draftNarrative(property, report) {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return null
   const client = new Anthropic({ apiKey })
+  // Sonnet 5 thinks before it answers by default; the reasoning eats the
+  // token budget and truncates the JSON. This is a short writing task.
   const r = await client.messages.create({
     model: 'claude-sonnet-5',
-    max_tokens: 600,
+    max_tokens: 1500,
+    thinking: { type: 'disabled' },
     system: SYSTEM,
     messages: [{ role: 'user', content: facts(property, report) }],
   })
