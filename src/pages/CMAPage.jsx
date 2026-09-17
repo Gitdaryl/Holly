@@ -400,6 +400,7 @@ export default function CMAPage() {
                   Holly will review your details and provide a personalized CMA within 24 hours. No obligation, no pressure - just honest market insight from a local expert.
                 </div>
 
+                <p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                 <button
                   onClick={submit}
                   disabled={!step2Valid || status === 'sending'}

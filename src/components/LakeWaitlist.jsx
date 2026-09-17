@@ -143,7 +143,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
             <button type="submit" disabled={status === 'sending'} style={{ background: '#e84393', color: 'white', border: 'none', padding: '0.85rem 1.5rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Adding you...' : owner ? `Keep me posted on ${lakeName}` : `Put me on the ${lakeName} list`}
             </button>
-            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>One text to confirm. No spam, no drip campaign.</span>
+            <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</span>
           </div>
         </form>
       )}

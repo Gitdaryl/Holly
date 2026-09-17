@@ -196,6 +196,7 @@ function ContactModal({ region, onClose }) {
             {status === 'error' && (
               <div style={{ marginBottom: '0.9rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>
             )}
+<p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
             <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Sending...' : 'Send to Holly'}
             </button>
@@ -829,6 +830,7 @@ export default function IrishHillsRealty() {
                     {formError}
                   </div>
                 )}
+<p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                 <button type="submit" disabled={formStatus === 'sending'}
                   style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#6b7a8d' : '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   {formStatus === 'sending' ? (

@@ -347,6 +347,7 @@ export default function PropertyPage() {
                     <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
                     <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
                   </div>
+                  <p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                   {formError && <p style={{ color: '#ef4444', fontSize: '0.82rem' }}>{formError}</p>}
                   <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e84393', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
                     {formStatus === 'sending' ? 'Sending...' : 'Request Showing'}
