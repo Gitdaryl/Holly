@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { marketFor, marketIndex, yearTotals } from '../lib/market';
 import { soldBadge, fmtPrice } from '../lib/listing-stats';
-import { coverFor } from '../lib/cover';
+import { coverFor, soldMapUrl } from '../lib/cover';
+import { propertiesData } from '../data/amenities';
+import { isSold } from '../lib/listing-stats';
 import { NavBar } from './ListingsPage';
 import LakeWaitlist from '../components/LakeWaitlist';
 import { TrustStrip } from '../components/GoogleReviews';
@@ -35,6 +37,20 @@ function TotalsBand({ year }) {
       ))}
       <Link to="/sold" style={{ marginLeft: 'auto', color: '#f6a5c9', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Every sale →</Link>
     </div>
+  );
+}
+
+// Pins under the hero: every sale this year, the current lake's in pink.
+function SoldMap({ highlight, caption }) {
+  const all = propertiesData.filter(isSold);
+  const others = all.filter((p) => !highlight.includes(p));
+  const url = soldMapUrl(highlight, others, { w: 640, h: 300 });
+  if (!url) return null;
+  return (
+    <Link to="/sold" style={{ display: 'block', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', position: 'relative', marginBottom: '1.25rem', background: '#f5f2ec' }}>
+      <img src={url} alt={caption} style={{ width: '100%', display: 'block', aspectRatio: '640 / 300' }} />
+      <div style={{ position: 'absolute', left: '0.9rem', top: '0.8rem', background: 'rgba(26,35,50,0.9)', color: 'white', fontSize: '0.75rem', fontWeight: 700, padding: '0.35rem 0.7rem', borderRadius: '20px' }}>{caption}</div>
+    </Link>
   );
 }
 
@@ -147,6 +163,7 @@ export default function MarketPage() {
       </div>
 
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
+        <SoldMap highlight={hasLakeData ? lakeSold : regionSold} caption={hasLakeData ? `${lakeSold.length} sold on ${lake.name}, in pink` : `${regionSold.length} sold across ${region.name}, in pink`} />
         <TotalsBand year={year} />
         <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>{hasLakeData ? `Of those, on ${lake.name}` : `${region.name}, the market ${lake.name} is priced against`}</div>
         <div className="mk-tiles" style={{ marginBottom: '1.25rem' }}>
@@ -223,6 +240,7 @@ function MarketIndex() {
         </div>
       </div>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
+        <SoldMap highlight={propertiesData.filter(isSold)} caption={`${t.sold} homes sold in ${year}`} />
         <div style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '560px' }}>
             <thead><tr>{th('name', 'Lake', 'left')}{th('sold', `Sold ${year}`)}{th('median', 'Median')}{th('days', 'Avg days')}{th('active', 'For sale')}</tr></thead>

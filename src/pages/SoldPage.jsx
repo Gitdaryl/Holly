@@ -6,6 +6,7 @@ import { propertiesData } from '../data/amenities';
 import { NavBar, PropertyCard } from './ListingsPage';
 import { isSold, trackRecord, fmtPrice } from '../lib/listing-stats';
 import { TrustStrip } from '../components/GoogleReviews';
+import { soldMapUrl } from '../lib/cover';
 
 // /sold: the proof page. A sold listing never leaves the site; it becomes a
 // case study with days-on-market and percent-of-list, grouped by lake. This is
@@ -82,6 +83,11 @@ export default function SoldPage() {
       </div>
 
       <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2.5rem 1.5rem 5rem' }}>
+        {sold.length > 0 && soldMapUrl(sold, [], { w: 640, h: 300 }) && (
+          <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', marginBottom: '2rem', background: '#f5f2ec' }}>
+            <img src={soldMapUrl(sold, [], { w: 640, h: 300 })} alt={`Map of ${sold.length} homes sold by Holly`} style={{ width: '100%', display: 'block', aspectRatio: '640 / 300' }} />
+          </div>
+        )}
         {sold.length === 0 ? (
           <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '3rem 2rem', textAlign: 'center' }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', marginBottom: '0.5rem' }}>Closed sales are being added</h2>

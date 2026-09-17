@@ -419,12 +419,14 @@ export const propertyTypes = {
 // minimal record (slug, title, address, lake, region, type, price, listedOn,
 // soldOn, soldPrice, image optional).
 // `image` is the card/hero cover; `photos` feeds the property-page gallery.
+// `geo` is lat/lng from the US Census geocoder (public domain), used for the
+// sold-pins map; a listing without geo simply has no pin.
 // Photos live in /public/listings/<slug>/ so the site never depends on MLS CDN URLs.
 const photoSet = (slug, n) => Array.from({ length: n }, (_, i) => `/listings/${slug}/${String(i + 1).padStart(2, '0')}.webp`);
 
 export const propertiesData = [
   {
-    id: 1, slug: '7296-walnut-hill-road-manitou-beach', mls: '50212587',
+    id: 1, slug: '7296-walnut-hill-road-manitou-beach', mls: '50212587', geo: { lat: 41.99993, lng: -84.29065 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '7296 Walnut Hill Road', address: '7296 Walnut Hill Road, Manitou Beach, MI 49253',
     price: '$849,000', beds: 4, baths: 3, sqft: '1,700', yearBuilt: 1942,
@@ -435,7 +437,7 @@ export const propertiesData = [
     listedOn: '2026-08-06', status: 'active', sellerName: null, sellerEmail: null,
   },
   {
-    id: 2, slug: '4834-round-lake-highway-devils-lake', mls: '50208730',
+    id: 2, slug: '4834-round-lake-highway-devils-lake', mls: '50208730', geo: { lat: 41.99975, lng: -84.28091 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '4834 Round Lake Highway', address: '4834 Round Lake Highway, Manitou Beach, MI 49253',
     price: '$549,900', beds: 3, baths: 1, sqft: '709', yearBuilt: 1940,
@@ -446,7 +448,7 @@ export const propertiesData = [
     listedOn: '2026-09-04', status: 'active', sellerName: null, sellerEmail: null,
   },
   {
-    id: 3, slug: 'devils-lake-inn-103-walnut-street', mls: '50210955',
+    id: 3, slug: 'devils-lake-inn-103-walnut-street', mls: '50210955', geo: { lat: 41.97079, lng: -84.30954 },
     region: 'manitou-beach', lake: null, type: 'commercial',
     title: 'Devils Lake Inn', address: '103 Walnut Street, Manitou Beach, MI 49253',
     price: '$325,000', beds: null, baths: null, sqft: '2,006', yearBuilt: 1900,
@@ -457,7 +459,7 @@ export const propertiesData = [
     listedOn: '2026-08-17', status: 'active', sellerName: null, sellerEmail: null,
   },
   {
-    id: 4, slug: 'devils-lake-inn-too-175-walnut-street', mls: '50210959',
+    id: 4, slug: 'devils-lake-inn-too-175-walnut-street', mls: '50210959', geo: { lat: 41.97079, lng: -84.30829 },
     region: 'manitou-beach', lake: null, type: 'commercial',
     title: 'Devils Lake Inn Too', address: '175 Walnut Street, Manitou Beach, MI 49253',
     price: '$325,000', beds: null, baths: null, sqft: '2,128', yearBuilt: 1920,
@@ -468,7 +470,7 @@ export const propertiesData = [
     listedOn: '2026-09-15', status: 'active', sellerName: null, sellerEmail: null,
   },
   {
-    id: 5, slug: 'devils-lake-inns-portfolio-walnut-street', mls: '50197252',
+    id: 5, slug: 'devils-lake-inns-portfolio-walnut-street', mls: '50197252', geo: { lat: 41.97079, lng: -84.30829 },
     region: 'manitou-beach', lake: null, type: 'commercial',
     title: 'Devils Lake Inn + Inn Too (Both Properties)', address: '103 & 175 Walnut Street, Manitou Beach, MI 49253',
     price: '$625,000', beds: null, baths: null, sqft: '4,134', yearBuilt: 1920,
@@ -479,7 +481,7 @@ export const propertiesData = [
     listedOn: '2026-04-16', status: 'active', sellerName: null, sellerEmail: null,
   },
   {
-    id: 6, slug: '10314-ferris-court-lake-somerset', mls: '50204928',
+    id: 6, slug: '10314-ferris-court-lake-somerset', mls: '50204928', geo: { lat: 42.04923, lng: -84.38773 },
     region: 'jerome-somerset', lake: null, type: 'land',
     title: '10314 Ferris Court', address: '10314 Ferris Court, Somerset, MI 49233',
     price: '$48,900', beds: null, baths: null, sqft: null, lot: '1.76 acres (4 lots)', yearBuilt: null,
@@ -499,7 +501,7 @@ export const propertiesData = [
   // `lake` is set only where the street is unambiguous lake frontage; the rest
   // stay null until Holly confirms. `side`: 'list' | 'buyer' | 'both'.
   {
-    id: 7, slug: '4108-woodland-avenue-manitou-beach', mls: '50220406',
+    id: 7, slug: '4108-woodland-avenue-manitou-beach', mls: '50220406', geo: { lat: 41.98914, lng: -84.28144 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '4108 Woodland Avenue', address: '4108 Woodland Avenue, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -519,7 +521,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 9, slug: '295-ridgeway-drive-brooklyn', mls: '50213639',
+    id: 9, slug: '295-ridgeway-drive-brooklyn', mls: '50213639', geo: { lat: 42.06613, lng: -84.17038 },
     region: 'brooklyn-columbia', lake: 'lake-columbia', type: 'lakefront',
     title: '295 Ridgeway Drive', address: '295 Ridgeway Drive, Brooklyn, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -529,7 +531,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 10, slug: '1140-n-posey-lake-highway-hudson', mls: '50219424',
+    id: 10, slug: '1140-n-posey-lake-highway-hudson', mls: '50219424', geo: { lat: 41.9025, lng: -84.29214 },
     region: 'southern-lakes', lake: 'posey-lake', type: 'lakefront',
     title: '1140 N Posey Lake Highway', address: '1140 N Posey Lake Highway, Hudson, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -539,7 +541,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 11, slug: '746-saint-joseph-street-adrian', mls: '50214685',
+    id: 11, slug: '746-saint-joseph-street-adrian', mls: '50214685', geo: { lat: 41.90195, lng: -84.04778 },
     region: 'tecumseh-eastern', lake: null, type: null,
     title: '746 Saint Joseph Street', address: '746 Saint Joseph Street, Adrian, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -549,7 +551,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 12, slug: '3493-round-lake-highway-manitou-beach', mls: '50208484',
+    id: 12, slug: '3493-round-lake-highway-manitou-beach', mls: '50208484', geo: { lat: 41.98142, lng: -84.27726 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '3493 Round Lake Highway', address: '3493 Round Lake Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -559,7 +561,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 13, slug: '2892-round-lake-highway-manitou-beach', mls: '50210087',
+    id: 13, slug: '2892-round-lake-highway-manitou-beach', mls: '50210087', geo: { lat: 41.97429, lng: -84.28205 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '2892 Round Lake Highway', address: '2892 Round Lake Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -569,7 +571,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 14, slug: '786-brookview-drive-hudson', mls: '50209350',
+    id: 14, slug: '786-brookview-drive-hudson', mls: '50209350', geo: { lat: 41.86535, lng: -84.33662 },
     region: 'southern-lakes', lake: null, type: null,
     title: '786 Brookview Drive', address: '786 Brookview Drive, Hudson, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -579,7 +581,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 15, slug: '1220-round-lake-highway-manitou-beach', mls: '50204028',
+    id: 15, slug: '1220-round-lake-highway-manitou-beach', mls: '50204028', geo: { lat: 41.96702, lng: -84.28566 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '1220 Round Lake Highway', address: '1220 Round Lake Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -589,7 +591,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 16, slug: '392-egan-highway-brooklyn', mls: '50209635',
+    id: 16, slug: '392-egan-highway-brooklyn', mls: '50209635', geo: { lat: 42.06834, lng: -84.16389 },
     region: 'brooklyn-columbia', lake: null, type: null,
     title: '392 Egan Highway', address: '392 Egan Highway, Brooklyn, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -599,7 +601,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 17, slug: '3940-round-lake-highway-manitou-beach', mls: '50210318',
+    id: 17, slug: '3940-round-lake-highway-manitou-beach', mls: '50210318', geo: { lat: 41.98637, lng: -84.28075 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '3940 Round Lake Highway', address: '3940 Round Lake Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -609,7 +611,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 18, slug: '250-sunset-drive-hudson', mls: '50203069',
+    id: 18, slug: '250-sunset-drive-hudson', mls: '50203069', geo: { lat: 41.91052, lng: -84.35018 },
     region: 'southern-lakes', lake: null, type: null,
     title: '250 Sunset Drive', address: '250 Sunset Drive, Hudson, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -619,7 +621,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 19, slug: '17059-south-street-hudson', mls: '50207686',
+    id: 19, slug: '17059-south-street-hudson', mls: '50207686', geo: { lat: 41.91024, lng: -84.32473 },
     region: 'southern-lakes', lake: null, type: null,
     title: '17059 South Street', address: '17059 South Street, Hudson, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -629,7 +631,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 20, slug: '5480-pleasant-valley-road-manitou-beach', mls: '50207661',
+    id: 20, slug: '5480-pleasant-valley-road-manitou-beach', mls: '50207661', geo: { lat: 41.96001, lng: -84.27052 },
     region: 'manitou-beach', lake: null, type: null,
     title: '5480 Pleasant Valley Road', address: '5480 Pleasant Valley Road, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -639,7 +641,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 21, slug: '9254-cherry-point-road-manitou-beach', mls: '50203225',
+    id: 21, slug: '9254-cherry-point-road-manitou-beach', mls: '50203225', geo: { lat: 41.98039, lng: -84.30355 },
     region: 'manitou-beach', lake: 'devils-lake', type: 'lakefront',
     title: '9254 Cherry Point Road', address: '9254 Cherry Point Road, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -649,7 +651,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 22, slug: '151-n-lakeview-boulevard-manitou-beach', mls: '50203244',
+    id: 22, slug: '151-n-lakeview-boulevard-manitou-beach', mls: '50203244', geo: { lat: 41.968, lng: -84.30831 },
     region: 'manitou-beach', lake: null, type: null,
     title: '151 N Lakeview Boulevard', address: '151 N Lakeview Boulevard, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -659,7 +661,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 23, slug: '4630-woerner-road-manitou-beach', mls: '50203300',
+    id: 23, slug: '4630-woerner-road-manitou-beach', mls: '50203300', geo: { lat: 41.95741, lng: -84.27503 },
     region: 'manitou-beach', lake: null, type: null,
     title: '4630 Woerner Road', address: '4630 Woerner Road, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -669,7 +671,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 24, slug: '10291-glencoe-road-jerome', mls: '50190682',
+    id: 24, slug: '10291-glencoe-road-jerome', mls: '50190682', geo: { lat: 42.04848, lng: -84.43864 },
     region: 'jerome-somerset', lake: null, type: null,
     title: '10291 Glencoe Road', address: '10291 Glencoe Road, Jerome, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -679,7 +681,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 25, slug: '1244-van-sickle-drive-hillsdale', mls: '50194580',
+    id: 25, slug: '1244-van-sickle-drive-hillsdale', mls: '50194580', geo: { lat: 41.80942, lng: -84.63649 },
     region: 'jerome-somerset', lake: null, type: null,
     title: '1244 Van sickle Drive', address: '1244 Van sickle Drive, Hillsdale, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -689,7 +691,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 26, slug: '11360-w-ferndale-drive-manitou-beach', mls: '50201525',
+    id: 26, slug: '11360-w-ferndale-drive-manitou-beach', mls: '50201525', geo: { lat: 41.97385, lng: -84.28162 },
     region: 'manitou-beach', lake: null, type: null,
     title: '11360 W Ferndale Drive', address: '11360 W Ferndale Drive, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -699,7 +701,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 27, slug: '6700-hallenbeck-highway-manitou-beach', mls: '50168279',
+    id: 27, slug: '6700-hallenbeck-highway-manitou-beach', mls: '50168279', geo: { lat: 41.98284, lng: -84.26658 },
     region: 'manitou-beach', lake: null, type: null,
     title: '6700 Hallenbeck Highway', address: '6700 Hallenbeck Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -709,7 +711,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 28, slug: '792-meadowbrook-drive-hudson', mls: '50200406',
+    id: 28, slug: '792-meadowbrook-drive-hudson', mls: '50200406', geo: { lat: 41.86534, lng: -84.33513 },
     region: 'southern-lakes', lake: null, type: null,
     title: '792 Meadowbrook Drive', address: '792 Meadowbrook Drive, Hudson, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -719,7 +721,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 29, slug: '12677-us-223-highway-manitou-beach', mls: '50199327',
+    id: 29, slug: '12677-us-223-highway-manitou-beach', mls: '50199327', geo: { lat: 41.97511, lng: -84.23997 },
     region: 'manitou-beach', lake: null, type: null,
     title: '12677 US-223 Highway', address: '12677 US-223 Highway, Manitou Beach, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -729,7 +731,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 30, slug: '14401-limerick-lane-somerset', mls: '50197126',
+    id: 30, slug: '14401-limerick-lane-somerset', mls: '50197126', geo: { lat: 42.05564, lng: -84.37393 },
     region: 'jerome-somerset', lake: null, type: null,
     title: '14401 Limerick Lane', address: '14401 Limerick Lane, Somerset, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -739,7 +741,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 31, slug: '236-s-steer-street-addison', mls: '50183053',
+    id: 31, slug: '236-s-steer-street-addison', mls: '50183053', geo: { lat: 41.98355, lng: -84.35226 },
     region: 'manitou-beach', lake: null, type: null,
     title: '236 S Steer Street', address: '236 S Steer Street, Addison, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
@@ -749,7 +751,7 @@ export const propertiesData = [
     sellerName: null, sellerEmail: null,
   },
   {
-    id: 32, slug: '2262-heatherwood-drive-adrian', mls: '50197910',
+    id: 32, slug: '2262-heatherwood-drive-adrian', mls: '50197910', geo: { lat: 41.91489, lng: -84.06271 },
     region: 'tecumseh-eastern', lake: null, type: null,
     title: '2262 Heatherwood Drive', address: '2262 Heatherwood Drive, Adrian, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
