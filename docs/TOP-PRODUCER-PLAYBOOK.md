@@ -124,3 +124,15 @@ are "for sale", prices are quoted verbatim or not at all, unknowns get
 "I'm not sure, want Holly to text you?" Runs on Sonnet with the facts block
 prompt-cached. To teach it something new, put the fact in the data files,
 not in the prompt.
+
+## 10. Lake sales reports (/market/<lake>)
+
+One page per lake: what Holly sold there this year (median, range, days to
+sell, day-one sales, closings by month), region context when the lake has
+no sales yet, for-sale list, and an owner sign-up ("text me when something
+sells or lists on my lake"). Owners are stored as waitlist entries with
+role=owner (.owner.json), show as "Lake owner" in the inbox and Notion
+source "Lake Owner", and never count toward the public buyer number.
+Prerendered with FAQ schema so "what do homes sell for on Clark Lake"
+can be answered from Holly's page. Data comes from amenities.js, so the
+report updates itself as sales are added.
