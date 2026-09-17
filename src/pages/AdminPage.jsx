@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { startTour } from '../components/Tour';
 
 // /admin: Holly's one screen. Phone-first. Inbox (every lead, every source),
 // Waitlist (buyers per lake), Listings (this week's numbers + report links).
@@ -72,16 +73,19 @@ function Shell({ children, tab, setTab, onLogout }) {
         .adm-btn.pink { background: ${PINK}; color: white; border-color: ${PINK}; }
         select.adm-status { font-family: inherit; font-size: 0.78rem; font-weight: 700; border-radius: 20px; padding: 0.3rem 1.6rem 0.3rem 0.7rem; border: 1px solid transparent; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%236b7a8d'/></svg>"); background-repeat: no-repeat; background-position: right 0.6rem center; }
       `}</style>
-      <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(250,249,247,0.96)', backdropFilter: 'blur(10px)', borderBottom: `1px solid ${LINE}` }}>
+      <header data-tour="desk" style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(250,249,247,0.96)', backdropFilter: 'blur(10px)', borderBottom: `1px solid ${LINE}` }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0.75rem 1rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '24px' }} />
             <span style={{ fontWeight: 700, color: NAVY, fontSize: '0.85rem' }}>Holly's desk</span>
           </Link>
-          <button onClick={onLogout} style={{ background: 'none', border: 'none', color: MUTED, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
+          <div style={{ display: 'flex', gap: '0.9rem' }}>
+            <button onClick={startTour} style={{ background: 'none', border: 'none', color: PINK, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Take the tour</button>
+            <button onClick={onLogout} style={{ background: 'none', border: 'none', color: MUTED, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
+          </div>
         </div>
         <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex' }}>
-          {tabs.map(([k, l]) => <button key={k} className={`adm-tab${tab === k ? ' on' : ''}`} onClick={() => setTab(k)}>{l}</button>)}
+          {tabs.map(([k, l]) => <button key={k} data-tour={`tab-${k}`} className={`adm-tab${tab === k ? ' on' : ''}`} onClick={() => setTab(k)}>{l}</button>)}
         </div>
       </header>
       <main style={{ maxWidth: '760px', margin: '0 auto', padding: '1rem 1rem 4rem' }}>{children}</main>
@@ -180,7 +184,7 @@ function LeadCard({ lead, session, onStatus }) {
             {' · '}<span title={when(lead.when)}>{ago(lead.when)}</span>
           </div>
         </div>
-        <select className="adm-status" value={lead.status} onChange={change} disabled={busy} style={{ background: st.bg, color: st.fg, backgroundColor: st.bg }}>
+        <select data-tour="status" className="adm-status" value={lead.status} onChange={change} disabled={busy} style={{ background: st.bg, color: st.fg, backgroundColor: st.bg }}>
           {Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
         </select>
       </div>
@@ -494,7 +498,8 @@ export default function AdminPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const [session, setSess] = useState(getSession);
-  const [tab, setTab] = useState('inbox');
+  const [tab, setTab] = useState(() => params.get('tab') || 'inbox');
+  useEffect(() => { const t = params.get('tab'); if (t) setTab(t); }, [params]);
   const [exchanging, setExchanging] = useState(Boolean(params.get('t')));
   const [linkError, setLinkError] = useState('');
 
@@ -515,6 +520,11 @@ export default function AdminPage() {
   }, [params, navigate]);
 
   const onSession = useCallback((s) => { setSession(s); setSess(s); }, []);
+  // First sign-in on this phone: run the tour once.
+  useEffect(() => {
+    if (!session) return;
+    try { if (!localStorage.getItem('hg-tour-seen') && !sessionStorage.getItem('hg-tour-step')) { localStorage.setItem('hg-tour-seen', '1'); startTour(); } } catch { /* ignore */ }
+  }, [session]);
   const logout = () => { setSession(''); setSess(''); };
 
   if (exchanging) return <div style={{ minHeight: '100vh', background: NAVY, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT }}>Signing you in…</div>;

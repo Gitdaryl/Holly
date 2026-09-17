@@ -63,7 +63,7 @@ export default function GoogleReviews({ limit = 3 }) {
   const d = useGoogleReviews();
   if (!d || !d.reviews?.length) return null;
   return (
-    <section style={{ padding: '6rem 2rem', background: '#1a2332', color: 'white' }}>
+    <section data-tour="reviews" style={{ padding: '6rem 2rem', background: '#1a2332', color: 'white' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>What Clients Say</h2>

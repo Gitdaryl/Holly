@@ -71,7 +71,7 @@ export default function SoldPage() {
             Every sale stays on this site with the numbers that matter to a seller: how fast, and for how much.
           </p>
           <div style={{ marginBottom: '1.5rem' }}><TrustStrip dark /></div>
-          <div className="sold-tiles">
+          <div className="sold-tiles" data-tour="sold-tiles">
             <Tile value={record.sold} label="Homes sold" />
             <Tile value={record.avgDays === null ? '—' : record.avgDays} label="Avg days to sell (listings)" />
             {record.avgPct

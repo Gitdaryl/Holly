@@ -119,7 +119,7 @@ function PlanBuilder() {
         <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Holly only</div>
         <h1 style={{ fontFamily: SERIF, fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem' }}>Build a listing plan link</h1>
         <p style={{ color: '#6b7a8d', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>Text it to the seller the night before the appointment. Nothing to save; the page is built from the link itself.</p>
-        <div style={{ display: 'grid', gap: '0.9rem', background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', padding: '1.5rem' }}>
+        <div data-tour="plan-builder" style={{ display: 'grid', gap: '0.9rem', background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', padding: '1.5rem' }}>
           <div>
             <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Property address</label>
             <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street address" style={input} />

@@ -173,7 +173,7 @@ export default function LakePage() {
 
         {/* Holly on this lake */}
         {(record.sold > 0 || record.active > 0) && (
-          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
+          <div data-tour="track-record" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>Holly on {lake.name}</h2>
               <Link to={`/market/${lake.slug}`} style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>{lake.name} sales report →</Link>

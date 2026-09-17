@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { pageview, track } from './lib/track.js';
+import Tour from './components/Tour.jsx';
 import App from './App.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import ArticlePage from './pages/ArticlePage.jsx';
@@ -43,6 +44,7 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Tracker />
+      <Tour />
       <Routes>
         <Route path="/blog/:slug" element={<ArticlePage />} />
         <Route path="/blog" element={<BlogPage />} />

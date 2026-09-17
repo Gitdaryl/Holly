@@ -106,7 +106,7 @@ export default function SoldMap({ highlight = [], others = [], caption, height =
   }, [highlight, others]);
 
   return (
-    <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', marginBottom: '1.25rem', background: '#f5f2ec' }}>
+    <div data-tour="sold-map" style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', marginBottom: '1.25rem', background: '#f5f2ec' }}>
       <style>{`
         .hg-tip { background: white; border: 1px solid #e8e4df; border-radius: 12px; box-shadow: 0 8px 24px rgba(26,35,50,0.15); padding: 10px; }
         .hg-tip::before { border-top-color: white; border-bottom-color: white; }
