@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   const sid = String(b.s || 'anon').replace(/[^a-zA-Z0-9-]/g, '').slice(0, 36) || 'anon'
 
   try {
-    await put(`hits/${todayISO()}/${b.e}/${enc}/${source}/${device}/${sid}-${crypto.randomUUID()}`, '', {
+    await put(`hits/${todayISO()}/${b.e}/${enc}/${source}/${device}/${sid}-${crypto.randomUUID()}`, '1', {
       access: 'public', addRandomSuffix: false, contentType: 'text/plain',
     })
   } catch (err) {
