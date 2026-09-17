@@ -1,5 +1,6 @@
 import { findProperty, buildReport, renderReportHtml } from './lib/report.js'
 import { sanitizeSlug } from './lib/engage-store.js'
+import { narrativeFor } from './lib/narrative.js'
 
 // Holly's approval step: this is the only endpoint that emails a seller.
 // Reached from the "Send this to the seller" button in her Friday email.
@@ -15,6 +16,7 @@ export default async function handler(req, res) {
 
   try {
     const report = await buildReport(property, 7)
+    report.narrative = await narrativeFor(property, report, { write: false }) || await narrativeFor(property, report)
     const html = renderReportHtml(report, { audience: 'seller' })
 
     const apiKey = process.env.RESEND_API_KEY

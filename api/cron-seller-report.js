@@ -1,7 +1,8 @@
 import { propertiesData } from '../src/data/amenities.js'
 import { buildReport, renderReportHtml, sellerKeyFor, SITE } from './lib/report.js'
+import { narrativeFor } from './lib/narrative.js'
 
-// Friday morning: build every active listing's seller report and email the
+// Monday morning: build every active listing's seller report and email the
 // finished reports to HOLLY, each with a one-click send link.
 //
 // The gate is deliberately on the SEND, not the build. An automated email to a
@@ -26,6 +27,7 @@ export default async function handler(req, res) {
   for (const property of listings) {
     try {
       const report = await buildReport(property, 7)
+      report.narrative = await narrativeFor(property, report)
       const html = renderReportHtml(report, { audience: 'seller' })
       const sendUrl = `${SITE}/api/seller-report-send?slug=${property.slug}&key=${encodeURIComponent(secret || '')}`
       await emailHolly(property, report, html, sendUrl)
@@ -68,7 +70,7 @@ async function emailHolly(property, report, sellerHtml, sendUrl) {
     body: JSON.stringify({
       from: 'Seller Reports <noreply@yetigroove.com>',
       to: [to],
-      subject: `Seller report ready: ${property.title} (${m.views.period} views this week)`,
+      subject: `Monday update ready for ${property.sellerName || 'the seller'}: ${property.title} (${m.views.period} views)`,
       html: banner + sellerHtml,
     }),
   })

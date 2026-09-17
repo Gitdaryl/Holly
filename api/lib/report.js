@@ -165,13 +165,20 @@ function leadTable(report) {
 
 export function renderReportHtml(report, { audience = 'seller' } = {}) {
   const m = report.metrics
-  const greeting = report.sellerName ? `${esc(report.sellerName)},` : 'Here is this week&rsquo;s activity.'
+  const greeting = report.sellerName ? `${esc(report.sellerName)},` : 'Here is where things stand this week.'
   const dom = report.daysOnMarket === null ? '' : ` &middot; ${report.daysOnMarket} days on market`
 
-  const summary =
-    m.views.period === 0
+  const n = report.narrative
+  const summary = n?.summary
+    ? esc(n.summary)
+    : m.views.period === 0
       ? 'No traffic recorded this week. If the listing just went live, give it a few days for the page to be indexed and shared.'
       : `${m.views.period} ${m.views.period === 1 ? 'person' : 'people'} viewed your listing page this week, ${m.saves.period} saved it, and ${m.showings.period} asked to see it in person. Since it was listed, the page has been viewed ${m.views.total} times.`
+  const section = (label, text, accent) => text ? `
+  <div style="background:${accent ? '#fff5f9' : '#fff'};border:1px solid ${accent ? '#f6c3da' : BRAND.line};border-radius:14px;padding:18px 20px;margin-top:14px">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${accent ? BRAND.pink : BRAND.muted};margin-bottom:8px">${label}</div>
+    <p style="font-size:15px;color:${BRAND.navy};line-height:1.65;margin:0">${esc(text)}</p>
+  </div>` : ''
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -181,7 +188,7 @@ export function renderReportHtml(report, { audience = 'seller' } = {}) {
 <div style="max-width:640px;margin:0 auto;padding:28px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
 
   <div style="text-align:center;margin-bottom:24px">
-    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${BRAND.pink}">Weekly Seller Report</div>
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${BRAND.pink}">Your weekly update from Holly</div>
     <h1 style="font-size:26px;color:${BRAND.navy};margin:8px 0 4px;line-height:1.25">${esc(report.title)}</h1>
     <div style="font-size:14px;color:${BRAND.muted}">${esc(report.price || '')}${dom}</div>
     <div style="font-size:13px;color:${BRAND.muted};margin-top:6px">${fmtDate(report.window.start)} &ndash; ${fmtDate(report.window.end)}</div>
@@ -198,6 +205,9 @@ export function renderReportHtml(report, { audience = 'seller' } = {}) {
   </tr></table>
 
   ${barChart(report.series)}
+
+  ${section('Your market right now', n?.market)}
+  ${section('What I recommend', n?.recommendation, true)}
 
   <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:14px">
     <tr><td style="background:#fff;border:1px solid ${BRAND.line};border-radius:14px;padding:18px 20px">

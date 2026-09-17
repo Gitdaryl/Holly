@@ -1,5 +1,6 @@
 import { findProperty, buildReport, renderReportHtml, audienceFor, sellerKeyFor, SITE } from './lib/report.js'
 import { sanitizeSlug } from './lib/engage-store.js'
+import { narrativeFor } from './lib/narrative.js'
 
 // The live seller report. Two audiences, one URL:
 //   ?key=<ADMIN_SECRET>      Holly. Sees buyer lead detail. This is the link
@@ -34,6 +35,7 @@ export default async function handler(req, res) {
 
   try {
     const report = await buildReport(property, days)
+    if (days === 7 && req.query.plain !== '1') report.narrative = await narrativeFor(property, report)
     res.setHeader('Cache-Control', 'no-store')
 
     if (req.query.format === 'json') {

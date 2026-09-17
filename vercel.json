@@ -12,7 +12,7 @@
     },
     {
       "path": "/api/cron-seller-report",
-      "schedule": "0 13 * * 5"
+      "schedule": "0 12 * * 1"
     },
     {
       "path": "/api/cron-seasonal-article",
