@@ -46,14 +46,31 @@ export default function SoldMap({ highlight = [], others = [], caption, height =
   useEffect(() => {
     if (!ref.current) return;
     const map = L.map(ref.current, { scrollWheelZoom: false, attributionControl: true });
-    // Satellite for lake property: the shoreline is the point. Esri imagery
-    // plus a labels layer, both free with attribution, no key.
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics', maxZoom: 19,
-    }).addTo(map);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19, opacity: 0.9,
-    }).addTo(map);
+    // Esri topo by default (clean, lakes blue); satellite on
+    // a toggle for when the shoreline is the point. All Esri, free, no key.
+    const light = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Map &copy; Esri, HERE, Garmin, OpenStreetMap contributors', maxZoom: 19 }),
+    ]);
+    const sat = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics', maxZoom: 19 }),
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, opacity: 0.9 }),
+    ]);
+    light.addTo(map);
+    let onSat = false;
+    const toggle = L.control({ position: 'topright' });
+    toggle.onAdd = () => {
+      const btn = L.DomUtil.create('button');
+      btn.textContent = 'Satellite';
+      btn.style.cssText = 'margin-top:44px;background:white;border:1px solid #e8e4df;border-radius:20px;padding:6px 12px;font:600 12px "DM Sans",system-ui,sans-serif;color:#1a2332;cursor:pointer;box-shadow:0 2px 6px rgba(26,35,50,0.12)';
+      L.DomEvent.disableClickPropagation(btn);
+      btn.onclick = () => {
+        onSat = !onSat;
+        if (onSat) { map.removeLayer(light); sat.addTo(map); btn.textContent = 'Map'; }
+        else { map.removeLayer(sat); light.addTo(map); btn.textContent = 'Satellite'; }
+      };
+      return btn;
+    };
+    toggle.addTo(map);
 
     const add = (p, color, size) => {
       if (!p.geo) return null;
