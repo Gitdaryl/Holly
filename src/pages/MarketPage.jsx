@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { marketFor, marketIndex } from '../lib/market';
+import { marketFor, marketIndex, yearTotals } from '../lib/market';
 import { soldBadge, fmtPrice } from '../lib/listing-stats';
 import { coverFor } from '../lib/cover';
 import { NavBar } from './ListingsPage';
@@ -21,6 +21,19 @@ function Tile({ value, label, sub }) {
       <div style={{ fontFamily: SERIF, fontSize: 'clamp(1.4rem, 4vw, 2rem)', fontWeight: 800, color: '#1a2332', lineHeight: 1.1 }}>{value}</div>
       <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.6px', marginTop: '0.4rem' }}>{label}</div>
       {sub && <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.15rem' }}>{sub}</div>}
+    </div>
+  );
+}
+
+function TotalsBand({ year }) {
+  const t = yearTotals();
+  return (
+    <div style={{ background: '#1a2332', color: 'white', borderRadius: '16px', padding: '1.1rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.25rem 2rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f6a5c9', textTransform: 'uppercase', letterSpacing: '1px', flexBasis: '100%' }}>Holly across the Irish Hills, {year}</div>
+      {[[t.sold, 'homes sold'], [`$${(t.volume / 1e6).toFixed(1)}M`, 'sold volume'], [t.listSides, 'as listing agent'], [t.avgDays === null ? '—' : `${t.avgDays} days`, 'avg to sell'], [t.median ? fmtPrice(t.median) : '—', 'median price'], [t.dayOne, 'sold day one']].map(([v, l]) => (
+        <div key={l}><div style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1 }}>{v}</div><div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{l}</div></div>
+      ))}
+      <Link to="/sold" style={{ marginLeft: 'auto', color: '#f6a5c9', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Every sale →</Link>
     </div>
   );
 }
@@ -134,6 +147,8 @@ export default function MarketPage() {
       </div>
 
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
+        <TotalsBand year={year} />
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>{hasLakeData ? `Of those, on ${lake.name}` : `${region.name}, the market ${lake.name} is priced against`}</div>
         <div className="mk-tiles" style={{ marginBottom: '1.25rem' }}>
           <Tile value={s.sold} label={`Sold in ${year}`} sub={scope} />
           <Tile value={s.avgDays === null ? '—' : s.avgDays} label="Avg days to sell" sub="Holly's listings" />
@@ -185,30 +200,57 @@ export default function MarketPage() {
 }
 
 function MarketIndex() {
-  const rows = marketIndex();
+  const [sort, setSort] = useState('sold');
   const year = new Date().getFullYear();
+  const t = yearTotals();
+  const rows = [...marketIndex()].sort((a, b) => {
+    if (sort === 'median') return (b.median || 0) - (a.median || 0);
+    if (sort === 'days') return (a.avgDays ?? 9999) - (b.avgDays ?? 9999);
+    if (sort === 'active') return b.active - a.active;
+    if (sort === 'name') return a.lake.name.localeCompare(b.lake.name);
+    return b.sold - a.sold || (b.lake.acres || 0) - (a.lake.acres || 0);
+  });
+  const th = (key, label, align = 'right') => (
+    <th onClick={() => setSort(key)} style={{ textAlign: align, padding: '0.6rem 0.75rem', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.6px', color: sort === key ? '#e84393' : '#94a3b8', cursor: 'pointer', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e4df' }}>{label}{sort === key ? ' ▾' : ''}</th>
+  );
   return (
     <Shell title={`Irish Hills lake sales reports ${year} | Holly Griewahn`}>
       <div style={{ background: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 60%, #1a3a4a 100%)', padding: '7rem 2rem 2.5rem' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <p style={{ color: '#f6a5c9', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>Lake by lake</p>
-          <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(1.9rem, 5vw, 3rem)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '0.6rem' }}>{year} sales reports</h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', maxWidth: '600px', lineHeight: 1.6 }}>Holly's closed sales on each Irish Hills lake this year: how many, how fast, for how much.</p>
+          <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(1.9rem, 5vw, 3rem)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '0.6rem' }}>{t.sold} homes sold in {year}. Here is where.</h1>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', maxWidth: '600px', lineHeight: 1.6 }}>${(t.volume / 1e6).toFixed(1)}M in closed sales through Holly Griewahn, {t.listSides} as the listing agent{t.avgDays !== null ? `, averaging ${t.avgDays} days to sell` : ''}. Tap a column to sort, tap a lake for its report.</p>
         </div>
       </div>
-      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
-        {rows.map((r) => (
-          <Link key={r.lake.slug} to={`/market/${r.lake.slug}`} style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '14px', padding: '1.1rem 1.25rem', textDecoration: 'none', color: '#1a2332', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-            <div>
-              <div style={{ fontWeight: 700 }}>{r.lake.name}</div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7a8d' }}>{r.region?.name}{r.active ? ` · ${r.active} for sale` : ''}</div>
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
+        <div style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '560px' }}>
+            <thead><tr>{th('name', 'Lake', 'left')}{th('sold', `Sold ${year}`)}{th('median', 'Median')}{th('days', 'Avg days')}{th('active', 'For sale')}</tr></thead>
+            <tbody>
+              {rows.filter((r) => r.sold || r.active).map((r) => (
+                <tr key={r.lake.slug} onClick={() => { window.location.href = `/market/${r.lake.slug}`; }} style={{ cursor: 'pointer' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#faf9f7'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}>
+                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #f0eee9' }}><Link to={`/market/${r.lake.slug}`} style={{ color: '#1a2332', fontWeight: 700, textDecoration: 'none' }}>{r.lake.name}</Link><div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>{r.region?.name}</div></td>
+                  <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontFamily: SERIF, fontWeight: 800, fontSize: '1.15rem', color: r.sold ? '#e84393' : '#cbd5e0' }}>{r.sold}</td>
+                  <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontWeight: 600 }}>{r.median ? fmtPrice(r.median) : <span style={{ color: '#cbd5e0' }}>—</span>}</td>
+                  <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontWeight: 600 }}>{r.avgDays === null ? <span style={{ color: '#cbd5e0' }}>—</span> : r.avgDays}</td>
+                  <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontWeight: 600 }}>{r.active || <span style={{ color: '#cbd5e0' }}>—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {rows.some((r) => !r.sold && !r.active) && (
+          <div style={{ marginTop: '1.25rem' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>Other lakes Holly covers</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              {rows.filter((r) => !r.sold && !r.active).sort((a, b) => a.lake.name.localeCompare(b.lake.name)).map((r) => (
+                <Link key={r.lake.slug} to={`/market/${r.lake.slug}`} style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '20px', padding: '0.4rem 0.9rem', fontSize: '0.82rem', fontWeight: 600, color: '#1a2332', textDecoration: 'none' }}>{r.lake.name}</Link>
+              ))}
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 800, color: r.sold ? '#e84393' : '#cbd5e0' }}>{r.sold}</div>
-              <div style={{ fontSize: '0.62rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>sold {year}</div>
-            </div>
-          </Link>
-        ))}
+          </div>
+        )}
+        {t.unassigned > 0 && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.9rem' }}>{t.unassigned} of the {t.sold} sales are village, land or rural homes without a lake, or are waiting on lake confirmation, so lake counts add up to less than the total.</p>}
       </div>
     </Shell>
   );

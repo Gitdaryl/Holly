@@ -52,8 +52,20 @@ export function marketFor(lakeSlug) {
 
 export function marketIndex() {
   return Object.values(lakes)
-    .map((l) => ({ lake: l, region: regions[l.region], ...trackRecord(propertiesData.filter((p) => p.lake === l.slug)) }))
+    .map((l) => {
+      const onLake = propertiesData.filter((p) => p.lake === l.slug)
+      const prices = onLake.filter(isSold).map((p) => soldStats(p).soldPrice).filter(Boolean)
+      return { lake: l, region: regions[l.region], ...trackRecord(onLake), median: prices.length ? median(prices) : null, high: prices.length ? Math.max(...prices) : null }
+    })
     .sort((a, b) => b.sold - a.sold || (b.lake.acres || 0) - (a.lake.acres || 0))
+}
+
+// Whole-year totals, the number to lead with before any lake slice.
+export function yearTotals() {
+  const sold = propertiesData.filter(isSold)
+  const prices = sold.map((p) => soldStats(p).soldPrice).filter(Boolean)
+  const withLake = sold.filter((p) => p.lake).length
+  return { ...trackRecord(propertiesData), median: prices.length ? median(prices) : null, high: prices.length ? Math.max(...prices) : null, dayOne: sold.filter((p) => soldStats(p).days === 0).length, unassigned: sold.length - withLake }
 }
 
 function median(nums) {
