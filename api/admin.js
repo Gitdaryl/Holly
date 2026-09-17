@@ -5,7 +5,7 @@ import { regions } from '../src/data/regions.js'
 import { buildReport, sellerKeyFor, SITE } from './lib/report.js'
 import { windowDays, todayISO } from './lib/engage-store.js'
 import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './lib/admin-auth.js'
-import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY, normalizePhone } from './lib/sms.js'
 import { WRITE_REVIEW_URL } from './reviews.js'
 import { transcribeWithDeepgram } from './voice-inbound.js'
 
@@ -322,7 +322,11 @@ async function texts() {
     const d = String(data.phone || '').replace(/\D/g, '').slice(-10)
     if (d && data.name && !names[d]) names[d] = data.name
   }
-  for (const t of list) t.name = names[t.phone.slice(-10)] || null
+  const holly = normalizePhone(process.env.HOLLY_SMS_PHONE || '')
+  for (const t of list) {
+    t.name = names[t.phone.slice(-10)] || null
+    if (holly && t.phone.slice(-10) === holly) { t.name = 'Holly (your cell)'; t.unanswered = false }
+  }
   return { threads: list }
 }
 
@@ -350,7 +354,7 @@ async function purgeTests(req, res) {
     const id = b.pathname.split('/')[2]
     if (ids.has(id)) removed.push(b.pathname)
   }
-  for (const p of phones) for (const b of await allBlobs(`sms/${p}/`)) removed.push(b.pathname)
+  for (const p of phones) for (const pre of [`sms/${p}/`, `sms/1${p}/`]) for (const b of await allBlobs(pre)) removed.push(b.pathname)
   for (let i = 0; i < removed.length; i += 50) await del(removed.slice(i, i + 50))
   return res.status(200).json({ removed: removed.length, leads: ids.size })
 }
