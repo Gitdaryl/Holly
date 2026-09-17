@@ -136,3 +136,19 @@ source "Lake Owner", and never count toward the public buyer number.
 Prerendered with FAQ schema so "what do homes sell for on Clark Lake"
 can be answered from Holly's page. Data comes from amenities.js, so the
 report updates itself as sales are added.
+
+## 11. Stats tab and the tour
+
+**Stats** (in /admin): first-party tracking (src/lib/track.js, api/track.js)
+counts visitors, page views, sources, devices and actions (waitlist, owner,
+showing, home value, contact, chat, call/text taps, review clicks). Holly's
+own admin and plan pages are never counted. The "Where to look" list at the
+top is rules, not magic: leads waiting over a day, texts unanswered, lake
+pages read but not converting, listings with lookers and no showings,
+listings nobody viewed, traffic swings, a source that is working. Each item
+links to the tab or page to act on.
+
+**Tour**: runs on Holly's first sign-in to the desk and from "Take the tour".
+16 steps across the real pages (desk tabs, lake page, sales report, listing,
+sold, plan link, reviews, chat). Steps live in src/components/Tour.jsx; add a
+step by adding a data-tour attribute to the element and an entry to STEPS.

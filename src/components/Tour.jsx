@@ -136,7 +136,7 @@ export default function Tour() {
         <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#4a5568', margin: 0 }}>{s.text}</p>
         {rect === 'none' && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>(Nothing to point at yet on this page; it appears once there is data.)</p>}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.9rem' }}>
-          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>Skip tour</button>
+          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0, whiteSpace: 'nowrap' }}>Skip tour</button>
           <div style={{ flex: 1, display: 'flex', gap: '3px', justifyContent: 'center' }}>
             {STEPS.map((_, i) => <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: i === step ? '#e84393' : i < step ? '#1a2332' : '#e8e4df' }} />)}
           </div>
