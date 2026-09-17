@@ -152,3 +152,16 @@ links to the tab or page to act on.
 16 steps across the real pages (desk tabs, lake page, sales report, listing,
 sold, plan link, reviews, chat). Steps live in src/components/Tour.jsx; add a
 step by adding a data-tour attribute to the element and an entry to STEPS.
+
+## 12. The Monday seller update
+
+Every Monday at 8am ET, cron-seller-report builds each active listing's report
+(views, saves, showing requests, buyers on the lake) and Claude writes three
+short sections from those numbers and Holly's sales on the lake: what
+happened this week, what the market is doing, what Holly recommends
+(api/lib/narrative.js). The draft is stored per listing per week, Holly gets
+it by email with a one-click send, and the seller receives exactly what she
+approved. Nothing goes to a seller until she clicks. A listing joins the
+Monday run when it has sellerName and sellerEmail in amenities.js.
+Next: competition (Paragon hotsheet forwarded weekly) and showing feedback
+(feedback emails forwarded), both through the inbound email parser.
