@@ -34,6 +34,7 @@ async function get(req, res) {
     const { paths } = await listAll('waitlist/')
     const counts = {}
     for (const p of paths) {
+      if (p.endsWith('.owner.json')) continue // owners are not "buyers waiting"
       const lake = p.split('/')[1]
       counts[lake] = (counts[lake] || 0) + 1
     }
@@ -65,14 +66,15 @@ async function get(req, res) {
   }
 
   const { paths } = await listAll(`waitlist/${lake}/`)
-  return res.status(200).json({ lake, name: lakes[lake].name, count: paths.length })
+  return res.status(200).json({ lake, name: lakes[lake].name, count: paths.filter((p) => !p.endsWith('.owner.json')).length })
 }
 
 async function post(req, res) {
   const lake = sanitizeSlug(req.query.lake)
   if (!lake || !lakes[lake]) return res.status(400).json({ error: 'unknown lake' })
 
-  const { name, phone, email, budget, timing, notes } = req.body || {}
+  const { name, phone, email, budget, timing, notes, role } = req.body || {}
+  const owner = role === 'owner'
   if (!name || (!phone && !email)) return res.status(400).json({ error: 'Name and a phone or email are required.' })
 
   const entry = {
@@ -84,6 +86,7 @@ async function post(req, res) {
     budget: budget ? String(budget).slice(0, 100) : null,
     timing: timing ? String(timing).slice(0, 100) : null,
     notes: notes ? String(notes).slice(0, 2000) : null,
+    role: owner ? 'owner' : 'buyer',
     receivedAt: new Date().toISOString(),
     userAgent: req.headers['user-agent'] || null,
   }
@@ -92,7 +95,7 @@ async function post(req, res) {
   try {
     const stamp = entry.receivedAt.replace(/[:.]/g, '-')
     await put(
-      `waitlist/${lake}/${todayISO()}/${stamp}-${crypto.randomUUID()}.json`,
+      `waitlist/${lake}/${todayISO()}/${stamp}-${crypto.randomUUID()}${owner ? '.owner' : ''}.json`,
       JSON.stringify(entry, null, 2),
       { access: 'public', addRandomSuffix: false, contentType: 'application/json' },
     )
@@ -103,21 +106,22 @@ async function post(req, res) {
 
   // 2. Notify, best-effort, in parallel. Nothing here can lose the entry.
   const first = entry.name.split(' ')[0]
-  const interest = [
-    `Wants first look on ${entry.lakeName}`,
-    entry.budget && `Budget: ${entry.budget}`,
-    entry.timing && `Timing: ${entry.timing}`,
-    entry.notes,
-  ].filter(Boolean).join('. ')
+  const interest = owner
+    ? [`OWNER on ${entry.lakeName}, wants sale updates`, entry.budget && `Street: ${entry.budget}`, entry.timing && `Selling: ${entry.timing}`, entry.notes].filter(Boolean).join('. ')
+    : [`Wants first look on ${entry.lakeName}`, entry.budget && `Budget: ${entry.budget}`, entry.timing && `Timing: ${entry.timing}`, entry.notes].filter(Boolean).join('. ')
 
   const [notion, sms, reply, count] = await Promise.all([
-    saveLeadToNotion({ name: entry.name, email: entry.email, phone: entry.phone, interest, region: lakes[lake].region, source: 'Lake Waitlist' })
+    saveLeadToNotion({ name: entry.name, email: entry.email, phone: entry.phone, interest, region: lakes[lake].region, source: owner ? 'Lake Owner' : 'Lake Waitlist' })
       .then(() => true).catch((err) => { console.error('Waitlist Notion save failed:', err.message); return false }),
-    notifyHolly(`New buyer on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `, ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\nWants: ${entry.notes.slice(0, 160)}` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`),
+    notifyHolly(owner
+      ? `Owner on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `. Selling: ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\n"${entry.notes.slice(0, 160)}"` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`
+      : `New buyer on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `, ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\nWants: ${entry.notes.slice(0, 160)}` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`),
     entry.phone
-      ? textLead(entry.phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). You're on my ${entry.lakeName} list. When something comes up you'll hear from me before it hits the market. Anything specific you're after? Text me here or call ${HOLLY_PRETTY}.`)
+      ? textLead(entry.phone, owner
+          ? `Hi ${first}, Holly Griewahn here (Foundation Realty). I'll text you when a ${entry.lakeName} home sells or lists, with the number. If you ever want to know what yours would bring, just reply here or call ${HOLLY_PRETTY}.`
+          : `Hi ${first}, Holly Griewahn here (Foundation Realty). You're on my ${entry.lakeName} list. When something comes up you'll hear from me before it hits the market. Anything specific you're after? Text me here or call ${HOLLY_PRETTY}.`)
       : Promise.resolve({ ok: false }),
-    listAll(`waitlist/${lake}/`).then((r) => r.paths.length).catch(() => null),
+    listAll(`waitlist/${lake}/`).then((r) => r.paths.filter((p) => !p.endsWith('.owner.json')).length).catch(() => null),
   ])
 
   return res.status(200).json({ success: true, count, notion, sms: sms.ok, autoReply: reply.ok })

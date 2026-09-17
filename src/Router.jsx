@@ -10,6 +10,7 @@ import CMAPage from './pages/CMAPage.jsx';
 import SoldPage from './pages/SoldPage.jsx';
 import PlanPage from './pages/PlanPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+import MarketPage from './pages/MarketPage.jsx';
 
 // /regions/<slug> exists as a prerendered, crawlable page; humans get the
 // interactive region view the app already has.
@@ -30,6 +31,8 @@ export default function Router() {
         <Route path="/cma" element={<CMAPage />} />
         <Route path="/sold" element={<SoldPage />} />
         <Route path="/regions/:slug" element={<RegionRedirect />} />
+        <Route path="/market" element={<MarketPage />} />
+        <Route path="/market/:slug" element={<MarketPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/plan" element={<PlanPage />} />
         <Route path="/plan/:lake/:address" element={<PlanPage />} />

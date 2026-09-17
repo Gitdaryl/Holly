@@ -146,7 +146,7 @@ function normalize({ pathname, data }) {
     email: data.email || null,
   }
   if (root === 'waitlist') {
-    return { ...base, source: 'Waitlist', about: data.lakeName || bucket,
+    return { ...base, source: data.role === 'owner' ? 'Lake owner' : 'Waitlist', about: data.lakeName || bucket,
       detail: [data.budget, data.timing, data.notes].filter(Boolean).join(' · '), link: `/lakes/${bucket}` }
   }
   if (bucket === '_contact') return { ...base, source: 'Contact form', about: data.region ? (regions[data.region]?.name || data.region) : '', detail: data.message || '' }

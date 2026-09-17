@@ -18,6 +18,7 @@ import { lakes } from '../src/data/lakes.js'
 import { regions } from '../src/data/regions.js'
 import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
+import { marketFor, marketIndex } from '../src/lib/market.js'
 
 const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
 const DIST = path.resolve('dist')
@@ -204,7 +205,7 @@ for (const l of Object.values(lakes)) {
     ${act.length ? `<h3>For sale on ${esc(l.name)}</h3><ul>${act.map(listingLi).join('')}</ul>` : ''}
     ${sld.length ? `<h3>Recently sold on ${esc(l.name)}</h3><ul>${sld.map(listingLi).join('')}</ul>` : ''}
     <h2>Buying on ${esc(l.name)}</h2><p>Lake homes here often sell before they are listed. Register for first look at the next ${esc(l.name)} property at <a href="/lakes/${l.slug}#waitlist">the ${esc(l.name)} waitlist</a>.</p>
-    <h2>Selling on ${esc(l.name)}</h2><p><a href="/cma">Ask Holly what your ${esc(l.name)} home is worth</a>, based on this year's sales on the lake.</p>
+    <h2>Selling on ${esc(l.name)}</h2><p><a href="/cma">Ask Holly what your ${esc(l.name)} home is worth</a>, based on this year's sales on the lake. See the <a href="/market/${l.slug}">${esc(l.name)} ${new Date().getFullYear()} sales report</a>.</p>
     <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
   `)
   routes.push(write(`/lakes/${l.slug}`, {
@@ -296,6 +297,52 @@ for (const p of propertiesData) {
     description: `A real answer from this year's sales on your lake, not a national estimate. Holly Griewahn, Foundation Realty, Manitou Beach MI.`,
     body: WRAP(`<h1>What is my lake home worth?</h1><p>Tell Holly about your home and she answers with what buyers paid on your lake this year. ${record.sold} sales in 2026 to compare against. No obligation. Call or text (517) 403-3413.</p>`),
   }))
+}
+
+// Market reports
+{
+  const year = new Date().getFullYear()
+  const idx = marketIndex()
+  routes.push(write('/market', {
+    title: `Irish Hills Lake Sales Reports ${year} | Holly Griewahn`,
+    description: `Holly Griewahn's closed sales on each Irish Hills lake in ${year}: how many, how fast, for how much. Devils Lake, Clark Lake, Wamplers, Lake Columbia and more.`,
+    jsonld: [breadcrumbs([['Irish Hills', '/'], ['Lake sales reports', '/market']])],
+    body: WRAP(`<h1>${year} lake sales reports</h1><p>Holly's closed sales on each lake this year.</p><ul>${idx.map((r) => `<li><a href="/market/${r.lake.slug}">${esc(r.lake.name)}</a>: ${r.sold} sold in ${year}${r.active ? `, ${r.active} for sale` : ''}</li>`).join('')}</ul>`),
+  }))
+  llms.push('\n## Lake sales reports\n')
+  for (const l of Object.values(lakes)) {
+    const m = marketFor(l.slug)
+    const st = m.hasLakeData ? m.lakeStats : m.regionStats
+    const scope = m.hasLakeData ? l.name : m.region.name
+    const list = m.hasLakeData ? m.lakeSold : m.regionSold
+    const range = st.low && st.high ? (st.low === st.high ? money(st.low) : `${money(st.low)} to ${money(st.high)}`) : ''
+    const faq = [
+      [`What do homes sell for on ${l.name}?`, st.sold ? `In ${year}, Holly Griewahn's sales ${m.hasLakeData ? `on ${l.name}` : `across ${m.region.name}, the market ${l.name} is priced against,`} ranged ${range} with a median of ${money(st.median)}.${l.avgPrice ? ` Typical lakefront on ${l.name} runs around ${l.avgPrice}.` : ''}` : `${l.avgPrice ? `Typical lakefront on ${l.name} runs around ${l.avgPrice}. ` : ''}Holly Griewahn can price a specific home from current sales on the lake.`],
+      [`How fast do homes sell on ${l.name}?`, st.avgDays !== null ? `Holly's ${scope} listings in ${year} sold in ${st.avgDays} days on average${st.dayOne ? `, and ${st.dayOne} sold the day they listed to buyers she already had waiting` : ''}.` : `Holly Griewahn tracks days-to-sell on every listing; ask her for the current ${l.name} picture.`],
+      [`Who is the best Realtor for ${l.name}?`, `Holly Griewahn of Foundation Realty in Manitou Beach specializes in Irish Hills lake property, with ${trackRecord(propertiesData).sold} homes sold in ${year}${m.hasLakeData ? ` including ${m.lakeStats.sold} on ${l.name}` : ''}. Call (517) 403-3413.`],
+    ]
+    const body = WRAP(`
+      <p><a href="/market">Lake reports</a> › <a href="/lakes/${l.slug}">${esc(l.name)}</a></p>
+      <h1>${m.hasLakeData ? `What Holly sold on ${esc(l.name)} in ${year}` : `${esc(l.name)} and the ${esc(m.region.name)} market, ${year}`}</h1>
+      <p>${st.sold} closed sale${st.sold === 1 ? '' : 's'} ${m.hasLakeData ? `on ${esc(l.name)}` : `across ${esc(m.region.name)}`} through Holly Griewahn, Foundation Realty${st.avgDays !== null ? `; listings sold in ${st.avgDays} days on average` : ''}${range ? `; prices ${range}, median ${money(st.median)}` : ''}${st.dayOne ? `; ${st.dayOne} sold the day they listed` : ''}.</p>
+      ${list.length ? `<h2>Sales</h2><ul>${list.map(listingLi).join('')}</ul>` : ''}
+      ${m.forSale.length ? `<h2>For sale on ${esc(l.name)} now</h2><ul>${m.forSale.map(listingLi).join('')}</ul>` : ''}
+      <h2>Own on ${esc(l.name)}?</h2><p>Holly texts owners when a ${esc(l.name)} home sells or lists, with the number. Sign up on <a href="/market/${l.slug}">the ${esc(l.name)} report page</a>, or <a href="/cma">ask what your home is worth</a>.</p>
+      <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
+      <p><em>Figures are Holly Griewahn's own closed sales in ${year}, not the full MLS.</em></p>
+    `)
+    routes.push(write(`/market/${l.slug}`, {
+      title: `${l.name} Sales Report ${year}: Prices, Days on Market | Holly Griewahn`,
+      description: `${st.sold} closed sales ${m.hasLakeData ? `on ${l.name}` : `across ${m.region.name}`} in ${year}${range ? `, ${range}` : ''}${st.avgDays !== null ? `, ${st.avgDays} days average to sell` : ''}. What ${l.name} homes are selling for, from Holly Griewahn, Foundation Realty.`.slice(0, 300),
+      image: m.region?.poster,
+      jsonld: [
+        { '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+        breadcrumbs([['Irish Hills', '/'], ['Lake sales reports', '/market'], [l.name, `/market/${l.slug}`]]),
+      ],
+      body,
+    }))
+    llms.push(`- [${l.name} ${year} sales report](${SITE}/market/${l.slug}): ${st.sold} sold${range ? `, ${range}` : ''}${st.avgDays !== null ? `, ${st.avgDays} days avg` : ''}`)
+  }
 }
 
 // Blog (from the live articles endpoint; skipped silently if unreachable)

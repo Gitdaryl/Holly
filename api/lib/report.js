@@ -60,7 +60,7 @@ export async function buildReport(property, days = 7) {
     listAll(`engage/${slug}/views/`),
     listAll(`engage/${slug}/events/saved/`),
     listAll(`leads/${slug}/`),
-    lake ? listAll(`waitlist/${property.lake}/`) : Promise.resolve({ paths: [], capped: false }),
+    lake ? listAll(`waitlist/${property.lake}/`).then((r) => ({ ...r, paths: r.paths.filter((p) => !p.endsWith('.owner.json')) })) : Promise.resolve({ paths: [], capped: false }),
   ])
 
   const win = (paths) => countInWindow(paths, thisWindow[0], thisWindow[days - 1])

@@ -176,7 +176,7 @@ export default function LakePage() {
           <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>Holly on {lake.name}</h2>
-              {record.sold > 0 && <Link to="/sold" style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Full track record →</Link>}
+              <Link to={`/market/${lake.slug}`} style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>{lake.name} sales report →</Link>
             </div>
             <div className="lake-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               <StatCard label="Sold here" value={record.sold} />
