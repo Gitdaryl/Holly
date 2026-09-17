@@ -3,6 +3,7 @@ import { regions } from './data/regions';
 import { lakes, lakeSearchIndex } from './data/lakes';
 import { amenityData, propertiesData, blogPosts, propertyTypes } from './data/amenities';
 import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
+import { track } from './lib/track';
 import ChatWidget from './components/ChatWidget';
 import HeroVideo from './components/HeroVideo';
 
@@ -157,6 +158,7 @@ function ContactModal({ region, onClose }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      track('contact');
       setStatus('success');
     } catch (err) {
       setStatus('error');
@@ -253,6 +255,7 @@ export default function IrishHillsRealty() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      track('contact');
       setFormStatus('success');
       setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
     } catch (err) {

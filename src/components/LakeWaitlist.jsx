@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { track } from '../lib/track';
 
 // "Get first look" card for a lake page. Shows the live count once there are
 // enough registrations for the number to sell itself; before that it reads as
@@ -42,6 +43,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || 'Send failed');
       if (typeof d.count === 'number') setCount(d.count);
+      track(owner ? 'owner' : 'waitlist');
       setStatus('sent');
     } catch (err) {
       setStatus('idle');

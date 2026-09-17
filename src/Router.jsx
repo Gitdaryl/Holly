@@ -1,5 +1,6 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
+import { pageview, track } from './lib/track.js';
 import App from './App.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import ArticlePage from './pages/ArticlePage.jsx';
@@ -12,6 +13,25 @@ import PlanPage from './pages/PlanPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import MarketPage from './pages/MarketPage.jsx';
 
+// Page views on every route change, plus taps on phone, text and review links.
+function Tracker() {
+  const { pathname } = useLocation();
+  useEffect(() => { pageview(pathname); }, [pathname]);
+  useEffect(() => {
+    const onClick = (e) => {
+      const a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      const h = a.getAttribute('href') || '';
+      if (h.startsWith('tel:')) track('call');
+      else if (h.startsWith('sms:')) track('text');
+      else if (h.includes('writereview')) track('review');
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+  return null;
+}
+
 // /regions/<slug> exists as a prerendered, crawlable page; humans get the
 // interactive region view the app already has.
 function RegionRedirect() {
@@ -22,6 +42,7 @@ function RegionRedirect() {
 export default function Router() {
   return (
     <BrowserRouter>
+      <Tracker />
       <Routes>
         <Route path="/blog/:slug" element={<ArticlePage />} />
         <Route path="/blog" element={<BlogPage />} />

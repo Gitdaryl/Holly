@@ -59,7 +59,7 @@ const when = (iso) => {
 // ── shells ─────────────────────────────────────────────────────────────
 
 function Shell({ children, tab, setTab, onLogout }) {
-  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings']];
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['stats', 'Stats']];
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
@@ -411,6 +411,83 @@ function Listings({ session }) {
   );
 }
 
+// ── stats ──────────────────────────────────────────────────────────────
+
+const LEVEL = { act: { bg: 'rgba(232,67,147,0.1)', fg: PINK, label: 'Do now' }, watch: { bg: 'rgba(245,179,1,0.14)', fg: '#a16207', label: 'Look' }, good: { bg: 'rgba(16,185,129,0.12)', fg: '#047857', label: 'Good' }, info: { bg: '#f0eee9', fg: MUTED, label: 'FYI' } };
+const SOURCE_LABEL = (s) => s === 'direct' ? 'Direct / typed in' : s.startsWith('utm:') ? `Campaign: ${s.slice(4)}` : s.replace(/^(l\.|m\.|lm\.)/, '').replace('facebook.com', 'Facebook').replace('instagram.com', 'Instagram').replace('google.com', 'Google').replace('t.co', 'X / Twitter');
+const PAGE_LABEL = (p) => p === '/' ? 'Home' : p.replace(/^\/lakes\//, 'Lake: ').replace(/^\/market\//, 'Report: ').replace(/^\/property\//, 'Listing: ').replace(/-/g, ' ');
+
+function Delta({ now, before }) {
+  if (!before) return null;
+  const pct = Math.round(((now - before) / before) * 100);
+  if (!pct) return <span style={{ fontSize: '0.68rem', color: MUTED }}>same as before</span>;
+  return <span style={{ fontSize: '0.68rem', fontWeight: 700, color: pct > 0 ? '#047857' : PINK }}>{pct > 0 ? '▲' : '▼'} {Math.abs(pct)}% vs prior</span>;
+}
+
+function Stats({ session, setTab }) {
+  const [days, setDays] = useState(7);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  useEffect(() => { setData(null); api(`/api/admin?view=stats&days=${days}`, { session }).then(setData).catch((e) => setError(e.message)); }, [session, days]);
+  if (error) return <ErrorBox error={error} />;
+  if (!data) return <Loading />;
+  const { now, before } = data;
+  const rate = now.visitors ? Math.round((now.leadEvents / now.visitors) * 100) : 0;
+  const table = (rows, cols) => (
+    <div className="adm-card" style={{ padding: 0, overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+        <thead><tr>{cols.map((c) => <th key={c.k} style={{ textAlign: c.align || 'right', padding: '0.6rem 0.8rem', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#94a3b8', borderBottom: `1px solid ${LINE}` }}>{c.h}</th>)}</tr></thead>
+        <tbody>{rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.k} style={{ textAlign: c.align || 'right', padding: '0.55rem 0.8rem', borderBottom: '1px solid #f0eee9', fontWeight: c.align === 'left' ? 600 : 500 }}>{c.f ? c.f(r) : r[c.k]}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
+  );
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
+        <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>Last {days} days</div>
+        <div style={{ display: 'flex', gap: '0.35rem' }}>
+          {[7, 30, 90].map((d) => <button key={d} onClick={() => setDays(d)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: days === d ? NAVY : 'white', color: days === d ? 'white' : MUTED, borderColor: days === d ? NAVY : LINE }}>{d}d</button>)}
+        </div>
+      </div>
+
+      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Where to look</div>
+      <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1.25rem' }}>
+        {data.attention.map((a, i) => {
+          const L = LEVEL[a.level] || LEVEL.info;
+          const inner = (
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', background: 'white', border: `1px solid ${LINE}`, borderLeft: `4px solid ${L.fg}`, borderRadius: '12px', padding: '0.75rem 0.9rem' }}>
+              <span style={{ fontSize: '0.62rem', fontWeight: 800, color: L.fg, background: L.bg, padding: '0.2rem 0.5rem', borderRadius: '20px', whiteSpace: 'nowrap', marginTop: '0.1rem' }}>{L.label}</span>
+              <span style={{ fontSize: '0.88rem', lineHeight: 1.5 }}>{a.text}</span>
+            </div>
+          );
+          if (a.tab) return <button key={i} onClick={() => setTab(a.tab)} style={{ all: 'unset', cursor: 'pointer', display: 'block' }}>{inner}</button>;
+          if (a.path) return <Link key={i} to={a.path} style={{ textDecoration: 'none', color: 'inherit' }}>{inner}</Link>;
+          return <div key={i}>{inner}</div>;
+        })}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.6rem', marginBottom: '1.25rem' }}>
+        {[[now.visitors, 'Visitors', <Delta now={now.visitors} before={before.visitors} />], [now.views, 'Page views', <Delta now={now.views} before={before.views} />], [now.leadEvents, 'Leads', <Delta now={now.leadEvents} before={before.leadEvents} />], [`${rate}%`, 'Visitors to leads', null]].map(([v, l, d]) => (
+          <div key={l} className="adm-card" style={{ textAlign: 'center', padding: '0.9rem 0.5rem' }}>
+            <div style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1 }}>{v}</div>
+            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.3rem' }}>{l}</div>
+            <div style={{ marginTop: '0.2rem' }}>{d}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gap: '1rem' }}>
+        {data.lakes.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Lakes: readers to sign-ups</div>{table(data.lakes, [{ k: 'lake', h: 'Lake', align: 'left' }, { k: 'visitors', h: 'People' }, { k: 'buyers', h: 'Buyers' }, { k: 'owners', h: 'Owners' }])}</div>}
+        {data.listings.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Listings: lookers to showing requests</div>{table(data.listings, [{ k: 'title', h: 'Listing', align: 'left' }, { k: 'visitors', h: 'People' }, { k: 'showings', h: 'Showings' }])}</div>}
+        {now.pages.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Most read pages</div>{table(now.pages.slice(0, 12), [{ k: 'path', h: 'Page', align: 'left', f: (r) => PAGE_LABEL(r.path) }, { k: 'views', h: 'Views' }])}</div>}
+        {now.sources.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Where visitors came from</div>{table(now.sources, [{ k: 'source', h: 'Source', align: 'left', f: (r) => SOURCE_LABEL(r.source) }, { k: 'visitors', h: 'Visitors' }])}</div>}
+        {Object.keys(now.events).length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Actions taken</div>{table(Object.entries(now.events).sort((a, b) => b[1] - a[1]).map(([e, n]) => ({ e, n })), [{ k: 'e', h: 'Action', align: 'left', f: (r) => ({ waitlist: 'Joined a lake waitlist', owner: 'Owner asked for updates', showing: 'Requested a showing', cma: 'Asked home value', contact: 'Sent a message', chat_open: 'Opened the chat', chat_lead: 'Left details in chat', call: 'Tapped to call', text: 'Tapped to text', review: 'Went to leave a review', save: 'Saved a listing' }[r.e] || r.e) }, { k: 'n', h: 'Times' }])}</div>}
+      </div>
+      <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '1rem' }}>Counts visitors to this site only, not Zillow or the MLS. Your own visits to the desk are never counted.</p>
+    </>
+  );
+}
+
 // ── page ───────────────────────────────────────────────────────────────
 
 export default function AdminPage() {
@@ -455,6 +532,7 @@ export default function AdminPage() {
         {tab === 'texts' && <Texts session={session} />}
         {tab === 'waitlist' && <Waitlist session={session} />}
         {tab === 'listings' && <Listings session={session} />}
+        {tab === 'stats' && <Stats session={session} setTab={setTab} />}
       </SessionGuard>
     </Shell>
   );

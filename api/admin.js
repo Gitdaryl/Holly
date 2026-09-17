@@ -3,6 +3,7 @@ import { propertiesData } from '../src/data/amenities.js'
 import { lakes } from '../src/data/lakes.js'
 import { regions } from '../src/data/regions.js'
 import { buildReport, sellerKeyFor, SITE } from './lib/report.js'
+import { windowDays, todayISO } from './lib/engage-store.js'
 import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './lib/admin-auth.js'
 import { notifyHolly, textLead, HOLLY_PRETTY } from './lib/sms.js'
 import { WRITE_REVIEW_URL } from './reviews.js'
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
     if (view === 'waitlist') return res.status(200).json(await waitlist())
     if (view === 'listings') return res.status(200).json(await listings())
     if (view === 'texts') return res.status(200).json(await texts())
+    if (view === 'stats') return res.status(200).json(await stats(Math.min(90, Math.max(1, parseInt(req.query.days, 10) || 7))))
     if (view === 'transcribe') {
       // Re-run a voicemail through Deepgram: ?view=transcribe&rec=RE...
       if (!/^RE[0-9a-f]{32}$/.test(String(req.query.rec || ''))) return res.status(400).json({ error: 'bad recording id' })
@@ -192,6 +194,103 @@ async function askReview(req, res) {
   if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
   await put(`admin/review-asked/${id}/${Date.now()}`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
   return res.status(200).json({ ok: true })
+}
+
+// ── stats ───────────────────────────────────────────────────────────────
+
+// Counts come from hit pathnames only (see api/track.js), never blob reads:
+//   hits/<date>/<event>/<path enc>/<source>/<device>/<session>-<uuid>
+const decodePath = (enc) => (enc === 'home' ? '/' : '/' + enc.replace(/~/g, '/'))
+
+async function hitsFor(days) {
+  const rows = []
+  await Promise.all(days.map(async (d) => {
+    for (const b of await allBlobs(`hits/${d}/`)) {
+      const [, date, event, enc, source, device, file] = b.pathname.split('/')
+      if (!file) continue
+      rows.push({ date, event, path: decodePath(enc), source, device, sid: file.slice(0, 36) })
+    }
+  }))
+  return rows
+}
+
+function summarize(rows) {
+  const views = rows.filter((r) => r.event === 'view')
+  const sessions = new Set(views.map((r) => r.sid))
+  const count = (list, key) => {
+    const m = {}
+    for (const r of list) m[r[key]] = (m[r[key]] || 0) + 1
+    return Object.entries(m).sort((a, b) => b[1] - a[1])
+  }
+  const sessionsBy = (key) => {
+    const m = {}
+    for (const r of views) (m[r[key]] ||= new Set()).add(r.sid)
+    return Object.entries(m).map(([k, v]) => [k, v.size]).sort((a, b) => b[1] - a[1])
+  }
+  const events = {}
+  for (const r of rows) if (r.event !== 'view') events[r.event] = (events[r.event] || 0) + 1
+  return {
+    views: views.length,
+    visitors: sessions.size,
+    pages: count(views, 'path').slice(0, 25).map(([path, n]) => ({ path, views: n })),
+    sources: sessionsBy('source').slice(0, 12).map(([source, n]) => ({ source, visitors: n })),
+    devices: sessionsBy('device').map(([device, n]) => ({ device, visitors: n })),
+    events,
+    leadEvents: ['waitlist', 'owner', 'showing', 'cma', 'contact', 'chat_lead'].reduce((a, e) => a + (events[e] || 0), 0),
+  }
+}
+
+async function stats(days) {
+  const end = todayISO()
+  const thisWin = windowDays(end, days)
+  const priorWin = windowDays(thisWin[0], days + 1).slice(0, days)
+  const [rows, prior, inboxData, textData] = await Promise.all([hitsFor(thisWin), hitsFor(priorWin), inbox(), texts()])
+  const now = summarize(rows)
+  const before = summarize(prior)
+
+  // Per lake: page views on /lakes/x and /market/x vs sign-ups made there.
+  const lakeRows = Object.values(lakes).map((l) => {
+    const onPages = (r) => r.path === `/lakes/${l.slug}` || r.path === `/market/${l.slug}`
+    const v = rows.filter((r) => r.event === 'view' && onPages(r))
+    return { lake: l.name, slug: l.slug, views: v.length, visitors: new Set(v.map((r) => r.sid)).size,
+      buyers: rows.filter((r) => r.event === 'waitlist' && onPages(r)).length,
+      owners: rows.filter((r) => r.event === 'owner' && onPages(r)).length }
+  }).filter((x) => x.views || x.buyers || x.owners).sort((a, b) => b.views - a.views)
+
+  // Per active listing: page views vs showing requests.
+  const listingRows = propertiesData.filter((p) => String(p.status || 'active') === 'active').map((p) => {
+    const v = rows.filter((r) => r.event === 'view' && r.path === `/property/${p.slug}`)
+    return { title: p.title, slug: p.slug, views: v.length, visitors: new Set(v.map((r) => r.sid)).size,
+      showings: rows.filter((r) => r.event === 'showing' && r.path === `/property/${p.slug}`).length }
+  }).sort((a, b) => b.views - a.views)
+
+  // Where to pay attention. Rules, not magic: each one names a page and a move.
+  const attention = []
+  const stale = inboxData.items.filter((l) => l.status === 'new' && Date.now() - new Date(l.when) > 24 * 3600 * 1000)
+  if (stale.length) attention.push({ level: 'act', text: `${stale.length} lead${stale.length > 1 ? 's' : ''} waiting more than a day: ${stale.slice(0, 3).map((l) => l.name).join(', ')}${stale.length > 3 ? '…' : ''}.`, tab: 'inbox' })
+  const waitingTexts = textData.threads.filter((t) => t.unanswered).length
+  if (waitingTexts) attention.push({ level: 'act', text: `${waitingTexts} text conversation${waitingTexts > 1 ? 's' : ''} waiting on a reply.`, tab: 'texts' })
+  for (const l of lakeRows) {
+    if (l.visitors >= 15 && !l.buyers && !l.owners) attention.push({ level: 'watch', text: `${l.lake}: ${l.visitors} people read the page, nobody signed up. Worth a post pointing at the waitlist.`, path: `/lakes/${l.slug}` })
+    if (l.owners) attention.push({ level: 'good', text: `${l.owners} owner${l.owners > 1 ? 's' : ''} on ${l.lake} asked for sale updates. Those are future listings; a call beats a text.`, tab: 'inbox' })
+  }
+  for (const p of listingRows) {
+    if (p.visitors >= 12 && !p.showings) attention.push({ level: 'watch', text: `${p.title}: ${p.visitors} people looked, none asked to see it. Check the first photo and the price.`, path: `/property/${p.slug}` })
+    if (!p.views && days >= 7) attention.push({ level: 'watch', text: `${p.title}: no page views in ${days} days. Share the link somewhere.`, path: `/property/${p.slug}` })
+  }
+  const topSrc = now.sources.find((s) => !['direct', 'google.com', 'google'].includes(s.source))
+  if (topSrc && now.visitors >= 20 && topSrc.visitors / now.visitors >= 0.3) attention.push({ level: 'good', text: `${topSrc.source} sent ${Math.round((topSrc.visitors / now.visitors) * 100)}% of visitors. Whatever you posted there, do it again.` })
+  if (before.visitors >= 20) {
+    const pct = Math.round(((now.visitors - before.visitors) / before.visitors) * 100)
+    if (pct <= -30) attention.push({ level: 'watch', text: `Visitors down ${Math.abs(pct)}% vs the previous ${days} days.` })
+    if (pct >= 30) attention.push({ level: 'good', text: `Visitors up ${pct}% vs the previous ${days} days.` })
+  }
+  if ((now.events.chat_open || 0) >= 5 && !(now.events.chat_lead || 0)) attention.push({ level: 'watch', text: `${now.events.chat_open} people opened the chat, none left details. Read a few conversations for what they asked.` })
+  const mobile = now.devices.find((d) => d.device === 'mobile')
+  if (mobile && now.visitors >= 20 && mobile.visitors / now.visitors >= 0.7) attention.push({ level: 'info', text: `${Math.round((mobile.visitors / now.visitors) * 100)}% of visitors are on a phone. Check new pages on yours first.` })
+  if (!attention.length) attention.push({ level: 'good', text: now.visitors ? 'Nothing needs attention. Leads answered, pages converting.' : 'No traffic recorded yet in this window.' })
+
+  return { days, window: { start: thisWin[0], end }, now, before: { views: before.views, visitors: before.visitors, leadEvents: before.leadEvents }, lakes: lakeRows, listings: listingRows, attention }
 }
 
 // ── texts ───────────────────────────────────────────────────────────────

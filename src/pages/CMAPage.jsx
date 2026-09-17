@@ -1,3 +1,4 @@
+import { track } from '../lib/track';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -95,6 +96,7 @@ export default function CMAPage() {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error('Failed');
+      track('cma');
       setStatus('sent');
     } catch {
       setStatus('error');

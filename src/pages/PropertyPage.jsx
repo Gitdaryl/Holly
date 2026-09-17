@@ -6,6 +6,7 @@ import { useEngagement } from '../lib/useEngagement';
 import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
 import { coverFor, isAerial } from '../lib/cover';
 import { TrustStrip } from '../components/GoogleReviews';
+import { track } from '../lib/track';
 
 export default function PropertyPage() {
   const { id } = useParams();
@@ -49,6 +50,7 @@ export default function PropertyPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Send failed');
+      track('showing');
       setFormStatus('sent');
     } catch (err) {
       setFormStatus('idle');

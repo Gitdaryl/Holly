@@ -1,3 +1,4 @@
+import { track } from '../lib/track';
 import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 
@@ -86,6 +87,7 @@ export default function ChatWidget() {
 
     setLeadCaptured(true);
     setLeadSaved(true);
+    track('chat_lead');
     setShowLeadForm(false);
     setMessages(prev => [...prev, { role: 'assistant', content: `Thanks, ${leadForm.name || 'there'}! Holly will be in touch. You can also call her anytime at (517) 403-3413.` }]);
   };
@@ -94,7 +96,7 @@ export default function ChatWidget() {
     <>
       {/* Chat bubble trigger */}
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => { if (!open) track('chat_open'); setOpen(o => !o); }}
         aria-label="Chat with Holly's assistant"
         style={{
           position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 999,
