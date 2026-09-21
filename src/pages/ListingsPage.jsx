@@ -14,7 +14,7 @@ const PRICE_RANGES = [
 ];
 
 function parsePrice(str) {
-  return parseInt(str.replace(/[$,+]/g, ''), 10) || 0;
+  return parseInt(String(str || '').replace(/[$,+]/g, ''), 10) || 0;
 }
 
 export function NavBar({ scrolled }) {
