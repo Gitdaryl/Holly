@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { lakes } from '../data/lakes';
 import { regions } from '../data/regions';
@@ -6,6 +6,7 @@ import { propertiesData, propertyTypes } from '../data/amenities';
 import LakeWaitlist from '../components/LakeWaitlist';
 import { trackRecord, isActive, isSold, soldBadge } from '../lib/listing-stats';
 import { coverFor } from '../lib/cover';
+import SiteNav from '../components/SiteNav';
 
 const TYPE_COLOR = {
   'all-sports': { bg: 'rgba(59,130,246,0.1)', text: '#2563eb', label: 'All-Sports Lake' },
@@ -31,13 +32,9 @@ function StatCard({ label, value, sub }) {
 
 export default function LakePage() {
   const { slug } = useParams();
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const lake = lakes[slug];
@@ -79,26 +76,7 @@ export default function LakePage() {
       `}</style>
 
       {/* Nav */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? 'rgba(250,249,247,0.97)' : 'rgba(15,25,50,0.5)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: scrolled ? '1px solid #e8e4df' : 'none',
-        transition: 'all 0.4s ease', padding: '1rem 2rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-          <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.9rem' }}>Holly Griewahn</span>
-        </Link>
-        <nav style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
-          <Link to="/listings" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Listings</Link>
-          <Link to="/cma" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Home Value</Link>
-          <a href="tel:5174033413" style={{ background: '#e84393', color: 'white', padding: '0.4rem 1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600 }}>
-            Call Holly
-          </a>
-        </nav>
-      </header>
+      <SiteNav transparent active="regions" textBody={`Hi Holly, I'm interested in ${lake.name}`} />
 
       {/* Hero */}
       <div style={{

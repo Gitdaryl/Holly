@@ -4,8 +4,8 @@ import { lakes, lakeSearchIndex } from './data/lakes';
 import { amenityData, propertiesData, blogPosts, propertyTypes } from './data/amenities';
 import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
 import { track } from './lib/track';
-import ChatWidget from './components/ChatWidget';
 import HeroVideo from './components/HeroVideo';
+import SiteNav from './components/SiteNav';
 
 // ═══════════════════════════════════════════════════════════
 // ICONS LIBRARY
@@ -208,9 +208,11 @@ function ContactModal({ region, onClose }) {
 }
 
 export default function IrishHillsRealty() {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState(() => {
+    const region = new URLSearchParams(window.location.search).get('region');
+    return region && regions[region] ? region : 'home';
+  });
   const [activeFilter, setActiveFilter] = useState('all');
-  const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeAmenityTab, setActiveAmenityTab] = useState('schools');
   const [highlightedLake, setHighlightedLake] = useState(null);
@@ -218,18 +220,32 @@ export default function IrishHillsRealty() {
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
   const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
   const [formError, setFormError] = useState('');
+  const [homeArticles, setHomeArticles] = useState([]);
 
+  // Local Knowledge Blog cards on the home page pull live articles; the
+  // section simply doesn't render if the fetch fails or comes back empty.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    let cancelled = false;
+    fetch('/api/holly-articles')
+      .then(res => (res.ok ? res.json() : Promise.reject(new Error('fetch failed'))))
+      .then(data => {
+        if (!cancelled && Array.isArray(data?.articles)) setHomeArticles(data.articles.slice(0, 3));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
+
+  const fmtBlogDate = (dateStr) => {
+    const d = new Date(`${dateStr}T00:00:00`);
+    return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
 
   const navigateToRegion = (slug, lakeFocus) => {
     setCurrentView(slug);
     setActiveFilter('all');
     setActiveAmenityTab('schools');
     setHighlightedLake(lakeFocus || null);
+    window.history.replaceState(null, '', `/?region=${slug}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -237,6 +253,7 @@ export default function IrishHillsRealty() {
     setCurrentView('home');
     setSearchQuery('');
     setHighlightedLake(null);
+    window.history.replaceState(null, '', '/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -847,36 +864,37 @@ export default function IrishHillsRealty() {
       </section>
 
       {/* Blog Preview */}
-      <section style={{ padding: '4rem 2rem 5rem', background: '#faf9f7' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Local Knowledge Blog</h2>
-            <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1rem', borderRadius: '2px' }} />
-            <p style={{ color: '#6b7a8d', fontSize: '1.05rem' }}>Tips, guides, and market insights from Holly</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-            {blogPosts.slice(0, 3).map((post, i) => (
-              <div key={post.id} className="region-card" style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', animation: `fadeUp 0.6s ease-out ${i * 0.1}s both`, opacity: 0 }}>
-                <div style={{ height: '12px', background: 'linear-gradient(135deg, #e84393, #f093fb)' }} />
-                <div style={{ padding: '1.75rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                    <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.72rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Icons.clock /> {post.readTime}</span>
+      {homeArticles.length > 0 && (
+        <section style={{ padding: '4rem 2rem 5rem', background: '#faf9f7' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Local Knowledge Blog</h2>
+              <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1rem', borderRadius: '2px' }} />
+              <p style={{ color: '#6b7a8d', fontSize: '1.05rem' }}>Tips, guides, and market insights from Holly</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+              {homeArticles.map((post, i) => (
+                <a key={post.slug} href={`/blog/${post.slug}`} className="region-card" style={{ display: 'block', textDecoration: 'none', color: 'inherit', background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', animation: `fadeUp 0.6s ease-out ${i * 0.1}s both`, opacity: 0 }}>
+                  <div style={{ height: '12px', background: 'linear-gradient(135deg, #e84393, #f093fb)' }} />
+                  <div style={{ padding: '1.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.72rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
+                    </div>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
+                    <p style={{ fontSize: '0.88rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>
+                    <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{fmtBlogDate(post.publishedDate)}</div>
                   </div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
-                  <p style={{ fontSize: '0.88rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>
-                  <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{post.date}</div>
-                </div>
-              </div>
-            ))}
+                </a>
+              ))}
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+              <button onClick={navigateToBlog} style={{ padding: '0.75rem 2rem', background: 'white', color: '#1a2332', border: '2px solid #1a2332', borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease' }}>
+                View All Posts <Icons.arrow />
+              </button>
+            </div>
           </div>
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <button onClick={navigateToBlog} style={{ padding: '0.75rem 2rem', background: 'white', color: '#1a2332', border: '2px solid #1a2332', borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease' }}>
-              View All Posts <Icons.arrow />
-            </button>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 
@@ -928,30 +946,7 @@ export default function IrishHillsRealty() {
       `}</style>
 
       {/* Navigation */}
-      <nav style={{
-        position: 'fixed', top: 0, width: '100%', zIndex: 1000, transition: 'all 0.4s ease',
-        background: scrolled ? 'rgba(250,249,247,0.95)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(26,35,50,0.08)' : '1px solid transparent',
-        padding: scrolled ? '0.75rem 2rem' : '1.25rem 2rem'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={navigateHome}>
-            <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-            <span style={{ fontWeight: 700, fontSize: '1rem', color: scrolled ? '#1a2332' : 'white', transition: 'color 0.4s ease' }}>Holly Griewahn</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <button onClick={navigateHome} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Regions</button>
-            <button onClick={() => { window.location.href = '/listings'; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Listings</button>
-            <button onClick={() => { window.location.href = '/cma'; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Home Value</button>
-            <button onClick={navigateToBlog} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Blog</button>
-            <button onClick={() => { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: scrolled ? '#1a2332' : 'white', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease', fontFamily: 'inherit' }}>Contact</button>
-            <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: scrolled ? '#e84393' : 'white', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.4s ease' }}>
-              <Icons.phone /> <span className="phone-text">(517) 403-3413</span>
-            </a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav transparent active={currentView === 'blog' ? 'blog' : 'regions'} />
 
       {/* Page Content */}
       {currentView === 'home' ? <HomePage /> : currentView === 'blog' ? <BlogPage /> : <RegionDetailPage />}
@@ -977,7 +972,7 @@ export default function IrishHillsRealty() {
             <h3 style={{ fontFamily: "'Playfair Display', serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Explore</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {['All Regions', 'Lakefront Properties', 'Rural & Farm Properties', 'Browse Listings', 'What\'s My Home Worth?', 'Blog', 'Contact Holly'].map(link => (
-                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Browse Listings') window.location.href = '/listings'; if (link === "What's My Home Worth?") window.location.href = '/cma'; if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
+                <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Browse Listings') window.location.href = '/listings'; if (link === 'Lakefront Properties') window.location.href = '/listings?type=lakefront'; if (link === 'Rural & Farm Properties') window.location.href = '/listings?type=rural'; if (link === "What's My Home Worth?") window.location.href = '/cma'; if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
                   style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#e84393'}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
@@ -1005,7 +1000,6 @@ export default function IrishHillsRealty() {
       </footer>
 
       {contactRegion && <ContactModal region={contactRegion} onClose={() => setContactRegion(null)} />}
-      <ChatWidget />
     </div>
   );
 }

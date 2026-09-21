@@ -1,5 +1,6 @@
 import { track } from '../lib/track';
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ChatMessage from './ChatMessage';
 
 const SESSION_ID = Math.random().toString(36).slice(2);
@@ -22,6 +23,7 @@ export default function ChatWidget() {
   const [leadSaved, setLeadSaved] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const { pathname } = useLocation();
 
   const userMessageCount = messages.filter(m => m.role === 'user').length;
 
@@ -37,6 +39,8 @@ export default function ChatWidget() {
       setShowLeadForm(true);
     }
   }, [userMessageCount, leadCaptured, showLeadForm]);
+
+  if (pathname.startsWith('/admin') || pathname.startsWith('/plan')) return null;
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -94,8 +98,19 @@ export default function ChatWidget() {
 
   return (
     <>
+      {/* Under 768px, a fixed bottom action bar (MobileActionBar) and, on
+          PropertyPage, its own Call/Request Tour bar sit at the bottom of the
+          screen - raise the chat bubble and panel above both. */}
+      <style>{`
+        @media (max-width: 768px) {
+          .chat-fab { bottom: 6.5rem !important; }
+          .chat-panel { bottom: 10rem !important; height: min(520px, calc(100vh - 12rem)) !important; }
+        }
+      `}</style>
+
       {/* Chat bubble trigger */}
       <button
+        className="chat-fab"
         onClick={() => { if (!open) track('chat_open'); setOpen(o => !o); }}
         aria-label="Chat with Holly's assistant"
         style={{
@@ -131,7 +146,7 @@ export default function ChatWidget() {
 
       {/* Chat panel */}
       {open && (
-        <div style={{
+        <div className="chat-panel" style={{
           position: 'fixed', bottom: '5rem', right: '1.5rem', zIndex: 998,
           width: 'min(360px, calc(100vw - 2rem))',
           height: 'min(520px, calc(100vh - 7rem))',

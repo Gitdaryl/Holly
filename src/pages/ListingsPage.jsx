@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import { isSold, isActive, soldBadge, soldStats, fmtPrice, trackRecord } from '../lib/listing-stats';
 import { coverFor } from '../lib/cover';
+import SiteNav from '../components/SiteNav';
 
 const PRICE_RANGES = [
   { label: 'Any Price', min: 0, max: Infinity },
@@ -17,31 +18,12 @@ function parsePrice(str) {
   return parseInt(String(str || '').replace(/[$,+]/g, ''), 10) || 0;
 }
 
-export function NavBar({ scrolled }) {
-  return (
-    <header style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      background: scrolled ? 'rgba(250,249,247,0.97)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? '1px solid #e8e4df' : 'none',
-      transition: 'all 0.4s ease',
-      padding: '1rem 2rem',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    }}>
-      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-        <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.95rem' }}>Holly Griewahn</span>
-      </Link>
-      <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <Link to="/" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Regions</Link>
-        <span style={{ color: scrolled ? '#1a2332' : 'white', fontSize: '0.85rem', fontWeight: 700, borderBottom: '2px solid #e84393', paddingBottom: '2px' }}>Listings</span>
-        <Link to="/blog" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Blog</Link>
-        <a href="tel:5174033413" style={{ background: '#e84393', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-          Call Holly
-        </a>
-      </nav>
-    </header>
-  );
+// Thin wrapper so SoldPage and MarketPage (which import { NavBar } from here)
+// pick up the shared SiteNav with no edits of their own. Both are
+// transparent-over-hero pages that never marked "Listings" as active before
+// this change either, so that behavior carries over unchanged.
+export function NavBar() {
+  return <SiteNav transparent active="listings" />;
 }
 
 export function PropertyCard({ property }) {
@@ -133,20 +115,16 @@ export function PropertyCard({ property }) {
 
 export default function ListingsPage() {
   const [searchParams] = useSearchParams();
-  const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState('');
-  const [activeType, setActiveType] = useState('all');
+  const [activeType, setActiveType] = useState(() => {
+    const type = searchParams.get('type');
+    return type && propertyTypes[type] ? type : 'all';
+  });
   const [activePriceIdx, setActivePriceIdx] = useState(0);
   const [activeRegion, setActiveRegion] = useState(searchParams.get('region') || 'all');
   const [minBeds, setMinBeds] = useState(0);
   const [status, setStatus] = useState(searchParams.get('status') === 'sold' ? 'sold' : 'active');
   const record = trackRecord(propertiesData);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   const priceRange = PRICE_RANGES[activePriceIdx];
 
@@ -180,7 +158,7 @@ export default function ListingsPage() {
         }
       `}</style>
 
-      <NavBar scrolled={scrolled} />
+      <SiteNav transparent active="listings" />
 
       {/* Hero */}
       <div style={{

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HeroVideo from '../components/HeroVideo';
+import SiteNav from '../components/SiteNav';
 
 const CATEGORIES = ['All', 'Lake Living', 'Real Estate Tips', 'Area Guide', 'Seasonal', 'Buyer Education', 'Community'];
 
@@ -107,19 +108,12 @@ export default function BlogPage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     fetch('/api/holly-articles')
       .then(r => r.json())
       .then(data => { setArticles(data.articles || []); setLoading(false); })
       .catch(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const filtered = activeCategory === 'All'
@@ -133,27 +127,7 @@ export default function BlogPage() {
     <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? 'rgba(250,249,247,0.97)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid #e8e4df' : 'none',
-        transition: 'all 0.4s ease',
-        padding: '1rem 2rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-          <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.95rem' }}>Holly Griewahn</span>
-        </Link>
-        <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link to="/" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Lakes</Link>
-          <span style={{ color: scrolled ? '#1a2332' : 'white', fontSize: '0.85rem', fontWeight: 700, borderBottom: '2px solid #e84393', paddingBottom: '2px' }}>Blog</span>
-          <a href="tel:5174033413" style={{ background: '#e84393', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-            Call Holly
-          </a>
-        </nav>
-      </header>
+      <SiteNav transparent active="blog" />
 
       {/* Hero */}
       <div style={{

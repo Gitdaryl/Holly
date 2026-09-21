@@ -7,20 +7,17 @@ import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
 import { coverFor, isAerial } from '../lib/cover';
 import { TrustStrip } from '../components/GoogleReviews';
 import { track } from '../lib/track';
+import SiteNav from '../components/SiteNav';
 
 export default function PropertyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '', preferredTime: '' });
   const [formStatus, setFormStatus] = useState('idle');
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const property = propertiesData.find(p => p.slug === id || String(p.id) === String(id));
@@ -85,27 +82,11 @@ export default function PropertyPage() {
       `}</style>
 
       {/* Nav */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? 'rgba(250,249,247,0.97)' : 'rgba(15,25,35,0.6)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: scrolled ? '1px solid #e8e4df' : 'none',
-        transition: 'all 0.4s ease', padding: '1rem 2rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-          <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.95rem' }}>Holly Griewahn</span>
-        </Link>
-        <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link to="/listings" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
-            ← Listings
-          </Link>
-          <a href="tel:5174033413" style={{ background: '#e84393', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-            Call Holly
-          </a>
-        </nav>
-      </header>
+      <SiteNav
+        transparent
+        back={{ to: '/listings', label: 'Listings' }}
+        textBody={`Hi Holly, I'm interested in ${property.address || property.title}, ${property.price}`}
+      />
 
       {/* Photo Hero */}
       <div style={{
@@ -356,6 +337,18 @@ export default function PropertyPage() {
               )}
             </div>
             )}
+
+            {/* Text Holly about this home */}
+            <a
+              href={`sms:+15173008226?&body=${encodeURIComponent(`Hi Holly, I'm interested in ${property.address || property.title}, ${property.price}`)}`}
+              style={{
+                display: 'block', textAlign: 'center', background: 'white', color: '#6b7a8d',
+                padding: '0.7rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 600,
+                fontSize: '0.85rem', border: '1px solid #e8e4df', marginBottom: '1rem',
+              }}
+            >
+              Text Holly about this home
+            </a>
 
             {/* Agent card */}
             <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import SiteNav from '../components/SiteNav';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -87,7 +88,6 @@ export default function ArticlePage() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     fetch(`/api/holly-articles?slug=${encodeURIComponent(slug)}`)
@@ -101,22 +101,19 @@ export default function ArticlePage() {
   }, [slug]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
     if (article) document.title = `${article.title} | Holly Griewahn`;
     return () => { document.title = 'Holly Griewahn - Foundation Realty'; };
   }, [article]);
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf9f7' }}>
-        <div style={{ textAlign: 'center', color: '#6b7a8d' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏡</div>
-          <p>Loading…</p>
+      <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
+        <SiteNav back={{ to: '/blog', label: 'Blog' }} />
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center', color: '#6b7a8d' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏡</div>
+            <p>Loading…</p>
+          </div>
         </div>
       </div>
     );
@@ -124,10 +121,13 @@ export default function ArticlePage() {
 
   if (error || !article) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf9f7', flexDirection: 'column', gap: '1.5rem' }}>
-        <div style={{ fontSize: '3rem' }}>🌊</div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#1a2332' }}>Article not found</h2>
-        <Link to="/blog" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>← Back to Blog</Link>
+      <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
+        <SiteNav back={{ to: '/blog', label: 'Blog' }} />
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ fontSize: '3rem' }}>🌊</div>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#1a2332' }}>Article not found</h2>
+          <Link to="/blog" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>← Back to Blog</Link>
+        </div>
       </div>
     );
   }
@@ -136,27 +136,7 @@ export default function ArticlePage() {
     <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? 'rgba(250,249,247,0.97)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid #e8e4df' : 'none',
-        transition: 'all 0.4s ease',
-        padding: '1rem 2rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '32px' }} />
-          <span style={{ color: scrolled ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.95rem' }}>Holly Griewahn</span>
-        </Link>
-        <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link to="/" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Lakes</Link>
-          <Link to="/blog" style={{ color: scrolled ? '#4a5568' : 'rgba(255,255,255,0.85)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Blog</Link>
-          <a href="tel:5174033413" style={{ background: '#e84393', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-            Call Holly
-          </a>
-        </nav>
-      </header>
+      <SiteNav transparent back={{ to: '/blog', label: 'Blog' }} />
 
       {/* Hero */}
       <div style={{
