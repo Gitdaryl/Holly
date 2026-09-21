@@ -23,6 +23,22 @@ import { marketFor, marketIndex } from '../src/lib/market.js'
 const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
 const DIST = path.resolve('dist')
 const TEMPLATE = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8')
+const PUBLIC_DIR = path.resolve('public')
+
+// Width and height of a local webp so link previews (Messenger, iMessage,
+// Facebook) render the card on the first share instead of after a crawl.
+function webpSize(publicPath) {
+  try {
+    const buf = fs.readFileSync(path.join(PUBLIC_DIR, publicPath))
+    if (buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') return null
+    const chunk = buf.toString('ascii', 12, 16)
+    if (chunk === 'VP8X') return { w: 1 + buf.readUIntLE(24, 3), h: 1 + buf.readUIntLE(27, 3) }
+    if (chunk === 'VP8L') { const b = buf.readUInt32LE(21); return { w: 1 + (b & 0x3fff), h: 1 + ((b >> 14) & 0x3fff) } }
+    if (chunk === 'VP8 ') return { w: buf.readUInt16LE(26) & 0x3fff, h: buf.readUInt16LE(28) & 0x3fff }
+  } catch (e) { /* missing file: no dimensions */ }
+  return null
+}
+
 const TODAY = new Date().toISOString().slice(0, 10)
 
 const AGENT = {
@@ -56,6 +72,7 @@ function write(route, { title, description, body, jsonld = [], noindex = false, 
     `<meta property="og:description" content="${esc(description)}" />`,
     `<meta property="og:url" content="${SITE}${route}" />`,
     image ? `<meta property="og:image" content="${esc(image.startsWith('http') ? image : SITE + image)}" />` : '',
+    ...(() => { const d = image && !image.startsWith('http') ? webpSize(image) : null; return d ? [`<meta property="og:image:width" content="${d.w}" />`, `<meta property="og:image:height" content="${d.h}" />`] : [] })(),
     `<meta name="twitter:card" content="${image ? 'summary_large_image' : 'summary'}" />`,
     ...jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', ...o })}</script>`),
   ].filter(Boolean).join('\n    ')

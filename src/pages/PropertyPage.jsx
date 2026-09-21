@@ -9,6 +9,7 @@ import { coverFor, isAerial } from '../lib/cover';
 import { TrustStrip } from '../components/GoogleReviews';
 import { track } from '../lib/track';
 import SiteNav from '../components/SiteNav';
+import ShareButton from '../components/ShareButton';
 
 // Fixed-overlay photo lightbox: no library, Left/Right/Escape, swipe, and a
 // counter. Body scroll is locked for as long as it's mounted.
@@ -102,6 +103,11 @@ export default function PropertyPage() {
   const { counts, saved, toggleSave } = useEngagement(property?.slug);
   const region = property ? regions[property.region] : null;
   const sold = property ? isSold(property) : false;
+  const shareLakeName = property.lake && lakes[property.lake] ? lakes[property.lake].name : null;
+  const shareTitle = `${property.title}, ${property.price}`;
+  const shareText = shareLakeName
+    ? `${property.title}, ${property.price} on ${shareLakeName}. Listed by Holly Griewahn, Foundation Realty.`
+    : `${property.title}, ${property.price}. Listed by Holly Griewahn, Foundation Realty.`;
   const stats = property ? soldStats(property) : null;
   const cover = property ? coverFor(property, { w: 1280, h: 720 }) : null;
   const lakeInfo = property?.lake ? lakes[property.lake] : null;
@@ -228,6 +234,7 @@ export default function PropertyPage() {
 
       {/* Mobile sticky CTA */}
       <div className="mobile-cta" style={{ display: 'none', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 90, background: 'white', borderTop: '1px solid #e8e4df', padding: '0.75rem 1.5rem', gap: '0.75rem' }}>
+        <ShareButton title={shareTitle} text={shareText} compact style={{ padding: '0.75rem 0.8rem' }} />
         <a href="tel:5174033413" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e84393', color: 'white', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           Call Holly
@@ -367,16 +374,17 @@ export default function PropertyPage() {
               </div>
             ) : (
             <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <button
                 type="button"
                 onClick={toggleSave}
                 aria-pressed={saved}
                 style={{
-                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                   background: saved ? '#e84393' : 'white', color: saved ? 'white' : '#1a2332',
                   border: '1px solid ' + (saved ? '#e84393' : '#e8e4df'), borderRadius: '10px',
                   padding: '0.7rem 1rem', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'inherit',
-                  cursor: 'pointer', marginBottom: '1.25rem', transition: 'all 0.2s ease',
+                  cursor: 'pointer', transition: 'all 0.2s ease',
                 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e84393'} strokeWidth="2">
@@ -384,6 +392,8 @@ export default function PropertyPage() {
                 </svg>
                 {saved ? 'Saved' : 'Save this home'}
               </button>
+                <ShareButton title={shareTitle} text={shareText} label="Share" style={{ padding: '0.7rem 0.9rem' }} />
+              </div>
 
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.25rem' }}>Request a Showing</h3>
               <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginBottom: '1.25rem' }}>Holly will get back to you within a few hours.</p>
