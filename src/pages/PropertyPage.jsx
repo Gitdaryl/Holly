@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { regions } from '../data/regions';
+import { lakes } from '../data/lakes';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import { useEngagement } from '../lib/useEngagement';
 import { isSold, soldStats, soldBadge, fmtPrice } from '../lib/listing-stats';
@@ -9,12 +10,88 @@ import { TrustStrip } from '../components/GoogleReviews';
 import { track } from '../lib/track';
 import SiteNav from '../components/SiteNav';
 
+// Fixed-overlay photo lightbox: no library, Left/Right/Escape, swipe, and a
+// counter. Body scroll is locked for as long as it's mounted.
+function Lightbox({ photos, index, title, onClose, onPrev, onNext }) {
+  const touchStartX = useRef(null);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft') onPrev();
+      else if (e.key === 'ArrowRight') onNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose, onPrev, onNext]);
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0]?.clientX ?? null; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = (e.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 40) return;
+    if (delta > 0) onPrev(); else onNext();
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Photo gallery"
+      onClick={onClose}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(10,16,24,0.94)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      <button type="button" aria-label="Close gallery" onClick={(e) => { e.stopPropagation(); onClose(); }}
+        style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', fontSize: '1.4rem', lineHeight: 1, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        &times;
+      </button>
+
+      {photos.length > 1 && (
+        <button type="button" aria-label="Previous photo" onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', fontSize: '1.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          &lsaquo;
+        </button>
+      )}
+
+      <img
+        src={photos[index]}
+        alt={`${title} photo ${index + 1} of ${photos.length}`}
+        onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: '92vw', maxHeight: '82vh', objectFit: 'contain', borderRadius: '6px' }}
+      />
+
+      {photos.length > 1 && (
+        <button type="button" aria-label="Next photo" onClick={(e) => { e.stopPropagation(); onNext(); }}
+          style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', fontSize: '1.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          &rsaquo;
+        </button>
+      )}
+
+      {photos.length > 1 && (
+        <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', bottom: '1.25rem', left: '50%', transform: 'translateX(-50%)', color: 'white', fontSize: '0.85rem', fontWeight: 600, background: 'rgba(255,255,255,0.12)', padding: '0.35rem 1rem', borderRadius: '20px' }}>
+          {index + 1} / {photos.length}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PropertyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '', preferredTime: '' });
   const [formStatus, setFormStatus] = useState('idle');
   const [formError, setFormError] = useState('');
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -27,6 +104,12 @@ export default function PropertyPage() {
   const sold = property ? isSold(property) : false;
   const stats = property ? soldStats(property) : null;
   const cover = property ? coverFor(property, { w: 1280, h: 720 }) : null;
+  const lakeInfo = property?.lake ? lakes[property.lake] : null;
+  const photos = property?.photos || [];
+  const openLightbox = (i) => setLightboxIndex(i);
+  const closeLightbox = () => setLightboxIndex(null);
+  const prevPhoto = () => setLightboxIndex((i) => (photos.length ? (i - 1 + photos.length) % photos.length : i));
+  const nextPhoto = () => setLightboxIndex((i) => (photos.length ? (i + 1) % photos.length : i));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,27 +179,45 @@ export default function PropertyPage() {
         padding: '0 2rem 2.5rem',
         position: 'relative',
       }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)' }} />
+        {photos.length > 0 && (
+          <button type="button" onClick={() => openLightbox(0)} aria-label={`View photo 1 of ${photos.length}`}
+            style={{ position: 'absolute', inset: 0, border: 'none', padding: 0, margin: 0, background: 'transparent', cursor: 'pointer', zIndex: 0 }} />
+        )}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)', pointerEvents: 'none' }} />
         {!cover && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.12 }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.12, pointerEvents: 'none' }}>
             <svg width="120" height="120" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
           </div>
         )}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            {property.type && <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            {property.type && <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {propertyTypes[property.type]?.label || property.type}
             </span>}
             {sold ? (
-              <span style={{ background: 'rgba(26,35,50,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
+              <span style={{ background: 'rgba(26,35,50,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
             ) : (
-              <span style={{ background: 'rgba(34,197,94,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>Active</span>
+              <span style={{ background: 'rgba(34,197,94,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>Active</span>
             )}
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
             {property.title}
           </h1>
-          {(property.address || region) && (
+          {lakeInfo ? (
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', color: 'rgba(255,255,255,0.85)', fontSize: '0.95rem' }}>
+              <Link to={`/lakes/${lakeInfo.slug}`} style={{ color: 'white', fontWeight: 700, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.45)' }}>{lakeInfo.name}</Link>
+              <span>&middot;</span>
+              <span>{lakeInfo.type === 'no-wake' ? 'No-wake' : 'All-sports'}</span>
+              <span>&middot;</span>
+              <span>{lakeInfo.access === 'private' ? 'Private lake' : 'Public access'}</span>
+              {typeof property.frontage === 'number' && (
+                <>
+                  <span>&middot;</span>
+                  <span>{property.frontage} ft frontage</span>
+                </>
+              )}
+            </div>
+          ) : (property.address || region) && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               {property.address || region.name}
@@ -187,12 +288,13 @@ export default function PropertyPage() {
             </div>
 
             {/* Photos */}
-            {property.photos?.length > 1 && (
+            {photos.length > 1 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.6rem', marginBottom: '1.5rem' }}>
-                {property.photos.slice(1).map((src, i) => (
-                  <a key={src} href={src} target="_blank" rel="noopener" style={{ display: 'block', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16 / 10', background: '#e8e4df' }}>
+                {photos.slice(1).map((src, i) => (
+                  <button key={src} type="button" onClick={() => openLightbox(i + 1)} aria-label={`View photo ${i + 2} of ${photos.length}`}
+                    style={{ display: 'block', width: '100%', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16 / 10', background: '#e8e4df', border: 'none', padding: 0, cursor: 'pointer' }}>
                     <img src={src} alt={`${property.title} photo ${i + 2}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                  </a>
+                  </button>
                 ))}
               </div>
             )}
@@ -203,7 +305,7 @@ export default function PropertyPage() {
               {property.description ? (
                 <p style={{ color: '#4a5568', lineHeight: 1.8, fontSize: '0.95rem' }}>{property.description}</p>
               ) : (
-                <p style={{ color: '#6b7a8d', lineHeight: 1.8, fontSize: '0.92rem' }}>
+                <p style={{ color: '#6b7a8d', lineHeight: 1.8, fontSize: '0.95rem' }}>
                   {isAerial(property) ? 'Aerial view of the property. ' : ''}This sale closed {stats?.soldOn ? new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : 'recently'}{stats?.side === 'buyer' ? ' with Holly representing the buyer.' : stats?.side === 'both' ? ' with Holly representing both sides.' : ' with Holly as the listing agent.'} Details of past sales are available on request.
                 </p>
               )}
@@ -211,7 +313,7 @@ export default function PropertyPage() {
                 <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
                   <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Location</div>
                   <div style={{ fontWeight: 600, color: '#1a2332', marginBottom: '0.2rem' }}>{region.name}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{region.county} County — {region.priceRange}</div>
+                  <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{region.county} County · {region.priceRange}</div>
                 </div>
               )}
             </div>}
@@ -220,7 +322,7 @@ export default function PropertyPage() {
             {region && (
               <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
                 <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#1a2332' }}>About {region.name}</h2>
-                <p style={{ color: '#4a5568', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '1rem' }}>{region.description}</p>
+                <p style={{ color: '#4a5568', lineHeight: 1.7, fontSize: '0.95rem', marginBottom: '1rem' }}>{region.description}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                   {region.highlights.slice(0, 4).map((h, i) => (
                     <span key={i} style={{ padding: '0.3rem 0.75rem', background: '#f0eee9', borderRadius: '20px', fontSize: '0.78rem', color: '#4a5568', fontWeight: 500 }}>{h}</span>
@@ -253,7 +355,7 @@ export default function PropertyPage() {
           <div className="property-sidebar" style={{ width: '340px', flexShrink: 0, position: 'sticky', top: '90px' }}>
             {sold ? (
               <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>{stats?.side === 'buyer' ? "Holly's buyer got this one." : stats?.days === 0 ? 'Holly sold it on day one.' : `Holly sold it${stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.`}</h3>
                 <p style={{ fontSize: '0.85rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1.25rem' }}>
                   Own a place {region?.name ? `near ${region.name}` : 'on the lake'}? Find out what the same buyers would pay for yours, or get on the list for the next one before it hits the market.
@@ -298,24 +400,24 @@ export default function PropertyPage() {
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                     <div>
-                      <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>First Name *</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>First Name *</label>
                       <input required value={formData.firstName} onChange={e => setFormData(d => ({ ...d, firstName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                     </div>
                     <div>
-                      <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Last Name</label>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Last Name</label>
                       <input value={formData.lastName} onChange={e => setFormData(d => ({ ...d, lastName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Email *</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Email *</label>
                     <input required type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Phone</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Phone</label>
                     <input type="tel" value={formData.phone} onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Preferred Time</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Preferred Time</label>
                     <select value={formData.preferredTime} onChange={e => setFormData(d => ({ ...d, preferredTime: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', background: 'white', cursor: 'pointer', outline: 'none' }}>
                       <option value="">Any time</option>
                       <option>Weekday morning</option>
@@ -325,10 +427,10 @@ export default function PropertyPage() {
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.73rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
                     <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
                   </div>
-                  <p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                   {formError && <p style={{ color: '#ef4444', fontSize: '0.82rem' }}>{formError}</p>}
                   <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e84393', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
                     {formStatus === 'sending' ? 'Sending...' : 'Request Showing'}
@@ -408,6 +510,10 @@ export default function PropertyPage() {
         <p style={{ color: '#64748b', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
         <p style={{ color: '#475569', fontSize: '0.75rem', marginTop: '0.4rem' }}>All listings and information deemed reliable but not guaranteed.</p>
       </footer>
+
+      {lightboxIndex !== null && photos.length > 0 && (
+        <Lightbox photos={photos} index={lightboxIndex} title={property.title} onClose={closeLightbox} onPrev={prevPhoto} onNext={nextPhoto} />
+      )}
     </div>
   );
 }

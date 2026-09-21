@@ -22,8 +22,8 @@ function Tile({ value, label, sub }) {
   return (
     <div style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '14px', padding: '1.1rem 0.75rem', textAlign: 'center' }}>
       <div style={{ fontFamily: SERIF, fontSize: 'clamp(1.4rem, 4vw, 2rem)', fontWeight: 800, color: '#1a2332', lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.6px', marginTop: '0.4rem' }}>{label}</div>
-      {sub && <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.15rem' }}>{sub}</div>}
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.6px', marginTop: '0.4rem' }}>{label}</div>
+      {sub && <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.15rem' }}>{sub}</div>}
     </div>
   );
 }
@@ -32,9 +32,9 @@ function TotalsBand({ year }) {
   const t = yearTotals();
   return (
     <div style={{ background: '#1a2332', color: 'white', borderRadius: '16px', padding: '1.1rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.25rem 2rem', marginBottom: '1.25rem' }}>
-      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f6a5c9', textTransform: 'uppercase', letterSpacing: '1px', flexBasis: '100%' }}>Holly across the Irish Hills, {year}</div>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f6a5c9', textTransform: 'uppercase', letterSpacing: '1px', flexBasis: '100%' }}>Holly across the Irish Hills, {year}</div>
       {[[t.sold, 'homes sold'], [`$${(t.volume / 1e6).toFixed(1)}M`, 'sold volume'], [t.listSides, 'as listing agent'], [t.avgDays === null ? '—' : `${t.avgDays} days`, 'avg to sell'], [t.median ? fmtPrice(t.median) : '—', 'median price'], [t.dayOne, 'sold day one']].map(([v, l]) => (
-        <div key={l}><div style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1 }}>{v}</div><div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{l}</div></div>
+        <div key={l}><div style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1 }}>{v}</div><div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{l}</div></div>
       ))}
       <Link to="/sold" style={{ marginLeft: 'auto', color: '#f6a5c9', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>Every sale →</Link>
     </div>
@@ -47,19 +47,19 @@ function MonthChart({ byMonth, lakeName, regionName, hasLakeData }) {
   const now = new Date().getMonth();
   return (
     <div style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', padding: '1.25rem 1.25rem 0.9rem' }}>
-      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.9rem' }}>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.9rem' }}>
         Closings by month, {hasLakeData ? lakeName : regionName}
       </div>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: '5px', height: '90px' }}>
         {byMonth.map((m, i) => (
           <div key={m.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-            {m[key] > 0 && <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#1a2332', marginBottom: '3px' }}>{m[key]}</div>}
+            {m[key] > 0 && <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#1a2332', marginBottom: '3px' }}>{m[key]}</div>}
             <div style={{ width: '100%', height: `${Math.max(4, (m[key] / max) * 64)}px`, background: i > now ? '#f0eee9' : m[key] ? '#e84393' : '#e8e4df', borderRadius: '4px 4px 0 0' }} />
           </div>
         ))}
       </div>
       <div style={{ display: 'flex', gap: '5px', marginTop: '0.4rem' }}>
-        {byMonth.map((m) => <div key={m.month} style={{ flex: 1, textAlign: 'center', fontSize: '0.6rem', color: '#94a3b8', fontWeight: 600 }}>{m.month[0]}</div>)}
+        {byMonth.map((m) => <div key={m.month} style={{ flex: 1, textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>{m.month[0]}</div>)}
       </div>
     </div>
   );
@@ -152,7 +152,7 @@ export default function MarketPage() {
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
         <SoldMap highlight={hasLakeData ? lakeSold : regionSold} others={propertiesData.filter((p) => isSold(p) && !(hasLakeData ? lakeSold : regionSold).includes(p))} caption={hasLakeData ? `${lakeSold.length} sold on ${lake.name}, in pink` : `${regionSold.length} sold across ${region.name}, in pink`} />
         <TotalsBand year={year} />
-        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>{hasLakeData ? `Of those, on ${lake.name}` : `${region.name}, the market ${lake.name} is priced against`}</div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>{hasLakeData ? `Of those, on ${lake.name}` : `${region.name}, the market ${lake.name} is priced against`}</div>
         <div className="mk-tiles" style={{ marginBottom: '1.25rem' }}>
           <Tile value={s.sold} label={`Sold in ${year}`} sub={scope} />
           <Tile value={s.avgDays === null ? '—' : s.avgDays} label="Avg days to sell" sub="Holly's listings" />
@@ -163,7 +163,7 @@ export default function MarketPage() {
         <div className="mk-two" style={{ marginBottom: '1.25rem' }}>
           <MonthChart byMonth={byMonth} lakeName={lake.name} regionName={region.name} hasLakeData={hasLakeData} />
           <div style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '16px', padding: '1.25rem 1.5rem' }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>What this means if you own on {lake.name}</div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>What this means if you own on {lake.name}</div>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.65, color: '#4a5568' }}>
               {s.dayOne > 0
                 ? `${s.dayOne} of these ${s.sold} homes sold the day they listed, to buyers Holly already had waiting. `
@@ -215,7 +215,7 @@ function MarketIndex() {
     return b.sold - a.sold || (b.lake.acres || 0) - (a.lake.acres || 0);
   });
   const th = (key, label, align = 'right') => (
-    <th onClick={() => setSort(key)} style={{ textAlign: align, padding: '0.6rem 0.75rem', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.6px', color: sort === key ? '#e84393' : '#94a3b8', cursor: 'pointer', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e4df' }}>{label}{sort === key ? ' ▾' : ''}</th>
+    <th onClick={() => setSort(key)} style={{ textAlign: align, padding: '0.6rem 0.75rem', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.6px', color: sort === key ? '#e84393' : '#94a3b8', cursor: 'pointer', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e4df' }}>{label}{sort === key ? ' ▾' : ''}</th>
   );
   return (
     <Shell title={`Irish Hills lake sales reports ${year} | Holly Griewahn`}>
@@ -235,7 +235,7 @@ function MarketIndex() {
               {rows.filter((r) => r.sold || r.active).map((r) => (
                 <tr key={r.lake.slug} onClick={() => { window.location.href = `/market/${r.lake.slug}`; }} style={{ cursor: 'pointer' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = '#faf9f7'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}>
-                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #f0eee9' }}><Link to={`/market/${r.lake.slug}`} style={{ color: '#1a2332', fontWeight: 700, textDecoration: 'none' }}>{r.lake.name}</Link><div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>{r.region?.name}</div></td>
+                  <td style={{ padding: '0.75rem', borderBottom: '1px solid #f0eee9' }}><Link to={`/market/${r.lake.slug}`} style={{ color: '#1a2332', fontWeight: 700, textDecoration: 'none' }}>{r.lake.name}</Link><div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{r.region?.name}</div></td>
                   <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontFamily: SERIF, fontWeight: 800, fontSize: '1.15rem', color: r.sold ? '#e84393' : '#cbd5e0' }}>{r.sold}</td>
                   <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontWeight: 600 }}>{r.median ? fmtPrice(r.median) : <span style={{ color: '#cbd5e0' }}>—</span>}</td>
                   <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #f0eee9', fontWeight: 600 }}>{r.avgDays === null ? <span style={{ color: '#cbd5e0' }}>—</span> : r.avgDays}</td>
@@ -247,7 +247,7 @@ function MarketIndex() {
         </div>
         {rows.some((r) => !r.sold && !r.active) && (
           <div style={{ marginTop: '1.25rem' }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>Other lakes Holly covers</div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>Other lakes Holly covers</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {rows.filter((r) => !r.sold && !r.active).sort((a, b) => a.lake.name.localeCompare(b.lake.name)).map((r) => (
                 <Link key={r.lake.slug} to={`/market/${r.lake.slug}`} style={{ background: 'white', border: '1px solid #e8e4df', borderRadius: '20px', padding: '0.4rem 0.9rem', fontSize: '0.82rem', fontWeight: 600, color: '#1a2332', textDecoration: 'none' }}>{r.lake.name}</Link>

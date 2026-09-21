@@ -4,9 +4,11 @@ import { lakes } from '../data/lakes';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import LakeWaitlist from '../components/LakeWaitlist';
+import LakeEvents from '../components/LakeEvents';
 import { trackRecord, isActive, isSold, soldBadge } from '../lib/listing-stats';
 import { coverFor } from '../lib/cover';
 import SiteNav from '../components/SiteNav';
+import HeroVideo from '../components/HeroVideo';
 
 const TYPE_COLOR = {
   'all-sports': { bg: 'rgba(59,130,246,0.1)', text: '#2563eb', label: 'All-Sports Lake' },
@@ -24,8 +26,8 @@ function StatCard({ label, value, sub }) {
   return (
     <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e8e4df', padding: '1rem 1.25rem', textAlign: 'center' }}>
       <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a2332', fontFamily: "'Playfair Display', serif" }}>{value}</div>
-      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{label}</div>
-      {sub && <div style={{ fontSize: '0.72rem', color: '#cbd5e0', marginTop: '0.15rem' }}>{sub}</div>}
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{label}</div>
+      {sub && <div style={{ fontSize: '0.75rem', color: '#cbd5e0', marginTop: '0.15rem' }}>{sub}</div>}
     </div>
   );
 }
@@ -53,6 +55,15 @@ export default function LakePage() {
     }
   }, [lake]);
 
+  // Remember the last lake a visitor looked at so the home page can greet them
+  // back to it. Read by another agent's home page code.
+  useEffect(() => {
+    if (!lake) return;
+    try {
+      localStorage.setItem('hg:lastLake', JSON.stringify({ slug: lake.slug, name: lake.name }));
+    } catch {}
+  }, [lake]);
+
   if (!lake) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#faf9f7', fontFamily: "'DM Sans', sans-serif", padding: '2rem', textAlign: 'center' }}>
@@ -66,6 +77,9 @@ export default function LakePage() {
 
   const typeStyle = TYPE_COLOR[lake.type] || TYPE_COLOR['all-sports'];
   const gradient = LAKE_GRADIENTS[lake.type] || LAKE_GRADIENTS['all-sports'];
+  // Lake-specific footage wins, then the region's shared hero clip, else the flat gradient.
+  const heroVideo = lake.hero?.video || region?.video || null;
+  const heroPoster = lake.hero?.poster || region?.poster || null;
 
   return (
     <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332' }}>
@@ -84,6 +98,7 @@ export default function LakePage() {
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
         padding: '0 2rem 3rem', position: 'relative', overflow: 'hidden',
       }}>
+        {heroVideo && <HeroVideo video={heroVideo} poster={heroPoster} gradient={gradient} dim={0.45} />}
         {/* Water ripple effect */}
         <div style={{ position: 'absolute', inset: 0, opacity: 0.06, backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0.5) 41px)' }} />
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 60%)' }} />
@@ -99,14 +114,14 @@ export default function LakePage() {
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ background: typeStyle.bg, color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <span style={{ background: typeStyle.bg, color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)' }}>
               {typeStyle.label}
             </span>
             {lake.access === 'public' && (
-              <span style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.2)' }}>Public Access</span>
+              <span style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.2)' }}>Public Access</span>
             )}
             {lake.access === 'private' && (
-              <span style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.2)' }}>Private / HOA</span>
+              <span style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.2)' }}>Private / HOA</span>
             )}
           </div>
 
@@ -122,10 +137,10 @@ export default function LakePage() {
       {/* Stats bar */}
       <div style={{ background: 'white', borderBottom: '1px solid #e8e4df', padding: '1.25rem 2rem' }}>
         <div className="lake-grid" style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-          <StatCard label="Surface Area" value={`${lake.acres?.toLocaleString() || '—'} ac`} />
-          <StatCard label="Max Depth" value={lake.depth ? `${lake.depth} ft` : '—'} />
+          <StatCard label="Surface Area" value={`${lake.acres?.toLocaleString() || 'n/a'} ac`} />
+          {lake.depth ? <StatCard label="Max Depth" value={`${lake.depth} ft`} /> : null}
           <StatCard label="Type" value={lake.type === 'all-sports' ? 'All-Sports' : lake.type === 'no-wake' ? 'No-Wake' : 'Private'} />
-          <StatCard label="Avg Home Price" value={lake.avgPrice || '—'} sub="lakefront" />
+          {lake.avgPrice ? <StatCard label="Avg Home Price" value={lake.avgPrice} sub="lakefront" /> : null}
         </div>
       </div>
 
@@ -158,8 +173,8 @@ export default function LakePage() {
             </div>
             <div className="lake-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               <StatCard label="Sold here" value={record.sold} />
-              <StatCard label="Avg days to sell" value={record.avgDays === null ? '—' : record.avgDays} />
-              <StatCard label="Of list price" value={record.avgPct ? `${record.avgPct}%` : '—'} />
+              {record.avgDays !== null ? <StatCard label="Avg days to sell" value={record.avgDays} /> : null}
+              {record.avgPct ? <StatCard label="Of list price" value={`${record.avgPct}%`} /> : null}
               <StatCard label="For sale now" value={record.active} />
             </div>
             {recentSold.length > 0 && (
@@ -174,6 +189,11 @@ export default function LakePage() {
             )}
           </div>
         )}
+
+        {/* Upcoming events near this lake */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <LakeEvents lake={lake} />
+        </div>
 
         {/* Buyer waitlist */}
         <div style={{ marginBottom: '1.5rem' }}>
@@ -288,7 +308,7 @@ export default function LakePage() {
         {region && (
           <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '2rem', color: 'white', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '200px' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Part of</div>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Part of</div>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.4rem' }}>{region.name}</div>
               <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{region.character}</div>
             </div>

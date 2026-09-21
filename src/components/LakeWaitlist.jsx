@@ -22,7 +22,7 @@ export function useWaitlistCount(lake) {
 }
 
 const input = { width: '100%', padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', fontFamily: 'inherit', outline: 'none', background: 'white' };
-const label = { fontSize: '0.72rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' };
+const label = { fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' };
 
 export default function LakeWaitlist({ lake, lakeName, compact = false, role = 'buyer' }) {
   const owner = role === 'owner';
@@ -59,7 +59,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
 
   return (
     <div id="waitlist" style={{ background: 'linear-gradient(135deg, #1a2332, #24405c)', borderRadius: '16px', padding: compact ? '1.5rem' : '2rem', color: 'white', scrollMarginTop: '90px' }}>
-      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f6a5c9', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>{owner ? 'For owners' : 'Before it hits the MLS'}</div>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f6a5c9', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>{owner ? 'For owners' : 'Before it hits the MLS'}</div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: compact ? '1.3rem' : '1.5rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.25 }}>{headline}</h2>
       <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6, marginBottom: '1.25rem', maxWidth: '520px' }}>
         {owner
@@ -70,7 +70,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
       {status === 'sent' ? (
         <div style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: '12px', padding: '1.25rem' }}>
           <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{owner ? `You'll hear about ${lakeName} sales first.` : `You're on the ${lakeName} list.`}</div>
-          <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
+          <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
             Holly will reach out to learn exactly what you want. In a hurry? Call or text <a href="tel:5174033413" style={{ color: '#f6a5c9', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>.
           </div>
         </div>
@@ -138,12 +138,12 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
               </div>
             </>
           )}
-          {error && <p style={{ gridColumn: '1 / -1', color: '#fca5a5', fontSize: '0.85rem' }}>{error}</p>}
+          {error && <p style={{ gridColumn: '1 / -1', color: '#fca5a5', fontSize: '0.9rem' }}>{error}</p>}
           <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button type="submit" disabled={status === 'sending'} style={{ background: '#e84393', color: 'white', border: 'none', padding: '0.85rem 1.5rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Adding you...' : owner ? `Keep me posted on ${lakeName}` : `Put me on the ${lakeName} list`}
             </button>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</span>
+            <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</span>
           </div>
         </form>
       )}

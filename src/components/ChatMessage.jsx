@@ -26,7 +26,7 @@ export default function ChatMessage({ role, content, timestamp }) {
           background: 'linear-gradient(135deg, #1a2332, #2c4a6e)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 800 }}>H</span>
+          <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 800 }}>H</span>
         </div>
       )}
 
@@ -37,7 +37,7 @@ export default function ChatMessage({ role, content, timestamp }) {
         borderRadius: isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
         background: isUser ? '#e84393' : 'white',
         color: isUser ? 'white' : '#1a2332',
-        fontSize: '0.85rem',
+        fontSize: '0.9rem',
         lineHeight: 1.5,
         boxShadow: isUser ? 'none' : '0 1px 4px rgba(0,0,0,0.08)',
         border: isUser ? 'none' : '1px solid #e8e4df',

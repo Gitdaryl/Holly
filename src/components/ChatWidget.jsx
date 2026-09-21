@@ -175,7 +175,7 @@ export default function ChatWidget() {
             </div>
             <div>
               <div style={{ color: 'white', fontWeight: 700, fontSize: '0.9rem' }}>Holly's Assistant</div>
-              <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                 Online now
               </div>
@@ -196,7 +196,7 @@ export default function ChatWidget() {
             {loading && (
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end', marginBottom: '0.75rem' }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #1a2332, #2c4a6e)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 800 }}>H</span>
+                  <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 800 }}>H</span>
                 </div>
                 <div style={{ padding: '0.6rem 0.9rem', background: 'white', borderRadius: '14px 14px 14px 4px', border: '1px solid #e8e4df', display: 'flex', gap: '4px', alignItems: 'center' }}>
                   {[0, 1, 2].map(i => (
@@ -210,7 +210,7 @@ export default function ChatWidget() {
             {/* Lead capture form */}
             {showLeadForm && !leadCaptured && (
               <div style={{ background: 'white', borderRadius: '14px', border: '1px solid #e8e4df', padding: '1rem', marginBottom: '0.75rem', marginTop: '0.25rem' }}>
-                <p style={{ fontSize: '0.82rem', color: '#1a2332', fontWeight: 600, marginBottom: '0.75rem' }}>
+                <p style={{ fontSize: '0.9rem', color: '#1a2332', fontWeight: 600, marginBottom: '0.75rem' }}>
                   Want Holly to follow up with you?
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -265,7 +265,7 @@ export default function ChatWidget() {
               </button>
             </div>
             <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-              <a href="tel:5174033413" style={{ fontSize: '0.72rem', color: '#94a3b8', textDecoration: 'none' }}>
+              <a href="tel:5174033413" style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'none' }}>
                 Or call Holly: (517) 403-3413
               </a>
             </div>

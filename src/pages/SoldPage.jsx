@@ -16,7 +16,7 @@ function Tile({ value, label }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '14px', padding: '1.25rem 1rem', textAlign: 'center', backdropFilter: 'blur(6px)' }}>
       <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', fontWeight: 800, color: 'white', lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.4rem' }}>{label}</div>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.4rem' }}>{label}</div>
     </div>
   );
 }

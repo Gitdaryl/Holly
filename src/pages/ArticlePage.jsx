@@ -152,7 +152,7 @@ export default function ArticlePage() {
             ← Back to Blog
           </Link>
           <div style={{ marginBottom: '0.75rem' }}>
-            <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.75rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.75rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {article.category}
             </span>
           </div>

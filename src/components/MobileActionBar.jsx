@@ -33,7 +33,7 @@ export default function MobileActionBar({ textBody }) {
 
   const itemStyle = {
     flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-    gap: '0.15rem', textDecoration: 'none', color: '#1a2332', fontSize: '0.72rem', fontWeight: 700,
+    gap: '0.15rem', textDecoration: 'none', color: '#1a2332', fontSize: '0.75rem', fontWeight: 700,
     fontFamily: "'DM Sans', -apple-system, sans-serif",
   };
 

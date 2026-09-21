@@ -11,11 +11,12 @@ const CALL_HREF = 'tel:5174033413';
 const smsHref = (body) => `sms:+15173008226?&body=${encodeURIComponent(body)}`;
 
 const NAV_LINKS = [
-  { key: 'regions', label: 'Regions', to: '/' },
   { key: 'listings', label: 'Listings', to: '/listings' },
   { key: 'sold', label: 'Sold', to: '/sold' },
+  { key: 'sell', label: 'Sell', to: '/sell' },
   { key: 'cma', label: 'Home Value', to: '/cma' },
   { key: 'blog', label: 'Blog', to: '/blog' },
+  { key: 'about', label: 'About', to: '/about' },
 ];
 
 export default function SiteNav({
@@ -93,7 +94,7 @@ export default function SiteNav({
 
         {/* Desktop links */}
         {!back && (
-          <nav className="sitenav-desktop-links" style={{ gap: '1.35rem', alignItems: 'center' }}>
+          <nav className="sitenav-desktop-links" style={{ gap: '1.1rem', alignItems: 'center' }}>
             {NAV_LINKS.map(link => (
               <a key={link.key} href={link.to} style={{
                 color: linkColor(active === link.key), textDecoration: 'none', fontSize: '0.85rem',

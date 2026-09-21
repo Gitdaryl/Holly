@@ -15,6 +15,8 @@ import SoldPage from './pages/SoldPage.jsx';
 import PlanPage from './pages/PlanPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import MarketPage from './pages/MarketPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
+import SellPage from './pages/SellPage.jsx';
 
 // Page views on every route change, plus taps on phone, text and review links.
 function Tracker() {
@@ -63,6 +65,8 @@ export default function Router() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/plan" element={<PlanPage />} />
         <Route path="/plan/:lake/:address" element={<PlanPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/sell" element={<SellPage />} />
         <Route path="/*" element={<App />} />
       </Routes>
     </BrowserRouter>

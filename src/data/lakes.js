@@ -3,6 +3,8 @@
 // local real estate sources, and verified acreage
 // ═══════════════════════════════════════════════════════════
 
+// Optional per-lake hero override: lakes[slug].hero = { video, poster } to use
+// footage of that specific lake instead of falling back to the region's hero.
 export const lakes = {
   // ── MANITOU BEACH CLUSTER ──
   'devils-lake': {

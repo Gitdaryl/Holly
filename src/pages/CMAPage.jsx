@@ -138,7 +138,7 @@ export default function CMAPage() {
         <div style={{ maxWidth: '640px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(232,67,147,0.15)', border: '1px solid rgba(232,67,147,0.3)', padding: '0.3rem 0.8rem', borderRadius: '20px', marginBottom: '1rem' }}>
             <span style={{ width: 6, height: 6, background: '#e84393', borderRadius: '50%' }} />
-            <span style={{ color: '#e84393', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free Home Valuation</span>
+            <span style={{ color: '#e84393', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free Home Valuation</span>
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.75rem' }}>
             What's Your Home Worth?
@@ -189,7 +189,7 @@ export default function CMAPage() {
                 <p style={{ color: '#4a5568', lineHeight: 1.7, marginBottom: '0.5rem', fontSize: '0.95rem' }}>
                   Thanks, {form.name.split(' ')[0]}! Holly will review your property details and reach out with your Comparative Market Analysis, usually within 24 hours.
                 </p>
-                <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '2rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '2rem' }}>
                   Need to talk sooner? Call Holly at{' '}
                   <a href="tel:5174033413" style={{ color: '#e84393', fontWeight: 700 }}>(517) 403-3413</a>
                 </p>
@@ -281,7 +281,7 @@ export default function CMAPage() {
                         transition: 'all 0.2s', textAlign: 'left',
                       }}>
                         <span style={{ fontWeight: 700, color: form.condition === c.value ? '#c0166d' : '#1a2332', fontSize: '0.9rem' }}>{c.label}</span>
-                        <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>{c.desc}</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{c.desc}</span>
                       </button>
                     ))}
                   </div>
@@ -347,7 +347,7 @@ export default function CMAPage() {
                   Back to property details
                 </button>
 
-                <div style={{ background: '#f7f3f0', borderRadius: '12px', padding: '1rem', fontSize: '0.85rem', color: '#4a5568' }}>
+                <div style={{ background: '#f7f3f0', borderRadius: '12px', padding: '1rem', fontSize: '0.9rem', color: '#4a5568' }}>
                   <strong style={{ color: '#1a2332' }}>{form.address}</strong>
                   {form.type && <span> &bull; {PROPERTY_TYPES.find(t => t.value === form.type)?.label}</span>}
                   {form.beds && <span> &bull; {form.beds} bed</span>}
@@ -375,11 +375,11 @@ export default function CMAPage() {
                   <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: '90px' }} placeholder="Recent updates, special features, situation details..." value={form.notes} onChange={e => set('notes', e.target.value)} />
                 </div>
 
-                <div style={{ background: 'rgba(232,67,147,0.05)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(232,67,147,0.15)', fontSize: '0.82rem', color: '#6b7a8d' }}>
+                <div style={{ background: 'rgba(232,67,147,0.05)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(232,67,147,0.15)', fontSize: '0.9rem', color: '#6b7a8d' }}>
                   Holly will review your details and provide a personalized CMA within 24 hours. No obligation, no pressure - just honest market insight from a local expert.
                 </div>
 
-                <p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                 <button
                   onClick={submit}
                   disabled={!step2Valid || status === 'sending'}
@@ -404,7 +404,7 @@ export default function CMAPage() {
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
                 {status === 'error' && (
-                  <p style={{ color: '#dc2626', fontSize: '0.85rem', textAlign: 'center' }}>
+                  <p style={{ color: '#dc2626', fontSize: '0.9rem', textAlign: 'center' }}>
                     Something went wrong. Please call Holly at <a href="tel:5174033413" style={{ color: '#e84393' }}>(517) 403-3413</a>.
                   </p>
                 )}

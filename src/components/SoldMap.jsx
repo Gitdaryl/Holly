@@ -34,7 +34,7 @@ function card(p, withLink) {
       <div style="font-size:12px;color:#6b7a8d">${esc((p.address || '').split(', ')[1] || '')}</div>
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;gap:8px">
         <span style="font-family:'Playfair Display',serif;font-weight:800;font-size:17px">${esc(price)}</span>
-        <span style="font-size:11px;font-weight:700;color:${s ? '#1a2332' : '#e84393'};background:${s ? '#f0eee9' : 'rgba(232,67,147,0.1)'};padding:3px 8px;border-radius:20px;white-space:nowrap">${esc(line)}</span>
+        <span style="font-size:12px;font-weight:700;color:${s ? '#1a2332' : '#e84393'};background:${s ? '#f0eee9' : 'rgba(232,67,147,0.1)'};padding:3px 8px;border-radius:20px;white-space:nowrap">${esc(line)}</span>
       </div>
       ${withLink ? `<a href="/property/${p.slug}" style="display:block;margin-top:8px;text-align:center;background:#e84393;color:white;text-decoration:none;font-weight:700;font-size:12px;padding:7px;border-radius:8px">See this sale</a>` : ''}
     </div>`;
@@ -118,7 +118,7 @@ export default function SoldMap({ highlight = [], others = [], caption, height =
       {caption && (
         <div style={{ position: 'absolute', left: '0.9rem', top: '0.8rem', zIndex: 500, background: 'rgba(26,35,50,0.9)', color: 'white', fontSize: '0.75rem', fontWeight: 700, padding: '0.35rem 0.7rem', borderRadius: '20px', pointerEvents: 'none' }}>{caption}</div>
       )}
-      <div style={{ position: 'absolute', right: '0.9rem', top: '0.8rem', zIndex: 500, background: 'rgba(255,255,255,0.92)', color: '#6b7a8d', fontSize: '0.68rem', fontWeight: 600, padding: '0.3rem 0.6rem', borderRadius: '20px', pointerEvents: 'none' }}>Hover a pin · click for details</div>
+      <div style={{ position: 'absolute', right: '0.9rem', top: '0.8rem', zIndex: 500, background: 'rgba(255,255,255,0.92)', color: '#6b7a8d', fontSize: '0.75rem', fontWeight: 600, padding: '0.3rem 0.6rem', borderRadius: '20px', pointerEvents: 'none' }}>Hover a pin · click for details</div>
     </div>
   );
 }

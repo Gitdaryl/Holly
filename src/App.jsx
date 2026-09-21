@@ -58,7 +58,7 @@ function AmenitySection({ title, icon, items, type }) {
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.82rem', color: '#e84393', fontWeight: 600 }}>{item.distance}</div>
-                {item.rating && <div style={{ fontSize: '0.72rem', color: '#6b7a8d' }}>{item.rating}</div>}
+                {item.rating && <div style={{ fontSize: '0.75rem', color: '#6b7a8d' }}>{item.rating}</div>}
               </div>
             </div>
           ))}
@@ -75,7 +75,7 @@ function AmenitySection({ title, icon, items, type }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
           {Object.entries(items).map(([key, value]) => (
             <div key={key} style={{ padding: '0.75rem 1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
-              <div style={{ fontSize: '0.72rem', color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>{key}</div>
+              <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>{key}</div>
               <div style={{ fontSize: '0.85rem', color: '#1a2332', fontWeight: 500 }}>{value}</div>
             </div>
           ))}
@@ -196,7 +196,7 @@ function ContactModal({ region, onClose }) {
             {status === 'error' && (
               <div style={{ marginBottom: '0.9rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>
             )}
-<p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+<p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
             <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Sending...' : 'Send to Holly'}
             </button>
@@ -221,6 +221,19 @@ export default function IrishHillsRealty() {
   const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
   const [formError, setFormError] = useState('');
   const [homeArticles, setHomeArticles] = useState([]);
+  const [lastLake, setLastLake] = useState(null);
+
+  // Returning-visitor chip: whichever lake page they last viewed, read back
+  // from localStorage so the home hero can offer a shortcut to it.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem('hg:lastLake');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.slug && parsed.name) setLastLake(parsed);
+      }
+    } catch { /* ignore */ }
+  }, []);
 
   // Local Knowledge Blog cards on the home page pull live articles; the
   // section simply doesn't render if the fetch fails or comes back empty.
@@ -411,7 +424,7 @@ export default function IrishHillsRealty() {
                 return typeInfo ? (
                   <div key={pt} style={{ padding: '0.5rem 1rem', background: 'white', borderRadius: '8px', border: '1px solid #e8e4df' }}>
                     <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1a2332' }}>{typeInfo.label}</div>
-                    <div style={{ fontSize: '0.72rem', color: '#6b7a8d' }}>{typeInfo.description}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#6b7a8d' }}>{typeInfo.description}</div>
                   </div>
                 ) : null;
               })}
@@ -446,19 +459,19 @@ export default function IrishHillsRealty() {
                         {lake.acres && (
                           <div style={{ padding: '0.5rem 0.75rem', background: '#f0eee9', borderRadius: '8px', textAlign: 'center' }}>
                             <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>{lake.acres.toLocaleString()}</div>
-                            <div style={{ fontSize: '0.68rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Acres</div>
+                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Acres</div>
                           </div>
                         )}
                         {lake.depth && (
                           <div style={{ padding: '0.5rem 0.75rem', background: '#f0eee9', borderRadius: '8px', textAlign: 'center' }}>
                             <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>{lake.depth} ft</div>
-                            <div style={{ fontSize: '0.68rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Max Depth</div>
+                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Max Depth</div>
                           </div>
                         )}
                         {lake.avgPrice && (
                           <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(232,67,147,0.08)', borderRadius: '8px', textAlign: 'center' }}>
                             <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#e84393' }}>{lake.avgPrice}</div>
-                            <div style={{ fontSize: '0.68rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Avg Price</div>
+                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Avg Price</div>
                           </div>
                         )}
                         <div style={{ padding: '0.4rem 0.75rem', background: lake.access === 'private' ? 'rgba(139,92,246,0.1)' : 'rgba(16,185,129,0.1)', borderRadius: '8px', textAlign: 'center' }}>
@@ -577,7 +590,7 @@ export default function IrishHillsRealty() {
                     <div style={{ padding: '1.25rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                         <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#e84393' }}>{prop.price}</div>
-                        <span style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.68rem', color: '#6b7a8d', fontWeight: 600 }}>
+                        <span style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.75rem', color: '#6b7a8d', fontWeight: 600 }}>
                           {propertyTypes[prop.type]?.label || prop.type}
                         </span>
                       </div>
@@ -632,12 +645,12 @@ export default function IrishHillsRealty() {
     <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
       {/* Hero */}
       <div style={{ height: '85vh', position: 'relative', background: 'linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)', overflow: 'hidden' }}>
-        <HeroVideo video="/regions/home/hero.mp4" poster="/regions/home/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
+        <HeroVideo video="/regions/clark-lake/hero.mp4" poster="/regions/clark-lake/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
             <div style={{ flex: 1, textAlign: 'left', position: 'relative', zIndex: 1 }}>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, background: 'linear-gradient(135deg, #e84393 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
+              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#faf9f7', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
                 Holly Griewahn
               </h1>
               <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 300 }}>
@@ -657,6 +670,13 @@ export default function IrishHillsRealty() {
                   <Icons.phone /> Call Holly
                 </button>
               </div>
+              {lastLake && (
+                <div style={{ marginTop: '1.25rem' }}>
+                  <a href={`/lakes/${lastLake.slug}`} className="stat-pill" style={{ background: 'rgba(255,255,255,0.15)', color: 'white', textDecoration: 'none' }}>
+                    Back to {lastLake.name} <Icons.arrow />
+                  </a>
+                </div>
+              )}
             </div>
             <div style={{ flex: '0 0 auto', display: 'none', paddingLeft: '0.5rem' }} className="holly-photo-container">
               <img src="/images/holly-cutout.webp" alt="Holly Griewahn - Foundation Realty" style={{
@@ -679,7 +699,7 @@ export default function IrishHillsRealty() {
           ].map(({ val, label }) => (
             <div key={label}>
               <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e84393' }}>{val}</div>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+              <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
             </div>
           ))}
         </div>
@@ -712,10 +732,10 @@ export default function IrishHillsRealty() {
                 }}>
                   <div style={{ height: '160px', background: region.image ? `linear-gradient(to bottom, rgba(26,35,50,0) 30%, rgba(26,35,50,0.65) 100%), url(${region.image}) center / cover no-repeat` : region.gradient, position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '1.25rem' }}>
                     <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.72rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.county} County</span>
-                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.72rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.priceRange}</span>
+                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.75rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.county} County</span>
+                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.75rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.priceRange}</span>
                       {region.lakes.length > 0 && (
-                        <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.72rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>
+                        <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.75rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>
                           {region.lakes.length} {region.lakes.length === 1 ? 'lake' : 'lakes'}
                         </span>
                       )}
@@ -727,7 +747,7 @@ export default function IrishHillsRealty() {
                     <p style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '1rem', lineHeight: 1.5 }}>{region.character}</p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '1rem' }}>
                       {region.propertyTypes.slice(0, 4).map(pt => (
-                        <span key={pt} style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.68rem', color: '#6b7a8d', fontWeight: 500 }}>
+                        <span key={pt} style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.75rem', color: '#6b7a8d', fontWeight: 500 }}>
                           {propertyTypes[pt]?.label || pt}
                         </span>
                       ))}
@@ -847,7 +867,7 @@ export default function IrishHillsRealty() {
                     {formError}
                   </div>
                 )}
-<p style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+<p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                 <button type="submit" disabled={formStatus === 'sending'}
                   style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#6b7a8d' : '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   {formStatus === 'sending' ? (
@@ -878,7 +898,7 @@ export default function IrishHillsRealty() {
                   <div style={{ height: '12px', background: 'linear-gradient(135deg, #e84393, #f093fb)' }} />
                   <div style={{ padding: '1.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.72rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
+                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
                     </div>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
                     <p style={{ fontSize: '0.88rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>

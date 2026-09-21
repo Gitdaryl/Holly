@@ -48,7 +48,7 @@ export function PropertyCard({ property }) {
             <span style={{
               background: 'rgba(232,67,147,0.92)', color: 'white',
               padding: '0.3rem 0.75rem', borderRadius: '20px',
-              fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
+              fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
             }}>
               {propertyTypes[property.type]?.label || property.type}
             </span>
@@ -57,7 +57,7 @@ export function PropertyCard({ property }) {
             <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
               <span style={{
                 background: isActive(property) ? 'rgba(34,197,94,0.9)' : isSold(property) ? 'rgba(26,35,50,0.92)' : 'rgba(100,116,139,0.9)',
-                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700,
+                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700,
               }}>
                 {isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
               </span>
@@ -80,7 +80,7 @@ export function PropertyCard({ property }) {
         <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ fontSize: '1.4rem', fontWeight: 800, color: isSold(property) ? '#1a2332' : '#e84393', marginBottom: '0.35rem', fontFamily: "'Playfair Display', serif" }}>
             {isSold(property) ? (fmtPrice(soldStats(property).soldPrice) || property.price) : property.price}
-            {isSold(property) && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#94a3b8', marginLeft: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>sold</span>}
+            {isSold(property) && <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', marginLeft: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>sold</span>}
           </div>
           <div style={{ fontSize: '1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.4rem', lineHeight: 1.3 }}>
             {property.title}
@@ -91,7 +91,7 @@ export function PropertyCard({ property }) {
               {region.name}
             </div>
           )}
-          <div style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '1rem', lineHeight: 1.5, flex: 1 }}>
+          <div style={{ fontSize: '0.9rem', color: '#6b7a8d', marginBottom: '1rem', lineHeight: 1.5, flex: 1 }}>
             {property.summary || property.description}
           </div>
           {!property.beds && (property.sqft || property.lot) && (
@@ -195,7 +195,7 @@ export default function ListingsPage() {
 
       {/* Holly's listings notice */}
       <div style={{ background: 'linear-gradient(90deg, rgba(232,67,147,0.08), rgba(232,67,147,0.04))', borderBottom: '1px solid rgba(232,67,147,0.15)', padding: '0.75rem 2rem', textAlign: 'center' }}>
-        <p style={{ fontSize: '0.82rem', color: '#6b7a8d' }}>
+        <p style={{ fontSize: '0.9rem', color: '#6b7a8d' }}>
           <span style={{ color: '#e84393', fontWeight: 700 }}>These are Holly's own listings.</span>
           {' '}Looking for something else? Holly can show you any home for sale in the Irish Hills. Call{' '}
           <a href="tel:5174033413" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>
@@ -257,13 +257,13 @@ export default function ListingsPage() {
 
             {/* Contact CTA */}
             <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '12px', padding: '1.25rem', color: 'white', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
                 Don't see what you're looking for? Holly knows every listing in the area.
               </div>
               <a href="tel:5174033413" style={{ display: 'block', background: '#e84393', color: 'white', padding: '0.65rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700 }}>
                 Call Holly
               </a>
-              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem' }}>
                 (517) 403-3413
               </div>
             </div>

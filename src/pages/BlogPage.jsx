@@ -50,7 +50,7 @@ function ArticleCard({ article, featured = false }) {
               color: 'white',
               padding: '0.3rem 0.75rem',
               borderRadius: '20px',
-              fontSize: '0.72rem',
+              fontSize: '0.75rem',
               fontWeight: 700,
               letterSpacing: '0.5px',
               textTransform: 'uppercase',

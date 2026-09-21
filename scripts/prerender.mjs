@@ -74,7 +74,7 @@ function write(route, { title, description, body, jsonld = [], noindex = false, 
 
 // Minimal styling so the fallback is readable if it is ever seen by a person
 // (React replaces it within a second).
-const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a2332"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · <a href="/listings">Listings</a> · <a href="/sold">Sold</a> · <a href="/cma">Home value</a> · <a href="/blog">Blog</a> · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
+const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a2332"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · <a href="/listings">Listings</a> · <a href="/sold">Sold</a> · <a href="/sell">Sell</a> · <a href="/cma">Home value</a> · <a href="/blog">Blog</a> · <a href="/about">About</a> · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
 
 // ── data helpers ──────────────────────────────────────────────────────────
 
@@ -296,6 +296,96 @@ for (const p of propertiesData) {
     title: `What Is My Irish Hills Lake Home Worth? | Holly Griewahn`,
     description: `A real answer from this year's sales on your lake, not a national estimate. Holly Griewahn, Foundation Realty, Manitou Beach MI.`,
     body: WRAP(`<h1>What is my lake home worth?</h1><p>Tell Holly about your home and she answers with what buyers paid on your lake this year. ${record.sold} sales in 2026 to compare against. No obligation. Call or text (517) 403-3413.</p>`),
+  }))
+}
+
+// About
+{
+  const soldEntries = propertiesData.filter(isSold)
+  const aboutYear = soldEntries.reduce((max, p) => {
+    const y = parseInt(String(p.soldOn || '').slice(0, 4), 10)
+    return y > max ? y : max
+  }, 0) || new Date().getFullYear()
+  const yearSold = soldEntries.filter((p) => String(p.soldOn || '').startsWith(String(aboutYear)))
+  const aboutRecord = trackRecord(yearSold)
+  const fastSales = yearSold.filter((p) => {
+    const s = soldStats(p)
+    return s && s.side !== 'buyer' && s.days !== null && s.days <= 7
+  }).length
+  const body = WRAP(`
+    <h1>About Holly Griewahn, Realtor - Foundation Realty</h1>
+    <p>Holly Griewahn sells lake, farm, cottage, village and commercial property across the Irish Hills, based in Manitou Beach, Michigan on Devils Lake. 30+ years in the business, working Lenawee, Jackson, Hillsdale and Washtenaw counties. Lake homes here often change hands before they reach the MLS, so Holly keeps a buyer waitlist for each lake.</p>
+    <h2>By the numbers, ${aboutYear}</h2>
+    <ul>
+      <li>${aboutRecord.sold} homes sold</li>
+      <li>${money(aboutRecord.volume)} sold volume</li>
+      <li>${aboutRecord.listSides} as listing agent</li>
+      <li>${fastSales} sold in 7 days or less</li>
+    </ul>
+    <h2>How Holly works</h2>
+    <ul>
+      <li>The lake waitlist hears first. <a href="/sell#buyers-waiting">See who is waiting</a>.</li>
+      <li>Launch day, everywhere at once: MLS, every portal, a property page and the lake's own page.</li>
+      <li>A seller update every week: views, saves and showing requests.</li>
+      <li>Showings and feedback, with results public on <a href="/sold">the sold page</a>.</li>
+    </ul>
+    ${reviews?.reviews?.length ? `<h2>What clients say</h2><p>${reviews.rating.toFixed(1)} stars from ${reviews.count} Google reviews.</p>` : ''}
+    <p><a href="/cma">What is my home worth?</a> or <a href="/listings">see current listings</a>. Call or text (517) 403-3413.</p>
+  `)
+  routes.push(write('/about', {
+    title: 'About Holly Griewahn | Foundation Realty, Irish Hills',
+    description: `Holly Griewahn has sold Irish Hills lake, farm, cottage, village and commercial property for 30+ years. Foundation Realty, based in Manitou Beach on Devils Lake, Michigan.`,
+    image: '/images/holly-cutout.webp',
+    jsonld: [
+      {
+        '@type': 'Person',
+        name: 'Holly Griewahn',
+        jobTitle: 'Realtor',
+        worksFor: { '@type': 'Organization', name: 'Foundation Realty' },
+        telephone: '+1-517-403-3413',
+        areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
+        image: `${SITE}/images/holly-cutout.webp`,
+        url: `${SITE}/about`,
+      },
+      breadcrumbs([['Irish Hills', '/'], ['About', '/about']]),
+    ],
+    body,
+  }))
+}
+
+// Sell
+{
+  const body = WRAP(`
+    <h1>Selling a Lake Home in the Irish Hills</h1>
+    <p>Serious buyers hear from Holly Griewahn before a lake home ever reaches the MLS. Here is what happens from the day you decide to sell to the day it closes.</p>
+    <h2>The day we list</h2>
+    <ul>
+      <li>Before: the lake waitlist hears first. Registered buyers get a text before your home is public.</li>
+      <li>Day 1: your own property page, a full gallery, the numbers and a one-tap showing request.</li>
+      <li>Day 1: listed through Foundation Realty on the MLS, feeding Zillow, Realtor.com and the rest.</li>
+      <li>Day 1: placed on the lake's own page, where buyers searching that lake land.</li>
+      <li>Every week: a seller report with views, saves, showing requests and the lake's buyer count.</li>
+      <li>Every showing: feedback comes back to you, not into a drawer.</li>
+      <li>Closing: it stays on the site as a sold home, days on market and percent of list on the record.</li>
+    </ul>
+    <h2>Sold, not listed</h2>
+    <p>${record.sold} homes sold, ${money(record.volume)} in volume, ${record.listSides} as listing agent. <a href="/sold">See every sale</a>.</p>
+    <p><a href="/cma">What is my home worth?</a> Call or text (517) 403-3413.</p>
+  `)
+  routes.push(write('/sell', {
+    title: 'Sell Your Lake Home | Holly Griewahn, Foundation Realty',
+    description: `What happens when Holly Griewahn lists a lake home in the Irish Hills: the buyer waitlist, launch day, weekly seller reports and the track record behind it. Foundation Realty, Manitou Beach, Michigan.`,
+    jsonld: [
+      {
+        '@type': 'Service',
+        name: 'Lake Home Listing Service',
+        provider: { '@id': `${SITE}/#agent` },
+        areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
+        url: `${SITE}/sell`,
+      },
+      breadcrumbs([['Irish Hills', '/'], ['Sell', '/sell']]),
+    ],
+    body,
   }))
 }
 
