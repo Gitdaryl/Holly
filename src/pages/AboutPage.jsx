@@ -38,25 +38,29 @@ function WorkStep({ n, title, children, to }) {
 
 // Optional candid photo strip. The files may not exist yet, so each tile
 // removes itself on error and the whole strip renders nothing when none load.
+// Every photo keeps its own aspect ratio and the row shares one height, so a
+// vertical shot sits narrower beside a horizontal one instead of being cropped.
+// Order: vertical, horizontal, vertical, so the landscape frame anchors the middle.
+const ABOUT_PHOTOS = ['/images/about/01.webp', '/images/about/03.webp', '/images/about/02.webp', '/images/about/04.webp', '/images/about/05.webp'];
 function AboutPhotoStrip() {
-  const [srcs, setSrcs] = useState([
-    '/images/about/01.webp',
-    '/images/about/02.webp',
-    '/images/about/03.webp',
-    '/images/about/04.webp',
-    '/images/about/05.webp',
-  ]);
-  if (!srcs.length) return null;
+  const [photos, setPhotos] = useState(ABOUT_PHOTOS.map((src) => ({ src, ratio: null })));
+  const live = photos.filter((p) => p.ratio !== false);
+  if (!live.length) return null;
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem', margin: '2.5rem 0' }}>
-      {srcs.map((src) => (
-        <div key={src} style={{ aspectRatio: '3 / 2', borderRadius: '12px', overflow: 'hidden', background: '#f0eee9' }}>
+    <div className="about-strip" style={{ margin: '2.5rem 0' }}>
+      {live.map((p) => (
+        <div
+          key={p.src}
+          className={p.ratio && p.ratio < 1 ? 'about-strip-tile about-strip-tall' : 'about-strip-tile'}
+          style={{ flex: `${p.ratio || 1} 1 0`, aspectRatio: p.ratio ? `${p.ratio}` : '3 / 2', borderRadius: '12px', overflow: 'hidden', background: '#f0eee9', minWidth: 0 }}
+        >
           <img
-            src={src}
+            src={p.src}
             alt="Holly Griewahn with clients in the Irish Hills"
             loading="lazy"
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            onError={() => setSrcs((prev) => prev.filter((u) => u !== src))}
+            onLoad={(e) => { const { naturalWidth: w, naturalHeight: h } = e.currentTarget; if (w && h) setPhotos((prev) => prev.map((q) => (q.src === p.src ? { ...q, ratio: w / h } : q))); }}
+            onError={() => setPhotos((prev) => prev.map((q) => (q.src === p.src ? { ...q, ratio: false } : q)))}
           />
         </div>
       ))}
@@ -116,6 +120,12 @@ export default function AboutPage() {
         @media (max-width: 700px) {
           .about-steps { grid-template-columns: 1fr; }
           .about-numbers { grid-template-columns: repeat(2, 1fr); }
+        }
+              .about-strip { display: flex; gap: 0.75rem; align-items: stretch; }
+        @media (max-width: 640px) {
+          .about-strip { flex-wrap: wrap; }
+          .about-strip-tile { flex: 1 1 100% !important; order: 1; }
+          .about-strip-tall { flex: 1 1 calc(50% - 0.375rem) !important; order: 2; }
         }
       `}</style>
 
