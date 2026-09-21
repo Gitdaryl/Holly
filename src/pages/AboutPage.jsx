@@ -124,7 +124,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div style={{ position: 'relative', overflow: 'hidden', minHeight: '62vh', display: 'flex', alignItems: 'flex-end', background: 'linear-gradient(135deg, #1a2332 0%, #1a3a52 55%, #0f2940 100%)' }}>
         <div className="about-hero-portrait" style={{ position: 'absolute', right: '3rem', bottom: 0, height: '520px', maxHeight: '68vh', zIndex: 1 }}>
-          <img src="/images/holly-cutout.webp" alt="Holly Griewahn, Foundation Realty" style={{ height: '100%', maxHeight: '520px', objectFit: 'contain', display: 'block' }} />
+          <img src="/images/holly-about.webp" alt="Holly Griewahn, Foundation Realty" style={{ height: '100%', maxHeight: '520px', aspectRatio: '4 / 5', objectFit: 'cover', display: 'block', borderRadius: '18px 18px 0 0', boxShadow: '0 30px 60px rgba(0,0,0,0.35)' }} />
         </div>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '1100px', margin: '0 auto', width: '100%', padding: '9rem 1.5rem 3rem' }}>
           <div style={{ maxWidth: '600px' }}>
@@ -140,7 +140,7 @@ export default function AboutPage() {
 
       {/* Mobile-only portrait, stacked above the copy */}
       <div className="about-mobile-portrait" style={{ textAlign: 'center', padding: '1.5rem 1.5rem 0' }}>
-        <img src="/images/holly-cutout.webp" alt="Holly Griewahn, Foundation Realty" style={{ width: '100%', maxWidth: '240px', height: 'auto', objectFit: 'contain', margin: '0 auto', display: 'block' }} />
+        <img src="/images/holly-about.webp" alt="Holly Griewahn, Foundation Realty" style={{ width: '100%', maxWidth: '320px', aspectRatio: '4 / 5', objectFit: 'cover', margin: '0 auto', display: 'block', borderRadius: '16px', boxShadow: '0 16px 40px rgba(26,35,50,0.18)' }} />
       </div>
 
       <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2.5rem 1.5rem 1rem' }}>

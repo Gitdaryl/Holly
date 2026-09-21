@@ -137,7 +137,7 @@ export default function LakePage() {
       {/* Stats bar */}
       <div style={{ background: 'white', borderBottom: '1px solid #e8e4df', padding: '1.25rem 2rem' }}>
         <div className="lake-grid" style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-          <StatCard label="Surface Area" value={`${lake.acres?.toLocaleString() || 'n/a'} ac`} />
+          {lake.acres ? <StatCard label="Surface Area" value={`${lake.acres.toLocaleString()} ac`} /> : null}
           {lake.depth ? <StatCard label="Max Depth" value={`${lake.depth} ft`} /> : null}
           <StatCard label="Type" value={lake.type === 'all-sports' ? 'All-Sports' : lake.type === 'no-wake' ? 'No-Wake' : 'Private'} />
           {lake.avgPrice ? <StatCard label="Avg Home Price" value={lake.avgPrice} sub="lakefront" /> : null}

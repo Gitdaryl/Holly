@@ -1,9 +1,13 @@
 # What Yeti and Holly still need to supply
 
-Written 2026-09-21 after the design pass. Everything not on this list is built.
+Written 2026-09-21 after the design pass, updated the same evening.
+DONE 2026-09-21 from Yeti's Desktop folders: daytime Devils Lake hero (home, Devils
+Lake, Manitou Beach), Grass Lake hero + card, Devils Lake card, About hero portrait
+(front door), About candids (sign in the snow, porch, desk), 800x800 headshot.
+Everything not on this list is built.
 Drop files in the paths given, as JPG or PNG; the webp sweep converts them at push.
 
-## 1. Daytime Devils Lake drone clip (highest impact)
+## 1. Daytime Devils Lake drone clip (DONE 2026-09-21)
 
 Used for the home hero, the Devils Lake page and the Manitou Beach region.
 Until it exists the home page runs the Clark Lake marina clip and the two
@@ -18,7 +22,7 @@ Manitou pages run the night fireworks clip.
 - Paths: `public/regions/home/hero.mp4` + `poster.webp`, and
   `public/regions/manitou-beach/hero.mp4` + `poster.webp`
 
-## 2. Holly portrait, daylight, on the water
+## 2. Holly portrait, daylight, on the water (still open; the front-door shot is in use meanwhile)
 
 Replaces the studio cut-out on the home hero and the About page.
 
@@ -28,14 +32,14 @@ Replaces the studio cut-out on the home hero and the About page.
   transparent PNG (for the home hero, replaces `public/images/holly-cutout.webp`)
 - Also a square headshot 800x800 for the review card and schema
 
-## 3. About page candids (3 to 5)
+## 3. About page candids (DONE: 3 in place; two more welcome, on the water)
 
 - Holly with clients at a closing, at a dock, in a listing, in the village
 - 1600x1067 (3:2) landscape, JPG
 - Path: `public/images/about/01.jpg` … `05.jpg` (the page picks them up once
   present; until then it shows the portrait only)
 
-## 4. Two region cards with no photo
+## 4. Two region cards with no photo (Grass Lake DONE, Tecumseh still open)
 
 Grass Lake & Michigan Center, and Tecumseh & Eastern Lenawee show a gradient.
 

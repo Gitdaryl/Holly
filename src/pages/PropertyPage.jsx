@@ -455,7 +455,7 @@ export default function PropertyPage() {
             {/* Agent card */}
             <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #1a2332, #2c4a6e)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.1rem' }}>H</span>
+                <img src="/images/holly-headshot.webp" alt="Holly Griewahn" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
               </div>
               <div>
                 <div style={{ fontWeight: 700, color: '#1a2332', fontSize: '0.95rem' }}>Holly Griewahn</div>

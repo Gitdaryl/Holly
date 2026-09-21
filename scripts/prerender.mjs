@@ -32,7 +32,7 @@ const AGENT = {
   url: SITE,
   telephone: '+1-517-403-3413',
   email: 'hollygriewahn@gmail.com',
-  image: `${SITE}/images/holly-cutout.webp`,
+  image: `${SITE}/images/holly-headshot.webp`,
   address: { '@type': 'PostalAddress', streetAddress: '100 Walnut St', addressLocality: 'Manitou Beach', addressRegion: 'MI', postalCode: '49253', addressCountry: 'US' },
   areaServed: Object.values(lakes).map((l) => ({ '@type': 'Place', name: `${l.name}, Michigan` })),
   parentOrganization: { '@type': 'Organization', name: 'Foundation Realty' },
@@ -335,7 +335,7 @@ for (const p of propertiesData) {
   routes.push(write('/about', {
     title: 'About Holly Griewahn | Foundation Realty, Irish Hills',
     description: `Holly Griewahn has sold Irish Hills lake, farm, cottage, village and commercial property for 30+ years. Foundation Realty, based in Manitou Beach on Devils Lake, Michigan.`,
-    image: '/images/holly-cutout.webp',
+    image: '/images/holly-headshot.webp',
     jsonld: [
       {
         '@type': 'Person',
@@ -344,7 +344,7 @@ for (const p of propertiesData) {
         worksFor: { '@type': 'Organization', name: 'Foundation Realty' },
         telephone: '+1-517-403-3413',
         areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
-        image: `${SITE}/images/holly-cutout.webp`,
+        image: `${SITE}/images/holly-headshot.webp`,
         url: `${SITE}/about`,
       },
       breadcrumbs([['Irish Hills', '/'], ['About', '/about']]),

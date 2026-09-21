@@ -645,7 +645,7 @@ export default function IrishHillsRealty() {
     <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
       {/* Hero */}
       <div style={{ height: '85vh', position: 'relative', background: 'linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)', overflow: 'hidden' }}>
-        <HeroVideo video="/regions/clark-lake/hero.mp4" poster="/regions/clark-lake/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
+        <HeroVideo video="/regions/home/hero.mp4" poster="/regions/home/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
