@@ -8,6 +8,7 @@ import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './l
 import { notifyHolly, textLead, HOLLY_PRETTY, normalizePhone } from './lib/sms.js'
 import { WRITE_REVIEW_URL } from './reviews.js'
 import { transcribeWithDeepgram } from './voice-inbound.js'
+import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
 
 // Holly's admin. One function, four jobs:
 //   POST ?action=login                text Holly a 15-minute login link
@@ -214,6 +215,63 @@ async function hitsFor(days) {
   return rows
 }
 
+// bots/<date>/<agent key>/<path enc>/<uuid>, written by middleware.js
+async function botsFor(days) {
+  const rows = []
+  await Promise.all(days.map(async (d) => {
+    for (const b of await allBlobs(`bots/${d}/`)) {
+      const [, date, key, enc, file] = b.pathname.split('/')
+      if (!file) continue
+      rows.push({ date, key, path: decodePath(enc) })
+    }
+  }))
+  return rows
+}
+
+const LEAD_EVENTS = ['waitlist', 'owner', 'showing', 'cma', 'contact', 'chat_lead']
+
+// AI on the desk: people who clicked through from an assistant (from the page
+// beacon's referrer or utm tag), and AI agents that read her pages (from the
+// middleware). "live" reads are the ones tied to someone's question.
+function aiSummary(hits, bots) {
+  const bySid = new Map()
+  for (const r of hits) { const a = assistantFor(r.source); if (a && !bySid.has(r.sid)) bySid.set(r.sid, a) }
+  const leadsBySid = {}
+  for (const r of hits) if (LEAD_EVENTS.includes(r.event)) leadsBySid[r.sid] = (leadsBySid[r.sid] || 0) + 1
+  const landing = {}
+  const firstView = {}
+  for (const r of hits) if (r.event === 'view' && bySid.has(r.sid) && !(r.sid in firstView)) firstView[r.sid] = r.path
+  for (const path of Object.values(firstView)) landing[path] = (landing[path] || 0) + 1
+  const assistants = {}
+  let leads = 0
+  for (const [sid, name] of bySid) {
+    const a = (assistants[name] ||= { assistant: name, visitors: 0, leads: 0 })
+    a.visitors++; a.leads += leadsBySid[sid] || 0; leads += leadsBySid[sid] || 0
+  }
+  const kinds = { live: 0, search: 0, training: 0 }
+  const agents = {}
+  const read = {}
+  for (const b of bots) {
+    const ag = AGENT_BY_KEY[b.key]
+    if (!ag) continue
+    kinds[ag.kind]++
+    const k = `${ag.kind}:${ag.label}`
+    ;(agents[k] ||= { agent: ag.label, kind: ag.kind, reads: 0 }).reads++
+    if (ag.kind !== 'training') read[b.path] = (read[b.path] || 0) + 1
+  }
+  const order = { live: 0, search: 1, training: 2 }
+  return {
+    visitors: bySid.size,
+    leads,
+    ...kinds,
+    llmsTxt: bots.filter((b) => /^\/llms(-full)?\.txt$/.test(b.path)).length,
+    assistants: Object.values(assistants).sort((a, b) => b.visitors - a.visitors),
+    landing: Object.entries(landing).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([path, visitors]) => ({ path, visitors })),
+    agents: Object.values(agents).sort((a, b) => order[a.kind] - order[b.kind] || b.reads - a.reads),
+    pagesRead: Object.entries(read).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([path, reads]) => ({ path, reads })),
+  }
+}
+
 function summarize(rows) {
   const views = rows.filter((r) => r.event === 'view')
   const sessions = new Set(views.map((r) => r.sid))
@@ -236,7 +294,7 @@ function summarize(rows) {
     sources: sessionsBy('source').slice(0, 12).map(([source, n]) => ({ source, visitors: n })),
     devices: sessionsBy('device').map(([device, n]) => ({ device, visitors: n })),
     events,
-    leadEvents: ['waitlist', 'owner', 'showing', 'cma', 'contact', 'chat_lead'].reduce((a, e) => a + (events[e] || 0), 0),
+    leadEvents: LEAD_EVENTS.reduce((a, e) => a + (events[e] || 0), 0),
   }
 }
 
@@ -244,9 +302,11 @@ async function stats(days) {
   const end = todayISO()
   const thisWin = windowDays(end, days)
   const priorWin = windowDays(thisWin[0], days + 1).slice(0, days)
-  const [rows, prior, inboxData, textData] = await Promise.all([hitsFor(thisWin), hitsFor(priorWin), inbox(), texts()])
+  const [rows, prior, inboxData, textData, botRows, priorBots] = await Promise.all([hitsFor(thisWin), hitsFor(priorWin), inbox(), texts(), botsFor(thisWin), botsFor(priorWin)])
   const now = summarize(rows)
   const before = summarize(prior)
+  const ai = aiSummary(rows, botRows)
+  const aiBefore = aiSummary(prior, priorBots)
 
   // Per lake: page views on /lakes/x and /market/x vs sign-ups made there.
   const lakeRows = Object.values(lakes).map((l) => {
@@ -285,12 +345,14 @@ async function stats(days) {
     if (pct <= -30) attention.push({ level: 'watch', text: `Visitors down ${Math.abs(pct)}% vs the previous ${days} days.` })
     if (pct >= 30) attention.push({ level: 'good', text: `Visitors up ${pct}% vs the previous ${days} days.` })
   }
+  if (ai.live) attention.push({ level: 'good', text: `AI assistants opened your pages ${ai.live} time${ai.live > 1 ? 's' : ''} while answering someone's question${ai.pagesRead[0] ? `, most often ${ai.pagesRead[0].path === '/' ? 'your home page' : ai.pagesRead[0].path}` : ''}.` })
+  if (ai.leads) attention.push({ level: 'good', text: `${ai.leads} lead${ai.leads > 1 ? 's' : ''} came from people who found you through an AI assistant.`, tab: 'inbox' })
   if ((now.events.chat_open || 0) >= 5 && !(now.events.chat_lead || 0)) attention.push({ level: 'watch', text: `${now.events.chat_open} people opened the chat, none left details. Read a few conversations for what they asked.` })
   const mobile = now.devices.find((d) => d.device === 'mobile')
   if (mobile && now.visitors >= 20 && mobile.visitors / now.visitors >= 0.7) attention.push({ level: 'info', text: `${Math.round((mobile.visitors / now.visitors) * 100)}% of visitors are on a phone. Check new pages on yours first.` })
   if (!attention.length) attention.push({ level: 'good', text: now.visitors ? 'Nothing needs attention. Leads answered, pages converting.' : 'No traffic recorded yet in this window.' })
 
-  return { days, window: { start: thisWin[0], end }, now, before: { views: before.views, visitors: before.visitors, leadEvents: before.leadEvents }, lakes: lakeRows, listings: listingRows, attention }
+  return { days, window: { start: thisWin[0], end }, now, before: { views: before.views, visitors: before.visitors, leadEvents: before.leadEvents }, ai, aiBefore: { visitors: aiBefore.visitors, live: aiBefore.live, leads: aiBefore.leads }, lakes: lakeRows, listings: listingRows, attention }
 }
 
 // ── texts ───────────────────────────────────────────────────────────────

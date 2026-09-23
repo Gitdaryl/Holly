@@ -491,11 +491,53 @@ const LEVEL = { act: { bg: 'rgba(230,71,116,0.1)', fg: PINK, label: 'Do now' }, 
 const SOURCE_LABEL = (s) => s === 'direct' ? 'Direct / typed in' : s.startsWith('utm:') ? `Campaign: ${s.slice(4)}` : s.replace(/^(l\.|m\.|lm\.)/, '').replace('facebook.com', 'Facebook').replace('instagram.com', 'Instagram').replace('google.com', 'Google').replace('t.co', 'X / Twitter');
 const PAGE_LABEL = (p) => p === '/' ? 'Home' : p.replace(/^\/lakes\//, 'Lake: ').replace(/^\/market\//, 'Report: ').replace(/^\/property\//, 'Listing: ').replace(/-/g, ' ');
 
-function Delta({ now, before }) {
+function Delta({ now, before, onDark }) {
   if (!before) return null;
   const pct = Math.round(((now - before) / before) * 100);
-  if (!pct) return <span style={{ fontSize: '0.68rem', color: MUTED }}>same as before</span>;
-  return <span style={{ fontSize: '0.68rem', fontWeight: 700, color: pct > 0 ? DEEP : '#9c2f4c' }}>{pct > 0 ? '▲' : '▼'} {Math.abs(pct)}% vs prior</span>;
+  if (!pct) return <span style={{ fontSize: '0.68rem', color: onDark ? 'rgba(255,255,255,0.6)' : MUTED }}>same as before</span>;
+  return <span style={{ fontSize: '0.68rem', fontWeight: 700, color: pct > 0 ? (onDark ? '#a7c6c3' : DEEP) : (onDark ? '#f5b5c7' : '#9c2f4c') }}>{pct > 0 ? '▲' : '▼'} {Math.abs(pct)}% vs prior</span>;
+}
+
+// AI assistants: the three numbers she cares about, then the detail. "Opened
+// your site" is an AI fetching her page while answering a real person's
+// question (ChatGPT, Claude, Perplexity); "clicked through" is someone who then
+// came to the site from that answer.
+const KIND_LABEL = { live: 'Answering a question', search: 'AI search index', training: 'Model training' };
+function AiPanel({ ai, before, table }) {
+  if (!ai) return null;
+  const label = { fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' };
+  const tiles = [
+    [ai.live, 'AI answers that opened your site', <Delta now={ai.live} before={before?.live} onDark />],
+    [ai.visitors, 'People who clicked through', <Delta now={ai.visitors} before={before?.visitors} onDark />],
+    [ai.leads, 'Leads from those people', null],
+  ];
+  return (
+    <div style={{ marginBottom: '1.25rem' }}>
+      <div style={label}>AI assistants</div>
+      <div className="adm-card" style={{ background: DEEP, borderColor: DEEP, color: 'white', padding: '1rem 0.75rem', marginBottom: '0.6rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', textAlign: 'center' }}>
+          {tiles.map(([v, l, d]) => (
+            <div key={l}>
+              <div style={{ fontFamily: SERIF, fontSize: '1.6rem', fontWeight: 800, lineHeight: 1, color: '#f5b5c7' }}>{v}</div>
+              <div style={{ fontSize: '0.64rem', fontWeight: 700, color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', letterSpacing: '0.4px', marginTop: '0.35rem', lineHeight: 1.3 }}>{l}</div>
+              {d && <div style={{ marginTop: '0.2rem' }}>{d}</div>}
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5, marginTop: '0.85rem', textAlign: 'center' }}>
+          AI search indexed {ai.search} page{ai.search === 1 ? '' : 's'} and training crawlers read {ai.training}{ai.llmsTxt ? `; your AI summary file was read ${ai.llmsTxt} time${ai.llmsTxt > 1 ? 's' : ''}` : ''}.
+        </p>
+      </div>
+      <div style={{ display: 'grid', gap: '0.75rem' }}>
+        {ai.assistants.length > 0 && table(ai.assistants, [{ k: 'assistant', h: 'Clicked through from', align: 'left' }, { k: 'visitors', h: 'People' }, { k: 'leads', h: 'Leads' }])}
+        {ai.pagesRead.length > 0 && table(ai.pagesRead, [{ k: 'path', h: 'Pages AI read for answers', align: 'left', f: (r) => PAGE_LABEL(r.path) }, { k: 'reads', h: 'Times' }])}
+        {ai.agents.length > 0 && table(ai.agents, [{ k: 'agent', h: 'Which AI', align: 'left' }, { k: 'kind', h: 'Why', align: 'left', f: (r) => KIND_LABEL[r.kind] }, { k: 'reads', h: 'Reads' }])}
+        {!ai.live && !ai.visitors && !ai.search && !ai.training && (
+          <p style={{ fontSize: '0.8rem', color: MUTED, lineHeight: 1.5 }}>No AI activity recorded in this window yet. AI reads are counted from Sep 23, 2026; click-throughs go back as far as your visitor stats.</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function Stats({ session, setTab }) {
@@ -550,6 +592,8 @@ function Stats({ session, setTab }) {
         ))}
       </div>
 
+      <AiPanel ai={data.ai} before={data.aiBefore} table={table} />
+
       <div style={{ display: 'grid', gap: '1rem' }}>
         {data.lakes.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Lakes: readers to sign-ups</div>{table(data.lakes, [{ k: 'lake', h: 'Lake', align: 'left' }, { k: 'visitors', h: 'People' }, { k: 'buyers', h: 'Buyers' }, { k: 'owners', h: 'Owners' }])}</div>}
         {data.listings.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Listings: lookers to showing requests</div>{table(data.listings, [{ k: 'title', h: 'Listing', align: 'left' }, { k: 'visitors', h: 'People' }, { k: 'showings', h: 'Showings' }])}</div>}
@@ -557,7 +601,7 @@ function Stats({ session, setTab }) {
         {now.sources.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Where visitors came from</div>{table(now.sources, [{ k: 'source', h: 'Source', align: 'left', f: (r) => SOURCE_LABEL(r.source) }, { k: 'visitors', h: 'Visitors' }])}</div>}
         {Object.keys(now.events).length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Actions taken</div>{table(Object.entries(now.events).sort((a, b) => b[1] - a[1]).map(([e, n]) => ({ e, n })), [{ k: 'e', h: 'Action', align: 'left', f: (r) => ({ waitlist: 'Joined a lake waitlist', owner: 'Owner asked for updates', showing: 'Requested a showing', cma: 'Asked home value', contact: 'Sent a message', chat_open: 'Opened the chat', chat_lead: 'Left details in chat', call: 'Tapped to call', text: 'Tapped to text', review: 'Went to leave a review', save: 'Saved a listing', share: 'Shared a listing' }[r.e] || r.e) }, { k: 'n', h: 'Times' }])}</div>}
       </div>
-      <p style={{ fontSize: '0.72rem', color: '#98a3a1', marginTop: '1rem' }}>Counts visitors to this site only, not Zillow or the MLS. Your own visits to the desk are never counted.</p>
+      <p style={{ fontSize: '0.72rem', color: '#98a3a1', marginTop: '1rem' }}>Counts visitors to this site only, not Zillow or the MLS. Your own visits to the desk are never counted. AI counts go by the name each AI announces, so treat them as a strong signal, not an audit.</p>
     </>
   );
 }
