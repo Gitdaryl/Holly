@@ -11,6 +11,7 @@ import { matchAgent } from './api/lib/ai-agents.js'
 // is swallowed. People are untouched (no user-agent match, straight through).
 
 export const config = {
+  runtime: 'nodejs', // @vercel/blob needs Node; the edge runtime rejects it at deploy
   matcher: ['/((?!api/|assets/|images/|regions/|_vercel).*)'],
 }
 
