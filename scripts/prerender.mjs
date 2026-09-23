@@ -108,7 +108,7 @@ function write(route, { title, description, body, jsonld = [], noindex = false, 
 // Keep in sync with NAV_LINKS in src/components/SiteNav.jsx. This copy is what
 // a non-JS crawler follows, so a page missing here is a page they cannot reach.
 const NAV = [['Listings', '/listings'], ['Sold', '/sold'], ['Sell', '/sell'], ['Home value', '/cma'], ['Events', '/events'], ['Blog', '/blog'], ['About', '/about']]
-const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a2332"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · ${NAV.map(([label, url]) => `<a href="${url}">${label}</a>`).join(' · ')} · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
+const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1c2b29"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · ${NAV.map(([label, url]) => `<a href="${url}">${label}</a>`).join(' · ')} · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
 
 // ── data helpers ──────────────────────────────────────────────────────────
 

@@ -116,10 +116,10 @@ export default function ChatWidget() {
         style={{
           position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 999,
           width: 56, height: 56, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #e84393, #c0166d)',
+          background: 'linear-gradient(135deg, #e64774, #ad3557)',
           border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(232,67,147,0.4)',
+          boxShadow: '0 4px 20px rgba(230,71,116,0.4)',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.08)'; }}
@@ -139,7 +139,7 @@ export default function ChatWidget() {
           <span style={{
             position: 'absolute', top: 4, right: 4,
             width: 10, height: 10, borderRadius: '50%',
-            background: '#22c55e', border: '2px solid white',
+            background: '#237168', border: '2px solid white',
           }} />
         )}
       </button>
@@ -150,12 +150,12 @@ export default function ChatWidget() {
           position: 'fixed', bottom: '5rem', right: '1.5rem', zIndex: 998,
           width: 'min(360px, calc(100vw - 2rem))',
           height: 'min(520px, calc(100vh - 7rem))',
-          background: '#faf9f7', borderRadius: '20px',
+          background: '#fdf7f5', borderRadius: '20px',
           boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
           display: 'flex', flexDirection: 'column',
           overflow: 'hidden',
           animation: 'chatSlideIn 0.25s ease-out',
-          fontFamily: "'DM Sans', -apple-system, sans-serif",
+          fontFamily: "'Inter', -apple-system, sans-serif",
         }}>
           <style>{`
             @keyframes chatSlideIn {
@@ -166,7 +166,7 @@ export default function ChatWidget() {
 
           {/* Header */}
           <div style={{
-            background: 'linear-gradient(135deg, #1a2332, #2c4a6e)',
+            background: 'linear-gradient(135deg, #1a554e, #237168)',
             padding: '1rem 1.25rem', flexShrink: 0,
             display: 'flex', alignItems: 'center', gap: '0.75rem',
           }}>
@@ -176,7 +176,7 @@ export default function ChatWidget() {
             <div>
               <div style={{ color: 'white', fontWeight: 700, fontSize: '0.9rem' }}>Heather</div>
               <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#237168', display: 'inline-block' }} />
                 Online now
               </div>
             </div>
@@ -195,12 +195,12 @@ export default function ChatWidget() {
 
             {loading && (
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end', marginBottom: '0.75rem' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #1a2332, #2c4a6e)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #1a554e, #237168)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 800 }}>H</span>
                 </div>
-                <div style={{ padding: '0.6rem 0.9rem', background: 'white', borderRadius: '14px 14px 14px 4px', border: '1px solid #e8e4df', display: 'flex', gap: '4px', alignItems: 'center' }}>
+                <div style={{ padding: '0.6rem 0.9rem', background: 'white', borderRadius: '14px 14px 14px 4px', border: '1px solid #eeddd8', display: 'flex', gap: '4px', alignItems: 'center' }}>
                   {[0, 1, 2].map(i => (
-                    <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: '#cbd5e0', display: 'inline-block', animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+                    <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: '#d5dcda', display: 'inline-block', animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />
                   ))}
                 </div>
                 <style>{`@keyframes pulse { 0%,80%,100%{opacity:0.3;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }`}</style>
@@ -209,19 +209,19 @@ export default function ChatWidget() {
 
             {/* Lead capture form */}
             {showLeadForm && !leadCaptured && (
-              <div style={{ background: 'white', borderRadius: '14px', border: '1px solid #e8e4df', padding: '1rem', marginBottom: '0.75rem', marginTop: '0.25rem' }}>
-                <p style={{ fontSize: '0.9rem', color: '#1a2332', fontWeight: 600, marginBottom: '0.75rem' }}>
+              <div style={{ background: 'white', borderRadius: '14px', border: '1px solid #eeddd8', padding: '1rem', marginBottom: '0.75rem', marginTop: '0.25rem' }}>
+                <p style={{ fontSize: '0.9rem', color: '#1c2b29', fontWeight: 600, marginBottom: '0.75rem' }}>
                   Want Holly to follow up with you?
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <input placeholder="Your name" value={leadForm.name} onChange={e => setLeadForm(d => ({ ...d, name: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
-                  <input placeholder="Email" type="email" value={leadForm.email} onChange={e => setLeadForm(d => ({ ...d, email: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
-                  <input placeholder="Phone (optional)" type="tel" value={leadForm.phone} onChange={e => setLeadForm(d => ({ ...d, phone: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
+                  <input placeholder="Your name" value={leadForm.name} onChange={e => setLeadForm(d => ({ ...d, name: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
+                  <input placeholder="Email" type="email" value={leadForm.email} onChange={e => setLeadForm(d => ({ ...d, email: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
+                  <input placeholder="Phone (optional)" type="tel" value={leadForm.phone} onChange={e => setLeadForm(d => ({ ...d, phone: e.target.value }))} style={{ padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.83rem', fontFamily: 'inherit', outline: 'none' }} />
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={saveLead} disabled={!leadForm.name && !leadForm.email} style={{ flex: 1, background: '#e84393', color: 'white', border: 'none', padding: '0.55rem', borderRadius: '8px', fontSize: '0.83rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: (!leadForm.name && !leadForm.email) ? 0.5 : 1 }}>
+                    <button onClick={saveLead} disabled={!leadForm.name && !leadForm.email} style={{ flex: 1, background: '#e64774', color: 'white', border: 'none', padding: '0.55rem', borderRadius: '8px', fontSize: '0.83rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: (!leadForm.name && !leadForm.email) ? 0.5 : 1 }}>
                       Yes, follow up
                     </button>
-                    <button onClick={() => { setShowLeadForm(false); setLeadCaptured(true); }} style={{ flex: 1, background: 'white', color: '#6b7a8d', border: '1px solid #e8e4df', padding: '0.55rem', borderRadius: '8px', fontSize: '0.83rem', cursor: 'pointer', fontFamily: 'inherit' }}>
+                    <button onClick={() => { setShowLeadForm(false); setLeadCaptured(true); }} style={{ flex: 1, background: 'white', color: '#66706e', border: '1px solid #eeddd8', padding: '0.55rem', borderRadius: '8px', fontSize: '0.83rem', cursor: 'pointer', fontFamily: 'inherit' }}>
                       Skip
                     </button>
                   </div>
@@ -233,7 +233,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Input */}
-          <div style={{ padding: '0.75rem', borderTop: '1px solid #e8e4df', background: 'white', flexShrink: 0 }}>
+          <div style={{ padding: '0.75rem', borderTop: '1px solid #eeddd8', background: 'white', flexShrink: 0 }}>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
               <textarea
                 ref={inputRef}
@@ -244,7 +244,7 @@ export default function ChatWidget() {
                 rows={1}
                 style={{
                   flex: 1, padding: '0.6rem 0.75rem', borderRadius: '10px',
-                  border: '1px solid #e8e4df', fontSize: '0.85rem', fontFamily: 'inherit',
+                  border: '1px solid #eeddd8', fontSize: '0.85rem', fontFamily: 'inherit',
                   resize: 'none', outline: 'none', lineHeight: 1.5, maxHeight: '100px',
                 }}
               />
@@ -252,7 +252,7 @@ export default function ChatWidget() {
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
                 style={{
-                  background: '#e84393', border: 'none', borderRadius: '10px',
+                  background: '#e64774', border: 'none', borderRadius: '10px',
                   width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer', flexShrink: 0,
                   opacity: (!input.trim() || loading) ? 0.5 : 1, transition: 'opacity 0.2s',
@@ -265,7 +265,7 @@ export default function ChatWidget() {
               </button>
             </div>
             <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-              <a href="tel:5174033413" style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'none' }}>
+              <a href="tel:5174033413" style={{ fontSize: '0.75rem', color: '#98a3a1', textDecoration: 'none' }}>
                 Or call Holly: (517) 403-3413
               </a>
             </div>

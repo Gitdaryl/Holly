@@ -67,9 +67,9 @@ async function emailHolly(lead) {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px">
-      <h2 style="color:#1a2332;margin-bottom:4px">New Showing Request</h2>
-      <p style="color:#6b7a8d;font-size:14px;margin-top:0">${esc(lead.listing || lead.slug)}</p>
-      <hr style="border:none;border-top:1px solid #e8e4df;margin:20px 0" />
+      <h2 style="color:#1c2b29;margin-bottom:4px">New Showing Request</h2>
+      <p style="color:#66706e;font-size:14px;margin-top:0">${esc(lead.listing || lead.slug)}</p>
+      <hr style="border:none;border-top:1px solid #eeddd8;margin:20px 0" />
       <table style="width:100%;border-collapse:collapse">
         ${row('Name', lead.name)}
         ${row('Phone', lead.phone)}

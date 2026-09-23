@@ -49,7 +49,7 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;"
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${BRAND.line};border-radius:14px;overflow:hidden;">
 
 <tr><td style="background:${BRAND.navy};padding:22px 28px;">
-  <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#f6a5c9;margin-bottom:7px;">Foundation Realty &middot; Irish Hills</div>
+  <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#f5b5c7;margin-bottom:7px;">Foundation Realty &middot; Irish Hills</div>
   <div style="font:400 23px/1.2 ${SERIF};color:#ffffff;">Holly Griewahn</div>
 </td></tr>
 
@@ -70,10 +70,10 @@ ${inner}
 </body></html>`
 
 const h2 = (t) => `<h2 style="font:400 19px/1.3 ${SERIF};color:${BRAND.navy};margin:0 0 10px;">${esc(t)}</h2>`
-const p = (t) => `<p style="font:400 15px/1.75 ${SANS};color:#4a5568;margin:0 0 14px;">${esc(t)}</p>`
+const p = (t) => `<p style="font:400 15px/1.75 ${SANS};color:#4a5654;margin:0 0 14px;">${esc(t)}</p>`
 const button = (label, href) =>
   `<a href="${href}" style="display:inline-block;background:${BRAND.pink};color:#ffffff;font:700 15px/1 ${SANS};padding:14px 26px;border-radius:10px;text-decoration:none;">${esc(label)}</a>`
-const rule = `<tr><td style="padding:0 28px;"><div style="height:1px;background:#f0eee9;"></div></td></tr>`
+const rule = `<tr><td style="padding:0 28px;"><div style="height:1px;background:#f6e9e5;"></div></td></tr>`
 
 // ── the newsletter ────────────────────────────────────────────────────────
 
@@ -95,7 +95,7 @@ export function renderIssue(issue, { unsubUrl, siteUrl }) {
   if (issue.listings?.length) {
     sec.push(rule)
     sec.push(`<tr><td style="padding:22px 28px 6px;">${h2('On the market')}
-      ${issue.listings.map((l) => `<div style="padding:10px 0;border-top:1px solid #f0eee9;">
+      ${issue.listings.map((l) => `<div style="padding:10px 0;border-top:1px solid #f6e9e5;">
         <a href="${siteUrl}/property/${esc(l.slug)}" style="font:700 15px/1.4 ${SANS};color:${BRAND.navy};text-decoration:none;">${esc(l.title)}</a>
         <div style="font:400 13px/1.6 ${SANS};color:${BRAND.muted};">${esc(l.line)}</div>
       </div>`).join('')}
@@ -106,7 +106,7 @@ export function renderIssue(issue, { unsubUrl, siteUrl }) {
     sec.push(rule)
     sec.push(`<tr><td style="padding:22px 28px 6px;">${h2("What's on")}
       ${issue.eventLead ? p(issue.eventLead) : ''}
-      ${issue.events.map((e) => `<div style="padding:8px 0;border-top:1px solid #f0eee9;font:400 14px/1.6 ${SANS};color:#4a5568;">
+      ${issue.events.map((e) => `<div style="padding:8px 0;border-top:1px solid #f6e9e5;font:400 14px/1.6 ${SANS};color:#4a5654;">
         <a href="${e.url}" style="color:${BRAND.navy};font-weight:700;text-decoration:none;">${esc(e.name)}</a>
         <span style="color:${BRAND.muted};"> &middot; ${esc(e.when)}${e.location ? ` &middot; ${esc(e.location)}` : ''}</span>
       </div>`).join('')}
@@ -119,7 +119,7 @@ export function renderIssue(issue, { unsubUrl, siteUrl }) {
   if (issue.closing) {
     sec.push(rule)
     sec.push(`<tr><td style="padding:22px 28px 26px;">${p(issue.closing)}
-      <div style="font:400 15px/1.75 ${SANS};color:#4a5568;">Holly</div>
+      <div style="font:400 15px/1.75 ${SANS};color:#4a5654;">Holly</div>
     </td></tr>`)
   }
 
@@ -160,9 +160,9 @@ export function renderPage(title, message, { siteUrl, cta }) {
 <body style="margin:0;background:${BRAND.cream};font-family:${SANS};color:${BRAND.navy};">
 <div style="max-width:520px;margin:0 auto;padding:16vh 24px 24px;">
   <div style="background:#fff;border:1px solid ${BRAND.line};border-radius:14px;padding:32px;">
-    <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Foundation Realty</div>
+    <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#98a3a1;margin-bottom:10px;">Foundation Realty</div>
     <h1 style="font:400 26px/1.25 ${SERIF};margin:0 0 12px;">${esc(title)}</h1>
-    <p style="font:400 15px/1.75 ${SANS};color:#4a5568;margin:0 0 20px;">${esc(message)}</p>
+    <p style="font:400 15px/1.75 ${SANS};color:#4a5654;margin:0 0 20px;">${esc(message)}</p>
     ${cta ? `<a href="${cta.href}" style="display:inline-block;background:${BRAND.pink};color:#fff;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none;">${esc(cta.label)}</a>` : ''}
   </div>
   <div style="text-align:center;margin-top:18px;font-size:12px;color:${BRAND.muted};">

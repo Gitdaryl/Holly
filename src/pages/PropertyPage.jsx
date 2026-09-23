@@ -49,7 +49,7 @@ function Lightbox({ photos, index, title, onClose, onPrev, onNext }) {
       onClick={onClose}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(10,16,24,0.94)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(8,28,26,0.94)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <button type="button" aria-label="Close gallery" onClick={(e) => { e.stopPropagation(); onClose(); }}
         style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', fontSize: '1.4rem', lineHeight: 1, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -146,10 +146,10 @@ export default function PropertyPage() {
 
   if (!property) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#faf9f7', fontFamily: "'DM Sans', sans-serif", padding: '2rem', textAlign: 'center' }}>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: '#1a2332', marginBottom: '1rem' }}>Property Not Found</h1>
-        <p style={{ color: '#6b7a8d', marginBottom: '2rem' }}>This listing may no longer be available. Call Holly for current properties.</p>
-        <Link to="/listings" style={{ background: '#e84393', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700 }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fdf7f5', fontFamily: "'Inter', sans-serif", padding: '2rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2rem', color: '#1c2b29', marginBottom: '1rem' }}>Property Not Found</h1>
+        <p style={{ color: '#66706e', marginBottom: '2rem' }}>This listing may no longer be available. Call Holly for current properties.</p>
+        <Link to="/listings" style={{ background: '#e64774', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700 }}>
           Browse All Listings
         </Link>
       </div>
@@ -157,9 +157,9 @@ export default function PropertyPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332' }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5', fontFamily: "'Inter', -apple-system, sans-serif", color: '#1c2b29' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @media (max-width: 768px) {
           .property-layout { flex-direction: column !important; }
@@ -197,16 +197,16 @@ export default function PropertyPage() {
         )}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            {property.type && <span style={{ background: 'rgba(232,67,147,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            {property.type && <span style={{ background: 'rgba(230,71,116,0.9)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               {propertyTypes[property.type]?.label || property.type}
             </span>}
             {sold ? (
-              <span style={{ background: 'rgba(26,35,50,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
+              <span style={{ background: 'rgba(26,85,78,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
             ) : (
-              <span style={{ background: 'rgba(34,197,94,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>Active</span>
+              <span style={{ background: 'rgba(35,113,104,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>Active</span>
             )}
           </div>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
+          <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
             {property.title}
           </h1>
           {lakeInfo ? (
@@ -233,18 +233,18 @@ export default function PropertyPage() {
       </div>
 
       {/* Mobile sticky CTA */}
-      <div className="mobile-cta" style={{ display: 'none', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 90, background: 'white', borderTop: '1px solid #e8e4df', padding: '0.75rem 1.5rem', gap: '0.75rem' }}>
+      <div className="mobile-cta" style={{ display: 'none', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 90, background: 'white', borderTop: '1px solid #eeddd8', padding: '0.75rem 1.5rem', gap: '0.75rem' }}>
         <ShareButton title={shareTitle} text={shareText} compact style={{ padding: '0.75rem 0.8rem' }} />
-        <a href="tel:5174033413" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e84393', color: 'white', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
+        <a href="tel:5174033413" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e64774', color: 'white', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           Call Holly
         </a>
         {sold ? (
-          <Link to="/cma" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1a2332' }}>
+          <Link to="/cma" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1c2b29', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1c2b29' }}>
             My Home's Value
           </Link>
         ) : (
-          <a href="#request-tour" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1a2332' }}>
+          <a href="#request-tour" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', color: '#1c2b29', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '2px solid #1c2b29' }}>
             Request Tour
           </a>
         )}
@@ -257,21 +257,21 @@ export default function PropertyPage() {
           {/* Main column */}
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Price + Stats */}
-            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
+            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1.5rem' }}>
               {sold && stats ? (
                 <div style={{ marginBottom: '1.25rem' }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', flexWrap: 'wrap' }}>
-                    <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#1a2332', fontFamily: "'Playfair Display', serif" }}>{stats.soldPrice ? fmtPrice(stats.soldPrice) : property.price}</div>
-                    <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{stats.soldPrice ? 'sold price' : 'list price'}{stats.soldPrice && stats.listPrice && stats.listPrice !== stats.soldPrice ? <> · listed at <span style={{ textDecoration: 'line-through' }}>{property.price}</span></> : null}</div>
+                    <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#1c2b29', fontFamily: "'Source Serif 4', Georgia, serif" }}>{stats.soldPrice ? fmtPrice(stats.soldPrice) : property.price}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#66706e' }}>{stats.soldPrice ? 'sold price' : 'list price'}{stats.soldPrice && stats.listPrice && stats.listPrice !== stats.soldPrice ? <> · listed at <span style={{ textDecoration: 'line-through' }}>{property.price}</span></> : null}</div>
                   </div>
                   <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
-                    {stats.days !== null && <span style={{ background: '#1a2332', color: 'white', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.days} days on market</span>}
-                    {stats.pctOfList && <span style={{ background: 'rgba(232,67,147,0.1)', color: '#e84393', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.pctOfList}% of list price</span>}
-                    {stats.soldOn && <span style={{ background: '#f0eee9', color: '#4a5568', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600 }}>Closed {new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</span>}
+                    {stats.days !== null && <span style={{ background: '#1a554e', color: 'white', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.days} days on market</span>}
+                    {stats.pctOfList && <span style={{ background: 'rgba(230,71,116,0.1)', color: '#e64774', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{stats.pctOfList}% of list price</span>}
+                    {stats.soldOn && <span style={{ background: '#f6e9e5', color: '#4a5654', padding: '0.35rem 0.8rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600 }}>Closed {new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</span>}
                   </div>
                 </div>
               ) : (
-                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#e84393', fontFamily: "'Playfair Display', serif", marginBottom: '1rem' }}>
+                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#e64774', fontFamily: "'Source Serif 4', Georgia, serif", marginBottom: '1rem' }}>
                   {property.price}
                 </div>
               )}
@@ -286,8 +286,8 @@ export default function PropertyPage() {
                     { label: 'MLS #', value: property.mls },
                   ].filter(f => f.value).map(({ label, value }) => (
                     <div key={label}>
-                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a2332' }}>{value}</div>
-                      <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1c2b29' }}>{value}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#98a3a1', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</div>
                     </div>
                   ))}
                 </div>
@@ -299,7 +299,7 @@ export default function PropertyPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.6rem', marginBottom: '1.5rem' }}>
                 {photos.slice(1).map((src, i) => (
                   <button key={src} type="button" onClick={() => openLightbox(i + 1)} aria-label={`View photo ${i + 2} of ${photos.length}`}
-                    style={{ display: 'block', width: '100%', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16 / 10', background: '#e8e4df', border: 'none', padding: 0, cursor: 'pointer' }}>
+                    style={{ display: 'block', width: '100%', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16 / 10', background: '#eeddd8', border: 'none', padding: 0, cursor: 'pointer' }}>
                     <img src={src} alt={`${property.title} photo ${i + 2}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   </button>
                 ))}
@@ -307,35 +307,35 @@ export default function PropertyPage() {
             )}
 
             {/* Description */}
-            {(property.description || region) && <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '1rem', color: '#1a2332' }}>About This Property</h2>
+            {(property.description || region) && <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '1rem', color: '#1c2b29' }}>About This Property</h2>
               {property.description ? (
-                <p style={{ color: '#4a5568', lineHeight: 1.8, fontSize: '0.95rem' }}>{property.description}</p>
+                <p style={{ color: '#4a5654', lineHeight: 1.8, fontSize: '0.95rem' }}>{property.description}</p>
               ) : (
-                <p style={{ color: '#6b7a8d', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                <p style={{ color: '#66706e', lineHeight: 1.8, fontSize: '0.95rem' }}>
                   {isAerial(property) ? 'Aerial view of the property. ' : ''}This sale closed {stats?.soldOn ? new Date(`${stats.soldOn}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : 'recently'}{stats?.side === 'buyer' ? ' with Holly representing the buyer.' : stats?.side === 'both' ? ' with Holly representing both sides.' : ' with Holly as the listing agent.'} Details of past sales are available on request.
                 </p>
               )}
               {region && (
-                <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Location</div>
-                  <div style={{ fontWeight: 600, color: '#1a2332', marginBottom: '0.2rem' }}>{region.name}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#6b7a8d' }}>{region.county} County · {region.priceRange}</div>
+                <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#fcf5f3', borderRadius: '10px', border: '1px solid #eeddd8' }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Location</div>
+                  <div style={{ fontWeight: 600, color: '#1c2b29', marginBottom: '0.2rem' }}>{region.name}</div>
+                  <div style={{ fontSize: '0.85rem', color: '#66706e' }}>{region.county} County · {region.priceRange}</div>
                 </div>
               )}
             </div>}
 
             {/* Region Context */}
             {region && (
-              <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#1a2332' }}>About {region.name}</h2>
-                <p style={{ color: '#4a5568', lineHeight: 1.7, fontSize: '0.95rem', marginBottom: '1rem' }}>{region.description}</p>
+              <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#1c2b29' }}>About {region.name}</h2>
+                <p style={{ color: '#4a5654', lineHeight: 1.7, fontSize: '0.95rem', marginBottom: '1rem' }}>{region.description}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                   {region.highlights.slice(0, 4).map((h, i) => (
-                    <span key={i} style={{ padding: '0.3rem 0.75rem', background: '#f0eee9', borderRadius: '20px', fontSize: '0.78rem', color: '#4a5568', fontWeight: 500 }}>{h}</span>
+                    <span key={i} style={{ padding: '0.3rem 0.75rem', background: '#f6e9e5', borderRadius: '20px', fontSize: '0.78rem', color: '#4a5654', fontWeight: 500 }}>{h}</span>
                   ))}
                 </div>
-                <Link to={`/?region=${region.slug}`} style={{ color: '#e84393', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Link to={`/?region=${region.slug}`} style={{ color: '#e64774', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                   Explore {region.name}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </Link>
@@ -344,8 +344,8 @@ export default function PropertyPage() {
 
             {/* Map placeholder */}
             {region?.coordinates && (
-              <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '1rem', color: '#1a2332' }}>Location Map</h2>
+              <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '1rem', color: '#1c2b29' }}>Location Map</h2>
                 <div style={{ borderRadius: '12px', overflow: 'hidden', height: '300px' }}>
                   <iframe
                     title="Property Location"
@@ -361,19 +361,19 @@ export default function PropertyPage() {
           {/* Sidebar - Request a Showing form */}
           <div className="property-sidebar" style={{ width: '340px', flexShrink: 0, position: 'sticky', top: '90px' }}>
             {sold ? (
-              <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.5rem' }}>{stats?.side === 'buyer' ? "Holly's buyer got this one." : stats?.days === 0 ? 'Holly sold it on day one.' : `Holly sold it${stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.`}</h3>
-                <p style={{ fontSize: '0.85rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+              <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e64774', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>This one is sold</div>
+                <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.5rem' }}>{stats?.side === 'buyer' ? "Holly's buyer got this one." : stats?.days === 0 ? 'Holly sold it on day one.' : `Holly sold it${stats?.days !== null && stats?.days !== undefined ? ` in ${stats.days} days` : ''}.`}</h3>
+                <p style={{ fontSize: '0.85rem', color: '#66706e', lineHeight: 1.6, marginBottom: '1.25rem' }}>
                   Own a place {region?.name ? `near ${region.name}` : 'on the lake'}? Find out what the same buyers would pay for yours, or get on the list for the next one before it hits the market.
                 </p>
-                <Link to="/cma" style={{ display: 'block', textAlign: 'center', background: '#e84393', color: 'white', padding: '0.8rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.6rem' }}>What's my home worth?</Link>
+                <Link to="/cma" style={{ display: 'block', textAlign: 'center', background: '#e64774', color: 'white', padding: '0.8rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.6rem' }}>What's my home worth?</Link>
                 {property.lake && (
-                  <Link to={`/lakes/${property.lake}#waitlist`} style={{ display: 'block', textAlign: 'center', background: 'white', color: '#1a2332', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem', border: '2px solid #1a2332' }}>Get first look at the next one</Link>
+                  <Link to={`/lakes/${property.lake}#waitlist`} style={{ display: 'block', textAlign: 'center', background: 'white', color: '#1c2b29', padding: '0.75rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem', border: '2px solid #1c2b29' }}>Get first look at the next one</Link>
                 )}
               </div>
             ) : (
-            <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.75rem', marginBottom: '1rem' }}>
+            <div id="request-tour" style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.75rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <button
                 type="button"
@@ -381,13 +381,13 @@ export default function PropertyPage() {
                 aria-pressed={saved}
                 style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                  background: saved ? '#e84393' : 'white', color: saved ? 'white' : '#1a2332',
-                  border: '1px solid ' + (saved ? '#e84393' : '#e8e4df'), borderRadius: '10px',
+                  background: saved ? '#e64774' : 'white', color: saved ? 'white' : '#1c2b29',
+                  border: '1px solid ' + (saved ? '#e64774' : '#eeddd8'), borderRadius: '10px',
                   padding: '0.7rem 1rem', fontSize: '0.88rem', fontWeight: 700, fontFamily: 'inherit',
                   cursor: 'pointer', transition: 'all 0.2s ease',
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e84393'} strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e64774'} strokeWidth="2">
                   <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/>
                 </svg>
                 {saved ? 'Saved' : 'Save this home'}
@@ -395,40 +395,40 @@ export default function PropertyPage() {
                 <ShareButton title={shareTitle} text={shareText} label="Share" style={{ padding: '0.7rem 0.9rem' }} />
               </div>
 
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.25rem' }}>Request a Showing</h3>
-              <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginBottom: '1.25rem' }}>Holly will get back to you within a few hours.</p>
+              <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.25rem' }}>Request a Showing</h3>
+              <p style={{ fontSize: '0.82rem', color: '#98a3a1', marginBottom: '1.25rem' }}>Holly will get back to you within a few hours.</p>
 
               {formStatus === 'sent' ? (
                 <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
-                  <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(34,197,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(35,113,104,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#237168" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <h4 style={{ fontFamily: "'Playfair Display', serif", color: '#1a2332', marginBottom: '0.5rem' }}>Request Sent!</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#6b7a8d', lineHeight: 1.6 }}>Holly will reach out soon. You can also call her directly at <a href="tel:5174033413" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a></p>
+                  <h4 style={{ fontFamily: "'Source Serif 4', Georgia, serif", color: '#1c2b29', marginBottom: '0.5rem' }}>Request Sent!</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#66706e', lineHeight: 1.6 }}>Holly will reach out soon. You can also call her directly at <a href="tel:5174033413" style={{ color: '#e64774', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a></p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>First Name *</label>
-                      <input required value={formData.firstName} onChange={e => setFormData(d => ({ ...d, firstName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>First Name *</label>
+                      <input required value={formData.firstName} onChange={e => setFormData(d => ({ ...d, firstName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                     </div>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Last Name</label>
-                      <input value={formData.lastName} onChange={e => setFormData(d => ({ ...d, lastName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Last Name</label>
+                      <input value={formData.lastName} onChange={e => setFormData(d => ({ ...d, lastName: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Email *</label>
-                    <input required type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Email *</label>
+                    <input required type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Phone</label>
-                    <input type="tel" value={formData.phone} onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Phone</label>
+                    <input type="tel" value={formData.phone} onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Preferred Time</label>
-                    <select value={formData.preferredTime} onChange={e => setFormData(d => ({ ...d, preferredTime: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', background: 'white', cursor: 'pointer', outline: 'none' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Preferred Time</label>
+                    <select value={formData.preferredTime} onChange={e => setFormData(d => ({ ...d, preferredTime: e.target.value }))} style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', background: 'white', cursor: 'pointer', outline: 'none' }}>
                       <option value="">Any time</option>
                       <option>Weekday morning</option>
                       <option>Weekday afternoon</option>
@@ -437,12 +437,12 @@ export default function PropertyPage() {
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
-                    <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
+                    <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                  <p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                   {formError && <p style={{ color: '#ef4444', fontSize: '0.82rem' }}>{formError}</p>}
-                  <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e84393', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+                  <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e64774', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
                     {formStatus === 'sending' ? 'Sending...' : 'Request Showing'}
                   </button>
                 </form>
@@ -454,23 +454,23 @@ export default function PropertyPage() {
             <a
               href={`sms:+15173008226?&body=${encodeURIComponent(`Hi Holly, I'm interested in ${property.address || property.title}, ${property.price}`)}`}
               style={{
-                display: 'block', textAlign: 'center', background: 'white', color: '#6b7a8d',
+                display: 'block', textAlign: 'center', background: 'white', color: '#66706e',
                 padding: '0.7rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 600,
-                fontSize: '0.85rem', border: '1px solid #e8e4df', marginBottom: '1rem',
+                fontSize: '0.85rem', border: '1px solid #eeddd8', marginBottom: '1rem',
               }}
             >
               Text Holly about this home
             </a>
 
             {/* Agent card */}
-            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #1a2332, #2c4a6e)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #1a554e, #237168)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <img src="/images/holly-headshot.webp" alt="Holly Griewahn" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
               </div>
               <div>
-                <div style={{ fontWeight: 700, color: '#1a2332', fontSize: '0.95rem' }}>Holly Griewahn</div>
-                <div style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>Foundation Realty</div>
-                <a href="tel:5174033413" style={{ fontSize: '0.82rem', color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>
+                <div style={{ fontWeight: 700, color: '#1c2b29', fontSize: '0.95rem' }}>Holly Griewahn</div>
+                <div style={{ fontSize: '0.78rem', color: '#66706e' }}>Foundation Realty</div>
+                <a href="tel:5174033413" style={{ fontSize: '0.82rem', color: '#e64774', fontWeight: 600, textDecoration: 'none' }}>(517) 403-3413</a>
                 <div style={{ marginTop: '0.4rem' }}><TrustStrip /></div>
               </div>
             </div>
@@ -483,29 +483,29 @@ export default function PropertyPage() {
           if (!similar.length) return null;
           return (
             <div style={{ marginTop: '3rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, color: '#1a2332', marginBottom: '1.25rem' }}>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.5rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1.25rem' }}>
                 More in {region.name}
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
                 {similar.map(p => (
                   <Link key={p.id} to={`/property/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', transition: 'all 0.3s ease' }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(26,35,50,0.1)'; }}
+                    <div style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #eeddd8', transition: 'all 0.3s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(26,85,78,0.1)'; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                     >
                       <div style={{ height: '140px', background: p.image ? `url(${p.image}) center / cover no-repeat` : p.gradient }} />
                       <div style={{ padding: '1rem' }}>
-                        <div style={{ fontWeight: 700, color: '#e84393', fontSize: '1.1rem', marginBottom: '0.25rem' }}>{p.price}</div>
-                        <div style={{ fontWeight: 600, color: '#1a2332', fontSize: '0.9rem', marginBottom: '0.25rem' }}>{p.title}</div>
-                        {p.beds ? <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{p.beds} bed · {p.baths} bath · {p.sqft} sqft</div>
-                          : <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{p.lot || (p.sqft && `${p.sqft} sqft`)}</div>}
+                        <div style={{ fontWeight: 700, color: '#e64774', fontSize: '1.1rem', marginBottom: '0.25rem' }}>{p.price}</div>
+                        <div style={{ fontWeight: 600, color: '#1c2b29', fontSize: '0.9rem', marginBottom: '0.25rem' }}>{p.title}</div>
+                        {p.beds ? <div style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{p.beds} bed · {p.baths} bath · {p.sqft} sqft</div>
+                          : <div style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{p.lot || (p.sqft && `${p.sqft} sqft`)}</div>}
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
               <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                <Link to={`/listings?region=${property.region}`} style={{ color: '#e84393', fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Link to={`/listings?region=${property.region}`} style={{ color: '#e64774', fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                   View all listings in {region.name}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </Link>
@@ -516,9 +516,9 @@ export default function PropertyPage() {
       </div>
 
       {/* Footer */}
-      <footer style={{ background: '#0f1923', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
-        <p style={{ color: '#475569', fontSize: '0.75rem', marginTop: '0.4rem' }}>All listings and information deemed reliable but not guaranteed.</p>
+      <footer style={{ background: '#0e2d29', padding: '2rem', textAlign: 'center' }}>
+        <p style={{ color: '#66706e', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
+        <p style={{ color: '#4a5654', fontSize: '0.75rem', marginTop: '0.4rem' }}>All listings and information deemed reliable but not guaranteed.</p>
       </footer>
 
       {lightboxIndex !== null && photos.length > 0 && (

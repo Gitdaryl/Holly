@@ -45,8 +45,8 @@ const G = () => (
 export function TrustStrip({ dark = false, align = 'left' }) {
   const d = useGoogleReviews();
   if (!d || !d.count) return null;
-  const fg = dark ? 'white' : '#1a2332';
-  const muted = dark ? 'rgba(255,255,255,0.7)' : '#6b7a8d';
+  const fg = dark ? 'white' : '#1c2b29';
+  const muted = dark ? 'rgba(255,255,255,0.7)' : '#66706e';
   return (
     <a href={d.mapsUrl} target="_blank" rel="noopener" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', justifyContent: align === 'center' ? 'center' : 'flex-start', flexWrap: 'wrap' }}>
       <G />
@@ -63,11 +63,11 @@ export default function GoogleReviews({ limit = 3 }) {
   const d = useGoogleReviews();
   if (!d || !d.reviews?.length) return null;
   return (
-    <section data-tour="reviews" style={{ padding: '6rem 2rem', background: '#1a2332', color: 'white' }}>
+    <section data-tour="reviews" style={{ padding: '6rem 2rem', background: '#1a554e', color: 'white' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>What Clients Say</h2>
-          <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1.25rem', borderRadius: '2px' }} />
+          <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>What Clients Say</h2>
+          <div style={{ width: '40px', height: '3px', background: '#e64774', margin: '0 auto 1.25rem', borderRadius: '2px' }} />
           <a href={d.mapsUrl} target="_blank" rel="noopener" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '30px', padding: '0.55rem 1.1rem' }}>
             <G />
             <span style={{ fontWeight: 800, color: 'white', fontSize: '1.1rem' }}>{d.rating.toFixed(1)}</span>
@@ -92,7 +92,7 @@ export default function GoogleReviews({ limit = 3 }) {
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2.5rem' }}>
           <a href={d.mapsUrl} target="_blank" rel="noopener" style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.08)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.88rem', border: '1px solid rgba(255,255,255,0.15)' }}>Read all {d.count} reviews</a>
-          <a href={d.writeUrl} target="_blank" rel="noopener" style={{ padding: '0.75rem 1.5rem', background: '#e84393', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem' }}>Worked with Holly? Leave a review</a>
+          <a href={d.writeUrl} target="_blank" rel="noopener" style={{ padding: '0.75rem 1.5rem', background: '#e64774', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem' }}>Worked with Holly? Leave a review</a>
         </div>
       </div>
     </section>

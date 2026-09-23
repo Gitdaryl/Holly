@@ -11,8 +11,8 @@ import { track } from '../lib/track.js';
 // subscribed". Saying subscribed before they confirm is a small lie that
 // makes the confirmation email look like spam.
 
-const FONT = "'DM Sans', -apple-system, sans-serif";
-const SERIF = "'Playfair Display', serif";
+const FONT = "'Inter', -apple-system, sans-serif";
+const SERIF = "'Source Serif 4', Georgia, serif";
 
 export default function NewsletterSignup({ source = 'site', dark = false, heading, blurb }) {
   const [email, setEmail] = useState('');
@@ -61,11 +61,11 @@ export default function NewsletterSignup({ source = 'site', dark = false, headin
 
   if (!ready) return null;
 
-  const ink = dark ? 'white' : '#1a2332';
-  const body = dark ? 'rgba(255,255,255,0.75)' : '#4a5568';
+  const ink = dark ? 'white' : '#1c2b29';
+  const body = dark ? 'rgba(255,255,255,0.75)' : '#4a5654';
   const box = dark
     ? { background: 'transparent', border: 'none', padding: 0 }
-    : { background: 'white', border: '1px solid #e8e4df', borderRadius: '14px', padding: '1.75rem' };
+    : { background: 'white', border: '1px solid #eeddd8', borderRadius: '14px', padding: '1.75rem' };
 
   return (
     <section style={{ ...box, fontFamily: FONT, marginBottom: dark ? 0 : '3rem' }}>
@@ -101,7 +101,7 @@ export default function NewsletterSignup({ source = 'site', dark = false, headin
             style={{
               flex: '1 1 14rem', minWidth: 0, font: 'inherit', fontSize: '0.95rem',
               padding: '0.75rem 0.9rem', borderRadius: '10px',
-              border: `1px solid ${dark ? 'rgba(255,255,255,0.3)' : '#e8e4df'}`,
+              border: `1px solid ${dark ? 'rgba(255,255,255,0.3)' : '#eeddd8'}`,
               background: dark ? 'rgba(255,255,255,0.1)' : 'white',
               color: ink,
             }}
@@ -112,7 +112,7 @@ export default function NewsletterSignup({ source = 'site', dark = false, headin
             style={{
               font: 'inherit', fontWeight: 700, fontSize: '0.95rem', cursor: state === 'sending' ? 'default' : 'pointer',
               padding: '0.75rem 1.5rem', borderRadius: '10px', border: 'none',
-              background: '#e84393', color: 'white', opacity: state === 'sending' ? 0.6 : 1,
+              background: '#e64774', color: 'white', opacity: state === 'sending' ? 0.6 : 1,
             }}
           >
             {state === 'sending' ? 'Sending…' : 'Sign me up'}
@@ -121,7 +121,7 @@ export default function NewsletterSignup({ source = 'site', dark = false, headin
       )}
 
       {state === 'error' && (
-        <div style={{ marginTop: '0.75rem', color: '#e84393', fontSize: '0.9rem', fontWeight: 600 }}>{msg}</div>
+        <div style={{ marginTop: '0.75rem', color: '#e64774', fontSize: '0.9rem', fontWeight: 600 }}>{msg}</div>
       )}
     </section>
   );

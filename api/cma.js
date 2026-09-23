@@ -80,39 +80,39 @@ async function emailViaResend({ address, region, type, beds, baths, sqft, yearBu
   const extrasStr = Array.isArray(extras) && extras.length > 0 ? extras.join(', ') : 'None noted';
 
   const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; color: #1a2332;">
-      <div style="background: linear-gradient(135deg, #1a2332, #2c3e50); padding: 2rem; border-radius: 12px 12px 0 0; color: white;">
+    <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; color: #1c2b29;">
+      <div style="background: linear-gradient(135deg, #1a554e, #237168); padding: 2rem; border-radius: 12px 12px 0 0; color: white;">
         <h1 style="margin: 0; font-size: 1.4rem;">New CMA Request</h1>
         <p style="margin: 0.5rem 0 0; opacity: 0.7; font-size: 0.9rem;">What's My Home Worth form</p>
       </div>
-      <div style="border: 1px solid #e8e4df; border-top: none; border-radius: 0 0 12px 12px; padding: 2rem;">
+      <div style="border: 1px solid #eeddd8; border-top: none; border-radius: 0 0 12px 12px; padding: 2rem;">
 
-        <h2 style="font-size: 1rem; color: #e84393; margin: 0 0 1rem;">Contact Info</h2>
+        <h2 style="font-size: 1rem; color: #e64774; margin: 0 0 1rem;">Contact Info</h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d; width: 140px;"><strong>Name</strong></td><td style="padding: 0.4rem 0;">${name}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Email</strong></td><td style="padding: 0.4rem 0;">${email || 'Not provided'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Phone</strong></td><td style="padding: 0.4rem 0;">${phone || 'Not provided'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e; width: 140px;"><strong>Name</strong></td><td style="padding: 0.4rem 0;">${name}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Email</strong></td><td style="padding: 0.4rem 0;">${email || 'Not provided'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Phone</strong></td><td style="padding: 0.4rem 0;">${phone || 'Not provided'}</td></tr>
         </table>
 
-        <h2 style="font-size: 1rem; color: #e84393; margin: 0 0 1rem; padding-top: 1rem; border-top: 1px solid #f0ece8;">Property Details</h2>
+        <h2 style="font-size: 1rem; color: #e64774; margin: 0 0 1rem; padding-top: 1rem; border-top: 1px solid #f4e6e2;">Property Details</h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d; width: 140px;"><strong>Address</strong></td><td style="padding: 0.4rem 0;"><strong>${address}</strong></td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Area</strong></td><td style="padding: 0.4rem 0;">${REGION_LABELS[region] || region || 'Not specified'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Type</strong></td><td style="padding: 0.4rem 0;">${type || 'Not specified'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Beds / Baths</strong></td><td style="padding: 0.4rem 0;">${beds || '?'} bed / ${baths || '?'} bath</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Sq Ft</strong></td><td style="padding: 0.4rem 0;">${sqft || 'Not provided'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Year Built</strong></td><td style="padding: 0.4rem 0;">${yearBuilt || 'Not provided'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Condition</strong></td><td style="padding: 0.4rem 0;">${CONDITION_LABELS[condition] || condition || 'Not specified'}</td></tr>
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d;"><strong>Features</strong></td><td style="padding: 0.4rem 0;">${extrasStr}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e; width: 140px;"><strong>Address</strong></td><td style="padding: 0.4rem 0;"><strong>${address}</strong></td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Area</strong></td><td style="padding: 0.4rem 0;">${REGION_LABELS[region] || region || 'Not specified'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Type</strong></td><td style="padding: 0.4rem 0;">${type || 'Not specified'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Beds / Baths</strong></td><td style="padding: 0.4rem 0;">${beds || '?'} bed / ${baths || '?'} bath</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Sq Ft</strong></td><td style="padding: 0.4rem 0;">${sqft || 'Not provided'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Year Built</strong></td><td style="padding: 0.4rem 0;">${yearBuilt || 'Not provided'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Condition</strong></td><td style="padding: 0.4rem 0;">${CONDITION_LABELS[condition] || condition || 'Not specified'}</td></tr>
+          <tr><td style="padding: 0.4rem 0; color: #66706e;"><strong>Features</strong></td><td style="padding: 0.4rem 0;">${extrasStr}</td></tr>
         </table>
 
-        <h2 style="font-size: 1rem; color: #e84393; margin: 0 0 1rem; padding-top: 1rem; border-top: 1px solid #f0ece8;">Selling Intent</h2>
+        <h2 style="font-size: 1rem; color: #e64774; margin: 0 0 1rem; padding-top: 1rem; border-top: 1px solid #f4e6e2;">Selling Intent</h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
-          <tr><td style="padding: 0.4rem 0; color: #6b7a8d; width: 140px;"><strong>Timeline</strong></td><td style="padding: 0.4rem 0;">${TIMELINE_LABELS[timeline] || timeline || 'Not specified'}</td></tr>
-          ${notes ? `<tr><td style="padding: 0.4rem 0; color: #6b7a8d; vertical-align: top;"><strong>Notes</strong></td><td style="padding: 0.4rem 0;">${notes}</td></tr>` : ''}
+          <tr><td style="padding: 0.4rem 0; color: #66706e; width: 140px;"><strong>Timeline</strong></td><td style="padding: 0.4rem 0;">${TIMELINE_LABELS[timeline] || timeline || 'Not specified'}</td></tr>
+          ${notes ? `<tr><td style="padding: 0.4rem 0; color: #66706e; vertical-align: top;"><strong>Notes</strong></td><td style="padding: 0.4rem 0;">${notes}</td></tr>` : ''}
         </table>
 
-        <div style="background: #f7f3f0; border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: #6b7a8d;">
+        <div style="background: #fbf0ed; border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: #66706e;">
           Reply to this email to respond to the seller, or call ${phone || 'them'} directly.
         </div>
       </div>

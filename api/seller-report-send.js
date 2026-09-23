@@ -47,8 +47,8 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 
 const page = (title, body) => `<!doctype html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head>
-<body style="margin:0;background:#faf9f7;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
-<div style="max-width:460px;margin:14vh auto;padding:32px;background:#fff;border:1px solid #e8e4df;border-radius:16px;text-align:center">
-<h1 style="font-size:22px;color:#1a2332;margin:0 0 10px">${esc(title)}</h1>
-<p style="font-size:15px;color:#6b7a8d;line-height:1.6;margin:0">${esc(body)}</p>
+<body style="margin:0;background:#fdf7f5;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<div style="max-width:460px;margin:14vh auto;padding:32px;background:#fff;border:1px solid #eeddd8;border-radius:16px;text-align:center">
+<h1 style="font-size:22px;color:#1c2b29;margin:0 0 10px">${esc(title)}</h1>
+<p style="font-size:15px;color:#66706e;line-height:1.6;margin:0">${esc(body)}</p>
 </div></body></html>`

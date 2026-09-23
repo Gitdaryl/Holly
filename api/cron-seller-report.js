@@ -50,14 +50,14 @@ async function emailHolly(property, report, sellerHtml, sendUrl) {
 
   const banner = `
     <div style="max-width:640px;margin:0 auto;padding:16px;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
-      <div style="background:#1a2332;color:#fff;border-radius:14px;padding:18px 20px">
-        <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f6a5c9">Ready to send</div>
+      <div style="background:#1a554e;color:#fff;border-radius:14px;padding:18px 20px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f5b5c7">Ready to send</div>
         <p style="margin:8px 0 14px;font-size:15px;line-height:1.6">
           This week for <strong>${property.title}</strong>: ${m.views.period} views, ${m.saves.period} saves,
           ${m.showings.period} showing requests. Below is exactly what
           ${property.sellerName || 'the seller'} will see.
         </p>
-        <a href="${sendUrl}" style="display:inline-block;background:#e84393;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px">
+        <a href="${sendUrl}" style="display:inline-block;background:#e64774;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px">
           Send this to ${property.sellerName || 'the seller'}
         </a>
         <p style="margin:12px 0 0;font-size:12px;color:#b8c2cf">Nothing is sent to the seller until you click.</p>

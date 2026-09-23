@@ -25,7 +25,7 @@ function ArticleCard({ article, featured = false }) {
           background: 'white',
           borderRadius: '16px',
           overflow: 'hidden',
-          border: '1px solid #e8e4df',
+          border: '1px solid #eeddd8',
           transition: 'all 0.3s ease',
           cursor: 'pointer',
           height: '100%',
@@ -39,7 +39,7 @@ function ArticleCard({ article, featured = false }) {
             height: featured ? '320px' : '220px',
             background: article.coverImage
               ? `url(${article.coverImage}) center/cover no-repeat`
-              : 'linear-gradient(135deg, #1a2332, #2c4a6e)',
+              : 'linear-gradient(135deg, #1c2b29, #237168)',
             position: 'relative',
             flexShrink: 0,
           }}
@@ -47,7 +47,7 @@ function ArticleCard({ article, featured = false }) {
           {/* Category pill */}
           <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
             <span style={{
-              background: 'rgba(232,67,147,0.9)',
+              background: 'rgba(230,71,116,0.9)',
               color: 'white',
               padding: '0.3rem 0.75rem',
               borderRadius: '20px',
@@ -64,10 +64,10 @@ function ArticleCard({ article, featured = false }) {
         {/* Content */}
         <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <h2 style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "'Source Serif 4', Georgia, serif",
             fontSize: featured ? '1.6rem' : '1.2rem',
             fontWeight: 700,
-            color: '#1a2332',
+            color: '#1c2b29',
             marginBottom: '0.75rem',
             lineHeight: 1.35,
           }}>
@@ -76,7 +76,7 @@ function ArticleCard({ article, featured = false }) {
 
           <p style={{
             fontSize: '0.92rem',
-            color: '#4a5568',
+            color: '#4a5654',
             lineHeight: 1.7,
             marginBottom: '1rem',
             flex: 1,
@@ -85,12 +85,12 @@ function ArticleCard({ article, featured = false }) {
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <span style={{ fontSize: '0.8rem', color: '#6b7a8d' }}>
+            <span style={{ fontSize: '0.8rem', color: '#66706e' }}>
               {formatDate(article.publishedDate)}
             </span>
             <span style={{
               fontSize: '0.82rem',
-              color: '#e84393',
+              color: '#e64774',
               fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
@@ -125,7 +125,7 @@ export default function BlogPage() {
   const rest = filtered.slice(1);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
       <SiteNav transparent active="blog" />
@@ -133,17 +133,17 @@ export default function BlogPage() {
       {/* Hero */}
       <div style={{
         height: '50vh', minHeight: '380px',
-        background: 'linear-gradient(135deg, #1a2332 0%, #2c4a6e 50%, #1a3a4a 100%)',
+        background: 'linear-gradient(135deg, #1a554e 0%, #237168 50%, #174a44 100%)',
         display: 'flex', alignItems: 'flex-end',
         padding: '0 2rem 3rem',
         position: 'relative', overflow: 'hidden',
       }}>
-        <HeroVideo video="/regions/blog/hero.mp4" poster="/regions/blog/poster.webp" gradient="linear-gradient(135deg, #1a2332 0%, #2c4a6e 50%, #1a3a4a 100%)" dim={0.35} />
+        <HeroVideo video="/regions/blog/hero.mp4" poster="/regions/blog/poster.webp" gradient="linear-gradient(135deg, #1c2b29 0%, #237168 50%, #174a44 100%)" dim={0.35} />
         <div style={{ maxWidth: '800px', position: 'relative', zIndex: 1 }}>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
             Irish Hills Lakes
           </p>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '1rem' }}>
+          <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '1rem' }}>
             Lake Life, Local Knowledge
           </h1>
           <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.75)', fontWeight: 300, maxWidth: '560px' }}>
@@ -153,7 +153,7 @@ export default function BlogPage() {
       </div>
 
       {/* Category Filter */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e8e4df', position: 'sticky', top: '65px', zIndex: 50 }}>
+      <div style={{ background: 'white', borderBottom: '1px solid #eeddd8', position: 'sticky', top: '65px', zIndex: 50 }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 2rem', display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingTop: '1rem', paddingBottom: '1rem' }}>
           {CATEGORIES.map(cat => (
             <button
@@ -162,9 +162,9 @@ export default function BlogPage() {
               style={{
                 padding: '0.45rem 1rem',
                 borderRadius: '20px',
-                border: activeCategory === cat ? '2px solid #1a2332' : '1px solid #e8e4df',
-                background: activeCategory === cat ? '#1a2332' : 'white',
-                color: activeCategory === cat ? 'white' : '#4a5568',
+                border: activeCategory === cat ? '2px solid #1c2b29' : '1px solid #eeddd8',
+                background: activeCategory === cat ? '#1c2b29' : 'white',
+                color: activeCategory === cat ? 'white' : '#4a5654',
                 fontSize: '0.82rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -181,14 +181,14 @@ export default function BlogPage() {
       {/* Articles */}
       <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 2rem' }}>
         {loading && (
-          <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7a8d' }}>
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#66706e' }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🏡</div>
             <p>Loading articles…</p>
           </div>
         )}
 
         {!loading && filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7a8d' }}>
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#66706e' }}>
             <p style={{ fontSize: '1.1rem' }}>No articles yet in this category.</p>
             <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Check back soon - Holly's publishing regularly.</p>
           </div>
@@ -218,13 +218,13 @@ export default function BlogPage() {
       </div>
 
       {/* Footer CTA */}
-      <div style={{ background: '#1a2332', padding: '4rem 2rem', textAlign: 'center' }}>
+      <div style={{ background: '#1a554e', padding: '4rem 2rem', textAlign: 'center' }}>
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1rem' }}>Ready to find your lake?</p>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: 'white', fontSize: '2rem', marginBottom: '1.5rem' }}>
+        <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", color: 'white', fontSize: '2rem', marginBottom: '1.5rem' }}>
           Talk to Holly
         </h2>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a href="tel:5174033413" style={{ padding: '0.8rem 2rem', background: '#e84393', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
+          <a href="tel:5174033413" style={{ padding: '0.8rem 2rem', background: '#e64774', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
             (517) 403-3413
           </a>
           <Link to="/" style={{ padding: '0.8rem 2rem', background: 'rgba(255,255,255,0.1)', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.2)' }}>
@@ -234,7 +234,7 @@ export default function BlogPage() {
       </div>
 
       <style>{`
-        .article-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,35,50,0.12); }
+        .article-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,85,78,0.12); }
       `}</style>
     </div>
   );

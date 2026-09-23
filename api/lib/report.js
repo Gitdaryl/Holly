@@ -9,11 +9,11 @@ export const SITE = process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel
 // Exported so the newsletter uses these exact values instead of defining a
 // third palette. One place the brand colours live for email.
 export const BRAND = {
-  navy: '#1a2332',
-  pink: '#e84393',
-  cream: '#faf9f7',
-  line: '#e8e4df',
-  muted: '#6b7a8d',
+  navy: '#1c2b29',
+  pink: '#e64774',
+  cream: '#fdf7f5',
+  line: '#eeddd8',
+  muted: '#66706e',
 }
 
 export function findProperty(slugOrId) {

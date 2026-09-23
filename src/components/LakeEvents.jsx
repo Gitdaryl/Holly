@@ -39,8 +39,8 @@ export default function LakeEvents({ lake }) {
   if (rows.length === 0) return null;
 
   return (
-    <div style={{ background: 'white', borderRadius: '14px', border: '1px solid #e8e4df', padding: '1.5rem' }}>
-      <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' }}>
+    <div style={{ background: 'white', borderRadius: '14px', border: '1px solid #eeddd8', padding: '1.5rem' }}>
+      <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' }}>
         Coming up around {lake.name}
       </h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -50,21 +50,21 @@ export default function LakeEvents({ lake }) {
             href={eventHref(e)}
             target="_blank"
             rel="noopener"
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', textDecoration: 'none', color: '#1a2332', padding: '0.6rem 0', borderTop: '1px solid #f0eee9' }}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', textDecoration: 'none', color: '#1c2b29', padding: '0.6rem 0', borderTop: '1px solid #f6e9e5' }}
           >
             <span style={{ minWidth: 0 }}>
               <span style={{ fontWeight: 600, fontSize: '0.9rem', display: 'block' }}>{e.name}</span>
-              {e.location && <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{e.location}</span>}
+              {e.location && <span style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{e.location}</span>}
             </span>
-            <span style={{ textAlign: 'right', whiteSpace: 'nowrap', color: '#6b7a8d', fontSize: '0.82rem' }}>
+            <span style={{ textAlign: 'right', whiteSpace: 'nowrap', color: '#66706e', fontSize: '0.82rem' }}>
               {shortDate(e.date)}
               {e.time && <><br />{e.time}</>}
             </span>
           </a>
         ))}
       </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#94a3b8' }}>
-        Events via <a href="https://manitoubeachmichigan.com" target="_blank" rel="noopener" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>Manitou Beach Michigan</a>
+      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#98a3a1' }}>
+        Events via <a href="https://manitoubeachmichigan.com" target="_blank" rel="noopener" style={{ color: '#e64774', fontWeight: 600, textDecoration: 'none' }}>Manitou Beach Michigan</a>
       </div>
     </div>
   );

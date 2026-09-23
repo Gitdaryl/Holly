@@ -15,8 +15,8 @@ import { TOWN_KEYWORDS, groupByMonth, categories, shortDate, dateOf } from '../l
 // The prerendered copy in scripts/prerender.mjs is a build-time snapshot
 // refreshed daily; this component replaces it with live data on mount.
 
-const FONT = "'DM Sans', -apple-system, sans-serif";
-const SERIF = "'Playfair Display', serif";
+const FONT = "'Inter', -apple-system, sans-serif";
+const SERIF = "'Source Serif 4', Georgia, serif";
 const CALL_HREF = 'tel:5174033413';
 const SMS_HREF = 'sms:+15173008226?&body=Hi%20Holly%2C%20I%20saw%20your%20Irish%20Hills%20events%20page.';
 const CREDIT_URL = 'https://manitoubeachmichigan.com';
@@ -41,9 +41,9 @@ function Pill({ on, children, ...rest }) {
       style={{
         font: 'inherit', cursor: 'pointer', padding: '0.5rem 1rem', borderRadius: '30px',
         fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap',
-        background: on ? '#e84393' : 'white',
-        color: on ? 'white' : '#4a5568',
-        border: `1px solid ${on ? '#e84393' : '#e8e4df'}`,
+        background: on ? '#e64774' : 'white',
+        color: on ? 'white' : '#4a5654',
+        border: `1px solid ${on ? '#e64774' : '#eeddd8'}`,
       }}
     >
       {children}
@@ -58,21 +58,21 @@ function EventRow({ e }) {
       href={href}
       target="_blank"
       rel="noopener"
-      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1.25rem', textDecoration: 'none', color: '#1a2332', padding: '1rem 0', borderTop: '1px solid #f0eee9' }}
+      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1.25rem', textDecoration: 'none', color: '#1c2b29', padding: '1rem 0', borderTop: '1px solid #f6e9e5' }}
     >
       <span style={{ minWidth: 0 }}>
         <span style={{ fontWeight: 600, fontSize: '1rem', display: 'block', marginBottom: '0.15rem' }}>{e.name}</span>
         {e.description && (
-          <span style={{ fontSize: '0.88rem', color: '#4a5568', lineHeight: 1.55, display: 'block', marginBottom: '0.3rem' }}>
+          <span style={{ fontSize: '0.88rem', color: '#4a5654', lineHeight: 1.55, display: 'block', marginBottom: '0.3rem' }}>
             {truncate(e.description, 140)}
           </span>
         )}
-        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+        <span style={{ fontSize: '0.8rem', color: '#98a3a1' }}>
           {e.location}
-          {e.cost && <span style={{ marginLeft: '0.6rem', padding: '0.1rem 0.5rem', borderRadius: '30px', background: '#f0eee9', color: '#6b7a8d', fontWeight: 600 }}>{e.cost}</span>}
+          {e.cost && <span style={{ marginLeft: '0.6rem', padding: '0.1rem 0.5rem', borderRadius: '30px', background: '#f6e9e5', color: '#66706e', fontWeight: 600 }}>{e.cost}</span>}
         </span>
       </span>
-      <span style={{ textAlign: 'right', whiteSpace: 'nowrap', color: '#6b7a8d', fontSize: '0.85rem', paddingTop: '0.1rem' }}>
+      <span style={{ textAlign: 'right', whiteSpace: 'nowrap', color: '#66706e', fontSize: '0.85rem', paddingTop: '0.1rem' }}>
         {shortDate(e.date)}
         {e.time && <><br /><span style={{ fontSize: '0.8rem' }}>{e.time}{e.timeEnd ? `–${e.timeEnd}` : ''}</span></>}
       </span>
@@ -144,13 +144,13 @@ export default function EventsPage() {
     return counts.filter((r) => r.count > 0 && r.lake).sort((a, b) => b.count - a.count).slice(0, 3);
   }, [events]);
 
-  const card = { background: 'white', border: '1px solid #e8e4df', borderRadius: '14px', padding: '1.5rem' };
-  const h2 = { fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' };
+  const card = { background: 'white', border: '1px solid #eeddd8', borderRadius: '14px', padding: '1.5rem' };
+  const h2 = { fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: FONT, color: '#1a2332' }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5', fontFamily: FONT, color: '#1c2b29' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; }
         .ev-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .ev-owning { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
@@ -160,7 +160,7 @@ export default function EventsPage() {
       <SiteNav active="events" transparent textBody="Hi Holly, I saw your Irish Hills events page." />
 
       {/* Hero */}
-      <div style={{ position: 'relative', overflow: 'hidden', minHeight: '54vh', display: 'flex', alignItems: 'flex-end', background: 'linear-gradient(135deg, #1a2332 0%, #1a3a52 55%, #0f2940 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden', minHeight: '54vh', display: 'flex', alignItems: 'flex-end', background: 'linear-gradient(135deg, #1a554e 0%, #1d5f57 55%, #123f3a 100%)' }}>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '1100px', margin: '0 auto', width: '100%', padding: '9rem 1.5rem 3rem' }}>
           <div style={{ maxWidth: '640px' }}>
             <h1 style={{ fontFamily: SERIF, fontSize: 'clamp(2.2rem, 5.5vw, 3.6rem)', fontWeight: 800, color: 'white', lineHeight: 1.1, marginBottom: '0.6rem' }}>
@@ -170,7 +170,7 @@ export default function EventsPage() {
               Live music, festivals and lake happenings around Devils Lake, Manitou Beach, Onsted and Brooklyn. This is what a weekend here actually looks like.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <Link to="/listings" style={{ padding: '0.8rem 1.6rem', background: '#e84393', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>See homes for sale</Link>
+              <Link to="/listings" style={{ padding: '0.8rem 1.6rem', background: '#e64774', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>See homes for sale</Link>
               <Link to="/cma" style={{ padding: '0.8rem 1.6rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>What&rsquo;s my home worth?</Link>
             </div>
           </div>
@@ -180,9 +180,9 @@ export default function EventsPage() {
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '3rem 1.5rem 1rem' }}>
 
         {/* Credit, up front rather than buried in a footer */}
-        <div style={{ marginBottom: '1.5rem', fontSize: '0.85rem', color: '#6b7a8d' }}>
+        <div style={{ marginBottom: '1.5rem', fontSize: '0.85rem', color: '#66706e' }}>
           Calendar listed and maintained by{' '}
-          <a href={CREDIT_URL} target="_blank" rel="noopener" style={{ color: '#e84393', fontWeight: 600, textDecoration: 'none' }}>Manitou Beach Michigan</a>
+          <a href={CREDIT_URL} target="_blank" rel="noopener" style={{ color: '#e64774', fontWeight: 600, textDecoration: 'none' }}>Manitou Beach Michigan</a>
           . Every listing links to their page for details, tickets and changes.
         </div>
 
@@ -191,7 +191,7 @@ export default function EventsPage() {
           {RANGES.map((r) => (
             <Pill key={r.key} on={range === r.key} onClick={() => setRange(r.key)}>{r.label}</Pill>
           ))}
-          {cats.length > 1 && <span style={{ width: '1px', background: '#e8e4df', margin: '0 0.25rem' }} />}
+          {cats.length > 1 && <span style={{ width: '1px', background: '#eeddd8', margin: '0 0.25rem' }} />}
           {cats.length > 1 && cats.map((c) => (
             <Pill key={c.name} on={cat === c.name} onClick={() => setCat(cat === c.name ? null : c.name)}>
               {c.name} <span style={{ opacity: 0.6 }}>{c.count}</span>
@@ -200,15 +200,15 @@ export default function EventsPage() {
         </div>
 
         {/* The list */}
-        {events === null && <div style={{ ...card, color: '#6b7a8d' }}>Loading what&rsquo;s on&hellip;</div>}
+        {events === null && <div style={{ ...card, color: '#66706e' }}>Loading what&rsquo;s on&hellip;</div>}
 
         {events !== null && shown.length === 0 && (
           <div style={{ ...card, marginBottom: '3rem' }}>
             <h2 style={h2}>Nothing listed in this window</h2>
-            <p style={{ color: '#4a5568', lineHeight: 1.7, marginBottom: '1rem' }}>
+            <p style={{ color: '#4a5654', lineHeight: 1.7, marginBottom: '1rem' }}>
               Try &ldquo;Everything&rdquo; above, or see the full Irish Hills calendar at Manitou Beach Michigan.
             </p>
-            <a href={`${CREDIT_URL}/events`} target="_blank" rel="noopener" style={{ color: '#e84393', fontWeight: 700, textDecoration: 'none' }}>
+            <a href={`${CREDIT_URL}/events`} target="_blank" rel="noopener" style={{ color: '#e64774', fontWeight: 700, textDecoration: 'none' }}>
               Open the full calendar &rarr;
             </a>
           </div>
@@ -224,25 +224,25 @@ export default function EventsPage() {
             {/* After the first month, the reason this page is on a realtor's site */}
             {i === 0 && busiest.length > 0 && (
               <div style={{ ...card, marginBottom: '1.5rem' }}>
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>
                   Coming to the lake this weekend?
                 </div>
                 <h2 style={h2}>Where all of this is happening</h2>
                 <div className="ev-owning" style={{ marginBottom: '1.25rem' }}>
                   {busiest.map((r) => (
-                    <Link key={r.slug} to={`/lakes/${r.lake.slug}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit', border: '1px solid #e8e4df', borderRadius: '14px', padding: '1.1rem' }}>
-                      <div style={{ fontWeight: 700, color: '#1a2332', marginBottom: '0.2rem' }}>{r.lake.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.5rem' }}>{r.name}</div>
-                      <div style={{ fontSize: '0.85rem', color: '#e84393', fontWeight: 600 }}>{r.count} event{r.count === 1 ? '' : 's'} nearby &rarr;</div>
+                    <Link key={r.slug} to={`/lakes/${r.lake.slug}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit', border: '1px solid #eeddd8', borderRadius: '14px', padding: '1.1rem' }}>
+                      <div style={{ fontWeight: 700, color: '#1c2b29', marginBottom: '0.2rem' }}>{r.lake.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#98a3a1', marginBottom: '0.5rem' }}>{r.name}</div>
+                      <div style={{ fontSize: '0.85rem', color: '#e64774', fontWeight: 600 }}>{r.count} event{r.count === 1 ? '' : 's'} nearby &rarr;</div>
                     </Link>
                   ))}
                 </div>
-                <p style={{ color: '#4a5568', lineHeight: 1.7, marginBottom: '1rem' }}>
+                <p style={{ color: '#4a5654', lineHeight: 1.7, marginBottom: '1rem' }}>
                   Holly has sold around these lakes for thirty years. If a weekend here has you wondering what it costs to stay, that is a short conversation.
                 </p>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <Link to="/cma" style={{ padding: '0.7rem 1.3rem', background: '#e84393', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>What&rsquo;s my home worth?</Link>
-                  <Link to="/listings" style={{ padding: '0.7rem 1.3rem', background: '#f0eee9', color: '#1a2332', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>Homes for sale</Link>
+                  <Link to="/cma" style={{ padding: '0.7rem 1.3rem', background: '#e64774', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>What&rsquo;s my home worth?</Link>
+                  <Link to="/listings" style={{ padding: '0.7rem 1.3rem', background: '#f6e9e5', color: '#1c2b29', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>Homes for sale</Link>
                 </div>
               </div>
             )}
@@ -260,7 +260,7 @@ export default function EventsPage() {
         />
 
         {/* Closing CTA */}
-        <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '2.5rem 2rem', textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ background: 'linear-gradient(135deg, #1a554e, #237168)', borderRadius: '16px', padding: '2.5rem 2rem', textAlign: 'center', marginBottom: '3rem' }}>
           <h2 style={{ fontFamily: SERIF, fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', fontWeight: 700, color: 'white', marginBottom: '0.75rem' }}>
             Thinking about a place on the lake?
           </h2>
@@ -268,14 +268,14 @@ export default function EventsPage() {
             Call or text Holly. No pitch, and she will tell you if the lake you have in mind is the wrong one.
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href={SMS_HREF} style={{ padding: '0.8rem 1.6rem', background: '#e84393', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>Text Holly</a>
+            <a href={SMS_HREF} style={{ padding: '0.8rem 1.6rem', background: '#e64774', color: 'white', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>Text Holly</a>
             <a href={CALL_HREF} style={{ padding: '0.8rem 1.6rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>(517) 403-3413</a>
           </div>
         </div>
       </div>
 
-      <footer style={{ background: '#0f1923', padding: '2rem', textAlign: 'center' }}>
-        <div style={{ color: '#64748b', fontSize: '0.82rem' }}>Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</div>
+      <footer style={{ background: '#0e2d29', padding: '2rem', textAlign: 'center' }}>
+        <div style={{ color: '#66706e', fontSize: '0.82rem' }}>Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</div>
       </footer>
     </div>
   );

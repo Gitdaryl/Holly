@@ -50,7 +50,7 @@ export default function SiteNav({
   }, [menuOpen]);
 
   const solid = scrolled;
-  const linkColor = (isActive) => (isActive ? (solid ? '#1a2332' : 'white') : (solid ? '#4a5568' : 'rgba(255,255,255,0.85)'));
+  const linkColor = (isActive) => (isActive ? (solid ? '#1c2b29' : 'white') : (solid ? '#4a5654' : 'rgba(255,255,255,0.85)'));
   const smsBody = smsHref(textBody);
   const close = () => setMenuOpen(false);
 
@@ -68,9 +68,9 @@ export default function SiteNav({
 
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
-        background: solid ? 'rgba(250,249,247,0.97)' : 'transparent',
+        background: solid ? 'rgba(253,247,245,0.97)' : 'transparent',
         backdropFilter: solid ? 'blur(12px)' : 'none',
-        borderBottom: solid ? '1px solid #e8e4df' : 'none',
+        borderBottom: solid ? '1px solid #eeddd8' : 'none',
         transition: 'background 0.3s ease, border-color 0.3s ease',
         padding: '1rem 1.25rem',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -80,7 +80,7 @@ export default function SiteNav({
         {back ? (
           <a href={back.to} onClick={close} style={{
             display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none',
-            color: solid ? '#4a5568' : 'rgba(255,255,255,0.9)', fontSize: '0.85rem', fontWeight: 600,
+            color: solid ? '#4a5654' : 'rgba(255,255,255,0.9)', fontSize: '0.85rem', fontWeight: 600,
             minWidth: 0,
           }}>
             <span aria-hidden="true">←</span>
@@ -89,7 +89,7 @@ export default function SiteNav({
         ) : (
           <a href="/" onClick={close} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0, flexShrink: 0 }}>
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '30px', flexShrink: 0 }} />
-            <span style={{ color: solid ? '#1a2332' : 'white', fontWeight: 700, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Holly Griewahn</span>
+            <span style={{ color: solid ? '#1c2b29' : 'white', fontWeight: 700, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Holly Griewahn</span>
           </a>
         )}
 
@@ -100,7 +100,7 @@ export default function SiteNav({
               <a key={link.key} href={link.to} style={{
                 color: linkColor(active === link.key), textDecoration: 'none', fontSize: '0.85rem',
                 fontWeight: active === link.key ? 700 : 600,
-                borderBottom: active === link.key ? '2px solid #e84393' : '2px solid transparent',
+                borderBottom: active === link.key ? '2px solid #e64774' : '2px solid transparent',
                 paddingBottom: '2px',
               }}>
                 {link.label}
@@ -112,15 +112,15 @@ export default function SiteNav({
         {/* Desktop CTAs */}
         <div className="sitenav-desktop-cta" style={{ gap: '0.6rem', alignItems: 'center', flexShrink: 0 }}>
           <a href={smsBody} style={{
-            color: solid ? '#1a2332' : 'white',
-            border: `1.5px solid ${solid ? '#1a2332' : 'rgba(255,255,255,0.55)'}`,
+            color: solid ? '#1c2b29' : 'white',
+            border: `1.5px solid ${solid ? '#1c2b29' : 'rgba(255,255,255,0.55)'}`,
             padding: '0.42rem 0.9rem', borderRadius: '8px', textDecoration: 'none',
             fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap',
           }}>
             Text Holly
           </a>
           <a href={CALL_HREF} style={{
-            background: '#e84393', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px',
+            background: '#e64774', color: 'white', padding: '0.45rem 1.1rem', borderRadius: '8px',
             textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap',
           }}>
             Call Holly
@@ -137,17 +137,17 @@ export default function SiteNav({
           style={{
             alignItems: 'center', justifyContent: 'center',
             width: 40, height: 40, borderRadius: '8px', flexShrink: 0,
-            background: menuOpen ? (solid ? '#f0eee9' : 'rgba(255,255,255,0.15)') : 'transparent',
-            border: `1.5px solid ${solid ? '#e8e4df' : 'rgba(255,255,255,0.4)'}`,
+            background: menuOpen ? (solid ? '#f6e9e5' : 'rgba(255,255,255,0.15)') : 'transparent',
+            border: `1.5px solid ${solid ? '#eeddd8' : 'rgba(255,255,255,0.4)'}`,
             cursor: 'pointer',
           }}
         >
           {menuOpen ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solid ? '#1a2332' : 'white'} strokeWidth="2.2" strokeLinecap="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solid ? '#1c2b29' : 'white'} strokeWidth="2.2" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solid ? '#1a2332' : 'white'} strokeWidth="2.2" strokeLinecap="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solid ? '#1c2b29' : 'white'} strokeWidth="2.2" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           )}
@@ -158,14 +158,14 @@ export default function SiteNav({
       {menuOpen && (
         <div style={{
           position: 'fixed', top: '72px', left: 0, right: 0, bottom: 0, zIndex: 490,
-          background: '#faf9f7', overflowY: 'auto', padding: '0.5rem 1.25rem 2rem',
-          borderTop: '1px solid #e8e4df',
+          background: '#fdf7f5', overflowY: 'auto', padding: '0.5rem 1.25rem 2rem',
+          borderTop: '1px solid #eeddd8',
         }}>
           {back && (
             <a href={back.to} onClick={close} className="sitenav-panel-link" style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem', minHeight: '48px',
-              color: '#4a5568', textDecoration: 'none', fontSize: '1rem', fontWeight: 600,
-              borderBottom: '1px solid #f0eee9',
+              color: '#4a5654', textDecoration: 'none', fontSize: '1rem', fontWeight: 600,
+              borderBottom: '1px solid #f6e9e5',
             }}>
               ← {back.label}
             </a>
@@ -173,9 +173,9 @@ export default function SiteNav({
           {NAV_LINKS.map(link => (
             <a key={link.key} href={link.to} onClick={close} className="sitenav-panel-link" style={{
               display: 'flex', alignItems: 'center', minHeight: '48px',
-              color: active === link.key ? '#e84393' : '#1a2332', textDecoration: 'none',
+              color: active === link.key ? '#e64774' : '#1c2b29', textDecoration: 'none',
               fontSize: '1.05rem', fontWeight: active === link.key ? 700 : 600,
-              borderBottom: '1px solid #f0eee9',
+              borderBottom: '1px solid #f6e9e5',
             }}>
               {link.label}
             </a>
@@ -183,14 +183,14 @@ export default function SiteNav({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.25rem' }}>
             <a href={smsBody} onClick={close} className="sitenav-panel-btn" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '48px',
-              border: '2px solid #1a2332', color: '#1a2332', borderRadius: '10px',
+              border: '2px solid #1c2b29', color: '#1c2b29', borderRadius: '10px',
               textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem',
             }}>
               Text Holly
             </a>
             <a href={CALL_HREF} onClick={close} className="sitenav-panel-btn" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '48px',
-              background: '#e84393', color: 'white', borderRadius: '10px',
+              background: '#e64774', color: 'white', borderRadius: '10px',
               textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem',
             }}>
               Call Holly

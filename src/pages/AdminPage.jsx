@@ -9,16 +9,16 @@ import { startTour } from '../components/Tour';
 // public site writes.
 
 const SESSION_KEY = 'hg-admin-session';
-const FONT = "'DM Sans', -apple-system, sans-serif";
-const SERIF = "'Playfair Display', serif";
-const NAVY = '#1a2332', PINK = '#e84393', MUTED = '#6b7a8d', LINE = '#e8e4df', CREAM = '#faf9f7';
+const FONT = "'Inter', -apple-system, sans-serif";
+const SERIF = "'Source Serif 4', Georgia, serif";
+const NAVY = '#1c2b29', DEEP = '#1a554e', PINK = '#e64774', MUTED = '#66706e', LINE = '#eeddd8', CREAM = '#fdf7f5';
 
 const STATUS = {
-  new:     { label: 'New',         bg: 'rgba(232,67,147,0.12)', fg: PINK },
-  called:  { label: 'Called',      bg: 'rgba(59,130,246,0.12)', fg: '#2563eb' },
-  showing: { label: 'Showing set', bg: 'rgba(16,185,129,0.12)', fg: '#059669' },
-  client:  { label: 'Client',      bg: 'rgba(26,35,50,0.1)',    fg: NAVY },
-  dead:    { label: 'Dead',        bg: '#f0eee9',               fg: '#94a3b8' },
+  new:     { label: 'New',         bg: 'rgba(230,71,116,0.12)', fg: PINK },
+  called:  { label: 'Called',      bg: 'rgba(167,198,195,0.35)', fg: '#1a554e' },
+  showing: { label: 'Showing set', bg: '#237168',               fg: '#ffffff' },
+  client:  { label: 'Client',      bg: 'rgba(173,53,87,0.12)',  fg: '#ad3557' },
+  dead:    { label: 'Dead',        bg: '#f6e9e5',               fg: '#98a3a1' },
 };
 
 function getSession() { try { return localStorage.getItem(SESSION_KEY) || ''; } catch { return ''; } }
@@ -64,7 +64,7 @@ function Shell({ children, tab, setTab, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .adm-tab { flex: 1; padding: 0.85rem 0.5rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
         .adm-tab.on { color: ${NAVY}; border-bottom-color: ${PINK}; }
@@ -73,7 +73,7 @@ function Shell({ children, tab, setTab, onLogout }) {
         .adm-btn.pink { background: ${PINK}; color: white; border-color: ${PINK}; }
         select.adm-status { font-family: inherit; font-size: 0.78rem; font-weight: 700; border-radius: 20px; padding: 0.3rem 1.6rem 0.3rem 0.7rem; border: 1px solid transparent; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%236b7a8d'/></svg>"); background-repeat: no-repeat; background-position: right 0.6rem center; }
       `}</style>
-      <header data-tour="desk" style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(250,249,247,0.96)', backdropFilter: 'blur(10px)', borderBottom: `1px solid ${LINE}` }}>
+      <header data-tour="desk" style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(253,247,245,0.96)', backdropFilter: 'blur(10px)', borderBottom: `1px solid ${LINE}` }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0.75rem 1rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '24px' }} />
@@ -137,10 +137,11 @@ function Login({ onSession }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: NAVY, fontFamily: FONT, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;600;700&display=swap'); * { box-sizing: border-box; margin: 0; padding: 0; }`}</style>
+    <div style={{ minHeight: '100vh', background: DEEP, fontFamily: FONT, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap'); * { box-sizing: border-box; margin: 0; padding: 0; }`}</style>
       <div style={{ width: '100%', maxWidth: '380px', background: 'white', borderRadius: '18px', padding: '2rem 1.5rem', textAlign: 'center' }}>
-        <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '34px', marginBottom: '1rem' }} />
+        <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '28px', marginBottom: '0.9rem' }} />
+        <img src="/images/signature.webp" alt="" aria-hidden="true" width="900" height="238" style={{ display: 'block', width: '190px', height: 'auto', margin: '0 auto 0.4rem' }} />
         <h1 style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, color: NAVY, marginBottom: '0.4rem' }}>Holly's desk</h1>
         <p style={{ fontSize: '0.88rem', color: MUTED, lineHeight: 1.6, marginBottom: '1.5rem' }}>No password. Tap the button and a login link lands on your phone.</p>
         {state === 'sent' ? (
@@ -153,7 +154,7 @@ function Login({ onSession }) {
           </button>
         )}
         {error && <p style={{ color: '#b91c1c', fontSize: '0.82rem', marginTop: '0.75rem' }}>{error}</p>}
-        <button onClick={() => setShowKey((v) => !v)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.72rem', marginTop: '1.25rem', cursor: 'pointer', fontFamily: 'inherit' }}>Have a link or a key?</button>
+        <button onClick={() => setShowKey((v) => !v)} style={{ background: 'none', border: 'none', color: '#98a3a1', fontSize: '0.72rem', marginTop: '1.25rem', cursor: 'pointer', fontFamily: 'inherit' }}>Have a link or a key?</button>
         {showKey && (
           <form onSubmit={useKey} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.6rem' }}>
             <input value={key} onChange={(e) => setKey(e.target.value)} placeholder="Paste your login link or admin key" style={{ flex: 1, padding: '0.6rem 0.75rem', borderRadius: '8px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.85rem' }} />
@@ -200,7 +201,7 @@ function LeadCard({ lead, session, onStatus }) {
           {Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
         </select>
       </div>
-      {lead.detail && <div style={{ fontSize: '0.86rem', color: '#4a5568', lineHeight: 1.55, margin: '0.5rem 0 0.75rem', whiteSpace: 'pre-wrap' }}>{lead.detail}</div>}
+      {lead.detail && <div style={{ fontSize: '0.86rem', color: '#4a5654', lineHeight: 1.55, margin: '0.5rem 0 0.75rem', whiteSpace: 'pre-wrap' }}>{lead.detail}</div>}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: lead.detail ? 0 : '0.6rem' }}>
         {lead.phone && <a className="adm-btn pink" href={`tel:${digits(lead.phone)}`}>Call</a>}
         {lead.phone && <a className="adm-btn" href={`sms:${digits(lead.phone)}`}>Text</a>}
@@ -210,7 +211,7 @@ function LeadCard({ lead, session, onStatus }) {
             {asked ? 'Review link sent' : 'Ask for a review'}
           </button>
         )}
-        {!lead.phone && !lead.email && <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>No contact details</span>}
+        {!lead.phone && !lead.email && <span style={{ fontSize: '0.78rem', color: '#98a3a1' }}>No contact details</span>}
       </div>
     </div>
   );
@@ -232,7 +233,7 @@ function Inbox({ session }) {
         <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>{newCount ? `${newCount} new` : 'Inbox'} <span style={{ fontSize: '0.8rem', color: MUTED, fontFamily: FONT, fontWeight: 600 }}>· {data.total} total</span></div>
         <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
           {[['open', 'Open'], ['new', 'New'], ['called', 'Called'], ['showing', 'Showings'], ['all', 'All']].map(([k, l]) => (
-            <button key={k} onClick={() => setFilter(k)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: filter === k ? NAVY : 'white', color: filter === k ? 'white' : MUTED, borderColor: filter === k ? NAVY : LINE }}>{l}</button>
+            <button key={k} onClick={() => setFilter(k)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: filter === k ? DEEP : 'white', color: filter === k ? 'white' : MUTED, borderColor: filter === k ? DEEP : LINE }}>{l}</button>
           ))}
         </div>
       </div>
@@ -241,7 +242,7 @@ function Inbox({ session }) {
       ) : (
         <div style={{ display: 'grid', gap: '0.75rem' }}>{items.map((l) => <LeadCard key={l.id} lead={l} session={session} onStatus={onStatus} />)}</div>
       )}
-      {data.capped && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '1rem', textAlign: 'center' }}>Showing the latest {data.items.length}.</p>}
+      {data.capped && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '1rem', textAlign: 'center' }}>Showing the latest {data.items.length}.</p>}
     </>
   );
 }
@@ -274,8 +275,8 @@ function Thread({ thread, session, onSent, onBack }) {
       <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '55vh', overflowY: 'auto', background: CREAM }}>
         {thread.messages.map((m, i) => (
           <div key={i} style={{ alignSelf: m.direction === 'in' ? 'flex-start' : 'flex-end', maxWidth: '82%' }}>
-            <div style={{ background: m.direction === 'in' ? 'white' : NAVY, color: m.direction === 'in' ? NAVY : 'white', border: m.direction === 'in' ? `1px solid ${LINE}` : 'none', borderRadius: m.direction === 'in' ? '14px 14px 14px 4px' : '14px 14px 4px 14px', padding: '0.6rem 0.85rem', fontSize: '0.9rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.body}{m.media?.length ? m.media.map((u, j) => <div key={j}><a href={u} target="_blank" rel="noopener" style={{ color: 'inherit' }}>photo {j + 1}</a></div>) : null}</div>
-            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '0.2rem', textAlign: m.direction === 'in' ? 'left' : 'right' }}>{m.direction === 'out' ? (m.author === 'holly' ? 'Holly' : 'Auto') + ' · ' : ''}{when(m.receivedAt)}</div>
+            <div style={{ background: m.direction === 'in' ? 'white' : DEEP, color: m.direction === 'in' ? NAVY : 'white', border: m.direction === 'in' ? `1px solid ${LINE}` : 'none', borderRadius: m.direction === 'in' ? '14px 14px 14px 4px' : '14px 14px 4px 14px', padding: '0.6rem 0.85rem', fontSize: '0.9rem', lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.body}{m.media?.length ? m.media.map((u, j) => <div key={j}><a href={u} target="_blank" rel="noopener" style={{ color: 'inherit' }}>photo {j + 1}</a></div>) : null}</div>
+            <div style={{ fontSize: '0.68rem', color: '#98a3a1', marginTop: '0.2rem', textAlign: m.direction === 'in' ? 'left' : 'right' }}>{m.direction === 'out' ? (m.author === 'holly' ? 'Holly' : 'Auto') + ' · ' : ''}{when(m.receivedAt)}</div>
           </div>
         ))}
       </div>
@@ -309,7 +310,7 @@ function Texts({ session }) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 700, color: NAVY }}>{t.name || pretty(t.phone)}</span>
-                <span style={{ fontSize: '0.72rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{ago(t.last.receivedAt)}</span>
+                <span style={{ fontSize: '0.72rem', color: '#98a3a1', whiteSpace: 'nowrap' }}>{ago(t.last.receivedAt)}</span>
               </div>
               <div style={{ fontSize: '0.85rem', color: t.unanswered ? NAVY : MUTED, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '0.15rem' }}>{t.last.direction === 'out' ? 'You: ' : ''}{t.last.body}</div>
             </div>
@@ -344,11 +345,11 @@ function Waitlist({ session }) {
             {open === g.lake && (
               <div style={{ marginTop: '0.75rem', borderTop: `1px solid ${LINE}` }}>
                 {g.entries.map((e) => (
-                  <div key={e.id} style={{ padding: '0.7rem 0', borderBottom: `1px solid #f0eee9`, display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center' }}>
+                  <div key={e.id} style={{ padding: '0.7rem 0', borderBottom: `1px solid #f6e9e5`, display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center' }}>
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{e.name}</div>
                       <div style={{ fontSize: '0.75rem', color: MUTED }}>{[e.budget, e.timing, ago(e.receivedAt)].filter(Boolean).join(' · ')}</div>
-                      {e.notes && <div style={{ fontSize: '0.8rem', color: '#4a5568', marginTop: '0.2rem' }}>{e.notes}</div>}
+                      {e.notes && <div style={{ fontSize: '0.8rem', color: '#4a5654', marginTop: '0.2rem' }}>{e.notes}</div>}
                     </div>
                     <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
                       {e.phone && <a className="adm-btn pink" href={`tel:${digits(e.phone)}`} style={{ padding: '0.45rem 0.7rem' }}>Call</a>}
@@ -381,7 +382,7 @@ function Stat({ v, l }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 800, lineHeight: 1 }}>{v}</div>
-      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{l}</div>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{l}</div>
     </div>
   );
 }
@@ -418,7 +419,7 @@ function Listings({ session }) {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.85rem' }}>
               <a className="adm-btn pink" href={`/api/seller-report?slug=${p.slug}&key=${encodeURIComponent(session)}`} target="_blank" rel="noopener">Your report</a>
               {p.sellerLink && <button className="adm-btn" onClick={() => copy(p.slug, p.sellerLink)}>{copied === p.slug ? 'Copied' : 'Copy seller link'}</button>}
-              {!p.sellerEmail && <span style={{ fontSize: '0.72rem', color: '#94a3b8', alignSelf: 'center' }}>No seller email set, Friday report is off</span>}
+              {!p.sellerEmail && <span style={{ fontSize: '0.72rem', color: '#98a3a1', alignSelf: 'center' }}>No seller email set, Friday report is off</span>}
             </div>
           </div>
         ))}
@@ -440,7 +441,7 @@ function AddToHomeScreen() {
   if (hide) return null;
   const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   return (
-    <div className="adm-card" style={{ background: NAVY, color: 'white', borderColor: NAVY, marginBottom: '0.9rem' }}>
+    <div className="adm-card" style={{ background: DEEP, color: 'white', borderColor: DEEP, marginBottom: '0.9rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'flex-start' }}>
         <div>
           <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>Put this on your home screen</div>
@@ -459,7 +460,7 @@ function AddToHomeScreen() {
 
 // ── stats ──────────────────────────────────────────────────────────────
 
-const LEVEL = { act: { bg: 'rgba(232,67,147,0.1)', fg: PINK, label: 'Do now' }, watch: { bg: 'rgba(245,179,1,0.14)', fg: '#a16207', label: 'Look' }, good: { bg: 'rgba(16,185,129,0.12)', fg: '#047857', label: 'Good' }, info: { bg: '#f0eee9', fg: MUTED, label: 'FYI' } };
+const LEVEL = { act: { bg: 'rgba(230,71,116,0.1)', fg: PINK, label: 'Do now' }, watch: { bg: 'rgba(245,179,1,0.14)', fg: '#a16207', label: 'Look' }, good: { bg: 'rgba(35,113,104,0.12)', fg: '#1a554e', label: 'Good' }, info: { bg: '#f6e9e5', fg: MUTED, label: 'FYI' } };
 const SOURCE_LABEL = (s) => s === 'direct' ? 'Direct / typed in' : s.startsWith('utm:') ? `Campaign: ${s.slice(4)}` : s.replace(/^(l\.|m\.|lm\.)/, '').replace('facebook.com', 'Facebook').replace('instagram.com', 'Instagram').replace('google.com', 'Google').replace('t.co', 'X / Twitter');
 const PAGE_LABEL = (p) => p === '/' ? 'Home' : p.replace(/^\/lakes\//, 'Lake: ').replace(/^\/market\//, 'Report: ').replace(/^\/property\//, 'Listing: ').replace(/-/g, ' ');
 
@@ -467,7 +468,7 @@ function Delta({ now, before }) {
   if (!before) return null;
   const pct = Math.round(((now - before) / before) * 100);
   if (!pct) return <span style={{ fontSize: '0.68rem', color: MUTED }}>same as before</span>;
-  return <span style={{ fontSize: '0.68rem', fontWeight: 700, color: pct > 0 ? '#047857' : PINK }}>{pct > 0 ? '▲' : '▼'} {Math.abs(pct)}% vs prior</span>;
+  return <span style={{ fontSize: '0.68rem', fontWeight: 700, color: pct > 0 ? DEEP : '#9c2f4c' }}>{pct > 0 ? '▲' : '▼'} {Math.abs(pct)}% vs prior</span>;
 }
 
 function Stats({ session, setTab }) {
@@ -482,8 +483,8 @@ function Stats({ session, setTab }) {
   const table = (rows, cols) => (
     <div className="adm-card" style={{ padding: 0, overflowX: 'auto' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-        <thead><tr>{cols.map((c) => <th key={c.k} style={{ textAlign: c.align || 'right', padding: '0.6rem 0.8rem', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#94a3b8', borderBottom: `1px solid ${LINE}` }}>{c.h}</th>)}</tr></thead>
-        <tbody>{rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.k} style={{ textAlign: c.align || 'right', padding: '0.55rem 0.8rem', borderBottom: '1px solid #f0eee9', fontWeight: c.align === 'left' ? 600 : 500 }}>{c.f ? c.f(r) : r[c.k]}</td>)}</tr>)}</tbody>
+        <thead><tr>{cols.map((c) => <th key={c.k} style={{ textAlign: c.align || 'right', padding: '0.6rem 0.8rem', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#98a3a1', borderBottom: `1px solid ${LINE}` }}>{c.h}</th>)}</tr></thead>
+        <tbody>{rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.k} style={{ textAlign: c.align || 'right', padding: '0.55rem 0.8rem', borderBottom: '1px solid #f6e9e5', fontWeight: c.align === 'left' ? 600 : 500 }}>{c.f ? c.f(r) : r[c.k]}</td>)}</tr>)}</tbody>
       </table>
     </div>
   );
@@ -492,7 +493,7 @@ function Stats({ session, setTab }) {
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
         <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>Last {days} days</div>
         <div style={{ display: 'flex', gap: '0.35rem' }}>
-          {[7, 30, 90].map((d) => <button key={d} onClick={() => setDays(d)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: days === d ? NAVY : 'white', color: days === d ? 'white' : MUTED, borderColor: days === d ? NAVY : LINE }}>{d}d</button>)}
+          {[7, 30, 90].map((d) => <button key={d} onClick={() => setDays(d)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: days === d ? DEEP : 'white', color: days === d ? 'white' : MUTED, borderColor: days === d ? DEEP : LINE }}>{d}d</button>)}
         </div>
       </div>
 
@@ -516,7 +517,7 @@ function Stats({ session, setTab }) {
         {[[now.visitors, 'Visitors', <Delta now={now.visitors} before={before.visitors} />], [now.views, 'Page views', <Delta now={now.views} before={before.views} />], [now.leadEvents, 'Leads', <Delta now={now.leadEvents} before={before.leadEvents} />], [`${rate}%`, 'Visitors to leads', null]].map(([v, l, d]) => (
           <div key={l} className="adm-card" style={{ textAlign: 'center', padding: '0.9rem 0.5rem' }}>
             <div style={{ fontFamily: SERIF, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1 }}>{v}</div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.3rem' }}>{l}</div>
+            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.3rem' }}>{l}</div>
             <div style={{ marginTop: '0.2rem' }}>{d}</div>
           </div>
         ))}
@@ -529,7 +530,7 @@ function Stats({ session, setTab }) {
         {now.sources.length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Where visitors came from</div>{table(now.sources, [{ k: 'source', h: 'Source', align: 'left', f: (r) => SOURCE_LABEL(r.source) }, { k: 'visitors', h: 'Visitors' }])}</div>}
         {Object.keys(now.events).length > 0 && <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '0.5rem' }}>Actions taken</div>{table(Object.entries(now.events).sort((a, b) => b[1] - a[1]).map(([e, n]) => ({ e, n })), [{ k: 'e', h: 'Action', align: 'left', f: (r) => ({ waitlist: 'Joined a lake waitlist', owner: 'Owner asked for updates', showing: 'Requested a showing', cma: 'Asked home value', contact: 'Sent a message', chat_open: 'Opened the chat', chat_lead: 'Left details in chat', call: 'Tapped to call', text: 'Tapped to text', review: 'Went to leave a review', save: 'Saved a listing', share: 'Shared a listing' }[r.e] || r.e) }, { k: 'n', h: 'Times' }])}</div>}
       </div>
-      <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '1rem' }}>Counts visitors to this site only, not Zillow or the MLS. Your own visits to the desk are never counted.</p>
+      <p style={{ fontSize: '0.72rem', color: '#98a3a1', marginTop: '1rem' }}>Counts visitors to this site only, not Zillow or the MLS. Your own visits to the desk are never counted.</p>
     </>
   );
 }
@@ -587,7 +588,7 @@ export default function AdminPage() {
   const dismissWelcome = () => { try { localStorage.setItem('hg-tour-seen', '1'); } catch { /* ignore */ } setFirstTime(false); };
   const logout = () => { setSession(''); setSess(''); };
 
-  if (exchanging) return <div style={{ minHeight: '100vh', background: NAVY, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT }}>Signing you in…</div>;
+  if (exchanging) return <div style={{ minHeight: '100vh', background: DEEP, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT }}>Signing you in…</div>;
   if (!session) return (
     <>
       {linkError && <div style={{ background: '#fee2e2', color: '#b91c1c', padding: '0.75rem 1rem', fontSize: '0.85rem', textAlign: 'center', fontFamily: FONT }}>{linkError}</div>}

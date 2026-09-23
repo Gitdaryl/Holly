@@ -35,9 +35,9 @@ function DeskChip() {
       <a href="/admin" className="hg-desk-chip" style={{
         position: 'fixed', left: '1.25rem', bottom: '1.5rem', zIndex: 998,
         display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-        background: '#1a2332', color: 'white', textDecoration: 'none',
+        background: '#1a554e', color: 'white', textDecoration: 'none',
         padding: '0.55rem 0.95rem', borderRadius: '30px', fontSize: '0.8rem', fontWeight: 700,
-        fontFamily: "'DM Sans', system-ui, sans-serif", boxShadow: '0 6px 20px rgba(15,25,35,0.28)',
+        fontFamily: "'Inter', system-ui, sans-serif", boxShadow: '0 6px 20px rgba(10,38,35,0.28)',
       }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Your desk

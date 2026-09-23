@@ -46,19 +46,19 @@ function AmenitySection({ title, icon, items, type }) {
   if (type === 'list') {
     return (
       <div style={{ marginBottom: '1rem' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {icon} {title}
         </h3>
         <div style={{ display: 'grid', gap: '0.4rem' }}>
           {items.map((item, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.45rem 0.85rem', background: '#f8f7f5', borderRadius: '8px', border: '1px solid #e8e4df' }}>
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.45rem 0.85rem', background: '#fcf5f3', borderRadius: '8px', border: '1px solid #eeddd8' }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1a2332' }}>{item.name}</div>
-                <div style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>{item.type}</div>
+                <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1c2b29' }}>{item.name}</div>
+                <div style={{ fontSize: '0.78rem', color: '#66706e' }}>{item.type}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.82rem', color: '#e84393', fontWeight: 600 }}>{item.distance}</div>
-                {item.rating && <div style={{ fontSize: '0.75rem', color: '#6b7a8d' }}>{item.rating}</div>}
+                <div style={{ fontSize: '0.82rem', color: '#e64774', fontWeight: 600 }}>{item.distance}</div>
+                {item.rating && <div style={{ fontSize: '0.75rem', color: '#66706e' }}>{item.rating}</div>}
               </div>
             </div>
           ))}
@@ -69,14 +69,14 @@ function AmenitySection({ title, icon, items, type }) {
   if (type === 'grid') {
     return (
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {icon} {title}
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
           {Object.entries(items).map(([key, value]) => (
-            <div key={key} style={{ padding: '0.75rem 1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
-              <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>{key}</div>
-              <div style={{ fontSize: '0.85rem', color: '#1a2332', fontWeight: 500 }}>{value}</div>
+            <div key={key} style={{ padding: '0.75rem 1rem', background: '#fcf5f3', borderRadius: '10px', border: '1px solid #eeddd8' }}>
+              <div style={{ fontSize: '0.75rem', color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>{key}</div>
+              <div style={{ fontSize: '0.85rem', color: '#1c2b29', fontWeight: 500 }}>{value}</div>
             </div>
           ))}
         </div>
@@ -100,8 +100,8 @@ function RegionMap({ region }) {
 
   if (isMobile || !apiKey) {
     return (
-      <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df' }}>
-        <div style={{ height: '300px', background: 'linear-gradient(135deg, #1a2332, #2c3e50)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: 'white', gap: '0.75rem' }}>
+      <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #eeddd8' }}>
+        <div style={{ height: '300px', background: 'linear-gradient(135deg, #1a554e, #237168)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: 'white', gap: '0.75rem' }}>
           <Icons.map />
           <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>{region.name}</span>
           <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>{lat.toFixed(4)}N, {(lng * -1).toFixed(4)}W</span>
@@ -115,7 +115,7 @@ function RegionMap({ region }) {
   }
 
   return (
-    <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df' }}>
+    <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #eeddd8' }}>
       <iframe
         title={`${region.name} Map`}
         width="100%"
@@ -171,18 +171,18 @@ function ContactModal({ region, onClose }) {
   return (
     <div className="contact-modal-backdrop" onClick={onClose}>
       <div className="contact-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Email Holly">
-        <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: '0.9rem', right: '0.9rem', background: 'none', border: 'none', fontSize: '1.4rem', lineHeight: 1, color: '#94a3b8', cursor: 'pointer' }}>&times;</button>
+        <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: '0.9rem', right: '0.9rem', background: 'none', border: 'none', fontSize: '1.4rem', lineHeight: 1, color: '#98a3a1', cursor: 'pointer' }}>&times;</button>
         {status === 'success' ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>&#10003;</div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.5rem' }}>Sent to Holly</h3>
-            <p style={{ color: '#6b7a8d', fontSize: '0.9rem', marginBottom: '1.25rem' }}>She usually replies within a few hours. If it can't wait, call (517) 403-3413.</p>
-            <button onClick={onClose} style={{ padding: '0.65rem 1.4rem', background: '#1a2332', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit' }}>Done</button>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', color: '#1c2b29', marginBottom: '0.5rem' }}>Sent to Holly</h3>
+            <p style={{ color: '#66706e', fontSize: '0.9rem', marginBottom: '1.25rem' }}>She usually replies within a few hours. If it can't wait, call (517) 403-3413.</p>
+            <button onClick={onClose} style={{ padding: '0.65rem 1.4rem', background: '#1a554e', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit' }}>Done</button>
           </div>
         ) : (
           <form onSubmit={submit}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#1a2332', marginBottom: '0.25rem' }}>Email Holly</h3>
-            <p style={{ color: '#6b7a8d', fontSize: '0.85rem', marginBottom: '1.25rem' }}>About {region}</p>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', color: '#1c2b29', marginBottom: '0.25rem' }}>Email Holly</h3>
+            <p style={{ color: '#66706e', fontSize: '0.85rem', marginBottom: '1.25rem' }}>About {region}</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.9rem' }}>
               <div><label>First Name *</label><input type="text" required {...field('firstName')} /></div>
               <div><label>Last Name</label><input type="text" {...field('lastName')} /></div>
@@ -196,8 +196,8 @@ function ContactModal({ region, onClose }) {
             {status === 'error' && (
               <div style={{ marginBottom: '0.9rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>
             )}
-<p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
-            <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
+<p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+            <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e64774', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Sending...' : 'Send to Holly'}
             </button>
           </form>
@@ -345,26 +345,31 @@ export default function IrishHillsRealty() {
   const regionAmenities = currentRegion ? amenityData[currentView] : null;
 
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes sigInk { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+    .sig-ink { animation: sigInk 1.5s cubic-bezier(0.45, 0.05, 0.3, 1) 0.25s both; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .home-stats > div { flex: 1 0 88px; }
+    @media (prefers-reduced-motion: reduce) { .sig-ink { animation: none; } }
     .region-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
-    .region-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(26,35,50,0.12); }
-    .region-card:hover .region-card-cta { background: #1a2332; color: #faf9f7 !important; letter-spacing: 1.5px; }
+    .region-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(26,85,78,0.12); }
+    .region-card:hover .region-card-cta { background: #1a554e; color: #fdf7f5 !important; letter-spacing: 1.5px; }
     .hero-back:hover { background: rgba(255,255,255,0.28) !important; }
-    .contact-modal-backdrop { position: fixed; inset: 0; background: rgba(26,35,50,0.6); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .contact-modal-backdrop { position: fixed; inset: 0; background: rgba(26,85,78,0.6); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
     .contact-modal { background: white; border-radius: 16px; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 1.75rem; position: relative; }
-    .contact-modal input, .contact-modal textarea { width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #e8e4df; font-size: 0.9rem; outline: none; font-family: inherit; box-sizing: border-box; }
-    .contact-modal input:focus, .contact-modal textarea:focus { border-color: #e84393; }
-    .contact-modal label { display: block; font-size: 0.78rem; font-weight: 600; color: #6b7a8d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+    .contact-modal input, .contact-modal textarea { width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #eeddd8; font-size: 0.9rem; outline: none; font-family: inherit; box-sizing: border-box; }
+    .contact-modal input:focus, .contact-modal textarea:focus { border-color: #e64774; }
+    .contact-modal label { display: block; font-size: 0.78rem; font-weight: 600; color: #66706e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
     .lake-chip { transition: all 0.3s ease; cursor: pointer; }
-    .lake-chip:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(26,35,50,0.15); }
+    .lake-chip:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(26,85,78,0.15); }
     .property-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
-    .property-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(26,35,50,0.15); }
+    .property-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(26,85,78,0.15); }
     .stat-pill { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
   `;
 
@@ -383,7 +388,7 @@ export default function IrishHillsRealty() {
     ] : [];
 
     return (
-      <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
+      <div style={{ minHeight: '100vh', background: '#fdf7f5' }}>
         {/* Region Hero */}
         <div style={{ height: '50vh', minHeight: '420px', position: 'relative', background: currentRegion.gradient, overflow: 'hidden' }}>
           <HeroVideo video={currentRegion.video} poster={currentRegion.poster} gradient={currentRegion.gradient} />
@@ -393,12 +398,12 @@ export default function IrishHillsRealty() {
               <Icons.back /> All Regions
             </button>
             <div style={{ textAlign: 'center', maxWidth: '800px', paddingTop: '72px' }}>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: 'white', marginBottom: '0.75rem', fontFamily: "'Playfair Display', serif" }}>{currentRegion.name}</h1>
+              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: 'white', marginBottom: '0.75rem', fontFamily: "'Source Serif 4', Georgia, serif" }}>{currentRegion.name}</h1>
               <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', color: 'rgba(255,255,255,0.85)', fontWeight: 300, marginBottom: '1rem' }}>{currentRegion.subtitle}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
                 <span className="stat-pill" style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}><Icons.pin /> {currentRegion.county} County</span>
                 <span className="stat-pill" style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}>{currentRegion.township}</span>
-                <span className="stat-pill" style={{ background: 'rgba(232,67,147,0.8)', color: 'white' }}>{currentRegion.priceRange}</span>
+                <span className="stat-pill" style={{ background: 'rgba(230,71,116,0.8)', color: 'white' }}>{currentRegion.priceRange}</span>
               </div>
             </div>
           </div>
@@ -407,24 +412,24 @@ export default function IrishHillsRealty() {
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '3rem 2rem' }}>
           {/* Region Description */}
           <div style={{ marginBottom: '3rem' }}>
-            <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4a5568' }}>{currentRegion.description}</p>
+            <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4a5654' }}>{currentRegion.description}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1.5rem' }}>
               {currentRegion.highlights.map((h, i) => (
-                <span key={i} style={{ padding: '0.4rem 0.8rem', background: '#f0eee9', borderRadius: '6px', fontSize: '0.82rem', color: '#6b7a8d', fontWeight: 500 }}>{h}</span>
+                <span key={i} style={{ padding: '0.4rem 0.8rem', background: '#f6e9e5', borderRadius: '6px', fontSize: '0.82rem', color: '#66706e', fontWeight: 500 }}>{h}</span>
               ))}
             </div>
           </div>
 
           {/* Property Types Available */}
-          <div style={{ marginBottom: '3rem', padding: '2rem', background: '#f8f7f5', borderRadius: '14px', border: '1px solid #e8e4df' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' }}>Property Types in This Area</h3>
+          <div style={{ marginBottom: '3rem', padding: '2rem', background: '#fcf5f3', borderRadius: '14px', border: '1px solid #eeddd8' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' }}>Property Types in This Area</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {currentRegion.propertyTypes.map(pt => {
                 const typeInfo = propertyTypes[pt];
                 return typeInfo ? (
-                  <div key={pt} style={{ padding: '0.5rem 1rem', background: 'white', borderRadius: '8px', border: '1px solid #e8e4df' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1a2332' }}>{typeInfo.label}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#6b7a8d' }}>{typeInfo.description}</div>
+                  <div key={pt} style={{ padding: '0.5rem 1rem', background: 'white', borderRadius: '8px', border: '1px solid #eeddd8' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1c2b29' }}>{typeInfo.label}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#66706e' }}>{typeInfo.description}</div>
                   </div>
                 ) : null;
               })}
@@ -434,48 +439,48 @@ export default function IrishHillsRealty() {
           {/* Lakes in This Region */}
           {regionLakes.length > 0 && (
             <div style={{ marginBottom: '3rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 600, color: '#1a2332', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, color: '#1c2b29', marginBottom: '1.5rem' }}>
                 {regionLakes.length === 1 ? 'The Lake' : `Lakes in ${currentRegion.name}`}
               </h2>
               <div style={{ display: 'grid', gap: '1.5rem' }}>
                 {regionLakes.map(lake => (
                   <div key={lake.slug} className="lake-chip" id={`lake-${lake.slug}`}
                     style={{
-                      background: highlightedLake === lake.slug ? 'rgba(232,67,147,0.05)' : 'white',
-                      borderRadius: '14px', padding: '1.75rem', border: highlightedLake === lake.slug ? '2px solid #e84393' : '1px solid #e8e4df'
+                      background: highlightedLake === lake.slug ? 'rgba(230,71,116,0.05)' : 'white',
+                      borderRadius: '14px', padding: '1.75rem', border: highlightedLake === lake.slug ? '2px solid #e64774' : '1px solid #eeddd8'
                     }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                       <div style={{ flex: 1, minWidth: '250px' }}>
-                        <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.25rem' }}>{lake.name}</h3>
-                        <p style={{ fontSize: '0.85rem', color: '#e84393', fontWeight: 600, fontStyle: 'italic', marginBottom: '0.75rem' }}>{lake.tagline}</p>
-                        <p style={{ fontSize: '0.92rem', color: '#4a5568', lineHeight: 1.7, marginBottom: '1rem' }}>{lake.description}</p>
+                        <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.25rem' }}>{lake.name}</h3>
+                        <p style={{ fontSize: '0.85rem', color: '#e64774', fontWeight: 600, fontStyle: 'italic', marginBottom: '0.75rem' }}>{lake.tagline}</p>
+                        <p style={{ fontSize: '0.92rem', color: '#4a5654', lineHeight: 1.7, marginBottom: '1rem' }}>{lake.description}</p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                           {lake.features.map((f, i) => (
-                            <span key={i} style={{ padding: '0.3rem 0.6rem', background: '#f0eee9', borderRadius: '6px', fontSize: '0.75rem', color: '#6b7a8d', fontWeight: 500 }}>{f}</span>
+                            <span key={i} style={{ padding: '0.3rem 0.6rem', background: '#f6e9e5', borderRadius: '6px', fontSize: '0.75rem', color: '#66706e', fontWeight: 500 }}>{f}</span>
                           ))}
                         </div>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '140px' }}>
                         {lake.acres && (
-                          <div style={{ padding: '0.5rem 0.75rem', background: '#f0eee9', borderRadius: '8px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>{lake.acres.toLocaleString()}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Acres</div>
+                          <div style={{ padding: '0.5rem 0.75rem', background: '#f6e9e5', borderRadius: '8px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29' }}>{lake.acres.toLocaleString()}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#66706e', textTransform: 'uppercase' }}>Acres</div>
                           </div>
                         )}
                         {lake.depth && (
-                          <div style={{ padding: '0.5rem 0.75rem', background: '#f0eee9', borderRadius: '8px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>{lake.depth} ft</div>
-                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Max Depth</div>
+                          <div style={{ padding: '0.5rem 0.75rem', background: '#f6e9e5', borderRadius: '8px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29' }}>{lake.depth} ft</div>
+                            <div style={{ fontSize: '0.75rem', color: '#66706e', textTransform: 'uppercase' }}>Max Depth</div>
                           </div>
                         )}
                         {lake.avgPrice && (
-                          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(232,67,147,0.08)', borderRadius: '8px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#e84393' }}>{lake.avgPrice}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#6b7a8d', textTransform: 'uppercase' }}>Avg Price</div>
+                          <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(230,71,116,0.08)', borderRadius: '8px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#e64774' }}>{lake.avgPrice}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#66706e', textTransform: 'uppercase' }}>Avg Price</div>
                           </div>
                         )}
-                        <div style={{ padding: '0.4rem 0.75rem', background: lake.access === 'private' ? 'rgba(139,92,246,0.1)' : 'rgba(16,185,129,0.1)', borderRadius: '8px', textAlign: 'center' }}>
-                          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: lake.access === 'private' ? '#7c3aed' : '#059669' }}>
+                        <div style={{ padding: '0.4rem 0.75rem', background: lake.access === 'private' ? 'rgba(173,53,87,0.1)' : 'rgba(35,113,104,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: lake.access === 'private' ? '#ad3557' : '#237168' }}>
                             {lake.access === 'private' ? 'Private Lake' : 'Public Access'} &middot; {lake.type === 'no-wake' ? 'No Wake' : 'All-Sports'}
                           </div>
                         </div>
@@ -485,15 +490,15 @@ export default function IrishHillsRealty() {
                     {lake.fishSpecies && lake.fishSpecies.length > 0 && (
                       <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <Icons.fish />
-                        <span style={{ fontSize: '0.78rem', color: '#6b7a8d' }}>{lake.fishSpecies.join(' · ')}</span>
+                        <span style={{ fontSize: '0.78rem', color: '#66706e' }}>{lake.fishSpecies.join(' · ')}</span>
                       </div>
                     )}
                     <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                      <a href={`/lakes/${lake.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#e84393', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid rgba(232,67,147,0.3)', paddingBottom: '1px' }}>
+                      <a href={`/lakes/${lake.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#e64774', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid rgba(230,71,116,0.3)', paddingBottom: '1px' }}>
                         Full lake details
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                       </a>
-                      <a href={`/listings?region=${currentRegion.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#6b7a8d', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid #e8e4df', paddingBottom: '1px' }}>
+                      <a href={`/listings?region=${currentRegion.slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#66706e', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none', borderBottom: '1px solid #eeddd8', paddingBottom: '1px' }}>
                         Browse properties
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                       </a>
@@ -507,14 +512,14 @@ export default function IrishHillsRealty() {
           {/* Amenities Section */}
           {regionAmenities && (
             <div style={{ marginBottom: '3rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 600, color: '#1a2332', marginBottom: '1.5rem' }}>Neighborhood & Amenities</h2>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, color: '#1c2b29', marginBottom: '1.5rem' }}>Neighborhood & Amenities</h2>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2rem' }}>
                 {amenityTabs.map(tab => (
                   <button key={tab.id} onClick={() => setActiveAmenityTab(tab.id)} style={{
                     display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px',
-                    border: activeAmenityTab === tab.id ? '2px solid #e84393' : '1px solid #e8e4df',
-                    background: activeAmenityTab === tab.id ? 'rgba(232,67,147,0.08)' : 'white',
-                    color: activeAmenityTab === tab.id ? '#e84393' : '#6b7a8d',
+                    border: activeAmenityTab === tab.id ? '2px solid #e64774' : '1px solid #eeddd8',
+                    background: activeAmenityTab === tab.id ? 'rgba(230,71,116,0.08)' : 'white',
+                    color: activeAmenityTab === tab.id ? '#e64774' : '#66706e',
                     cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, transition: 'all 0.3s ease'
                   }}>
                     {tab.icon} {tab.label}
@@ -529,16 +534,16 @@ export default function IrishHillsRealty() {
               {activeAmenityTab === 'recreation' && <AmenitySection title="Recreation" icon={<Icons.compass />} items={regionAmenities.recreation} type="list" />}
               {activeAmenityTab === 'distances' && (
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <Icons.car /> Commute Distances
                   </h3>
                   <div style={{ display: 'grid', gap: '0.75rem' }}>
                     {regionAmenities.distances.map((d, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8f7f5', borderRadius: '10px', border: '1px solid #e8e4df' }}>
-                        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1a2332' }}>{d.to}</div>
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#fcf5f3', borderRadius: '10px', border: '1px solid #eeddd8' }}>
+                        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1c2b29' }}>{d.to}</div>
                         <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '0.85rem', color: '#e84393', fontWeight: 600 }}>{d.miles} mi</span>
-                          <span style={{ fontSize: '0.78rem', color: '#6b7a8d', marginLeft: '0.5rem' }}>{d.time}</span>
+                          <span style={{ fontSize: '0.85rem', color: '#e64774', fontWeight: 600 }}>{d.miles} mi</span>
+                          <span style={{ fontSize: '0.78rem', color: '#66706e', marginLeft: '0.5rem' }}>{d.time}</span>
                         </div>
                       </div>
                     ))}
@@ -549,32 +554,32 @@ export default function IrishHillsRealty() {
           )}
 
           {!regionAmenities && (
-            <div style={{ marginBottom: '3rem', padding: '2rem', background: '#f8f7f5', borderRadius: '14px', border: '1px solid #e8e4df', textAlign: 'center' }}>
+            <div style={{ marginBottom: '3rem', padding: '2rem', background: '#fcf5f3', borderRadius: '14px', border: '1px solid #eeddd8', textAlign: 'center' }}>
               <Icons.map />
-              <p style={{ color: '#6b7a8d', marginTop: '0.5rem' }}>Detailed amenity data coming soon for {currentRegion.name}.</p>
-              <p style={{ color: '#e84393', fontWeight: 600, fontSize: '0.9rem', marginTop: '0.5rem' }}>Call Holly for the inside scoop!</p>
+              <p style={{ color: '#66706e', marginTop: '0.5rem' }}>Detailed amenity data coming soon for {currentRegion.name}.</p>
+              <p style={{ color: '#e64774', fontWeight: 600, fontSize: '0.9rem', marginTop: '0.5rem' }}>Call Holly for the inside scoop!</p>
             </div>
           )}
 
           {/* Map */}
           <div style={{ marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 600, color: '#1a2332', marginBottom: '1.5rem' }}>Location</h2>
+            <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, color: '#1c2b29', marginBottom: '1.5rem' }}>Location</h2>
             <RegionMap region={currentRegion} />
           </div>
 
           {/* Properties */}
           {regionProperties.length > 0 && (
             <div style={{ marginBottom: '3rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 600, color: '#1a2332', marginBottom: '1.5rem' }}>Available Properties</h2>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, color: '#1c2b29', marginBottom: '1.5rem' }}>Available Properties</h2>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                 {['all', ...new Set(regionProperties.map(p => p.type))].map(f => {
                   const label = f === 'all' ? 'All' : (propertyTypes[f]?.label || f);
                   return (
                     <button key={f} onClick={() => setActiveFilter(f)} style={{
                       padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
-                      border: activeFilter === f ? '2px solid #e84393' : '1px solid #e8e4df',
-                      background: activeFilter === f ? 'rgba(232,67,147,0.08)' : 'white',
-                      color: activeFilter === f ? '#e84393' : '#6b7a8d', transition: 'all 0.3s ease'
+                      border: activeFilter === f ? '2px solid #e64774' : '1px solid #eeddd8',
+                      background: activeFilter === f ? 'rgba(230,71,116,0.08)' : 'white',
+                      color: activeFilter === f ? '#e64774' : '#66706e', transition: 'all 0.3s ease'
                     }}>
                       {label}
                     </button>
@@ -583,25 +588,25 @@ export default function IrishHillsRealty() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {filteredProperties.map(prop => (
-                  <a key={prop.id} href={`/property/${prop.id}`} className="property-card" style={{ display: 'block', background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
+                  <a key={prop.id} href={`/property/${prop.id}`} className="property-card" style={{ display: 'block', background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #eeddd8', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ height: '180px', background: prop.image ? `url(${prop.image}) center / cover no-repeat` : prop.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {!prop.image && <Icons.home />}
                     </div>
                     <div style={{ padding: '1.25rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                        <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#e84393' }}>{prop.price}</div>
-                        <span style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.75rem', color: '#6b7a8d', fontWeight: 600 }}>
+                        <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#e64774' }}>{prop.price}</div>
+                        <span style={{ padding: '0.2rem 0.5rem', background: '#f6e9e5', borderRadius: '4px', fontSize: '0.75rem', color: '#66706e', fontWeight: 600 }}>
                           {propertyTypes[prop.type]?.label || prop.type}
                         </span>
                       </div>
-                      <div style={{ fontSize: '1rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.5rem' }}>{prop.title}</div>
-                      <div style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '0.75rem', lineHeight: 1.5 }}>{prop.summary || prop.description}</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 600, color: '#1c2b29', marginBottom: '0.5rem' }}>{prop.title}</div>
+                      <div style={{ fontSize: '0.82rem', color: '#66706e', marginBottom: '0.75rem', lineHeight: 1.5 }}>{prop.summary || prop.description}</div>
                       {prop.beds ? (
-                        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+                        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#98a3a1' }}>
                           <span>{prop.beds} bed</span><span>{prop.baths} bath</span><span>{prop.sqft} sqft</span>
                         </div>
                       ) : (prop.sqft || prop.lot) && (
-                        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+                        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#98a3a1' }}>
                           {prop.sqft && <span>{prop.sqft} sqft</span>}{prop.lot && <span>{prop.lot}</span>}
                         </div>
                       )}
@@ -610,9 +615,9 @@ export default function IrishHillsRealty() {
                 ))}
               </div>
               <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                <a href={`/listings?region=${currentView}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#e84393', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none', padding: '0.65rem 1.25rem', border: '2px solid #e84393', borderRadius: '10px', transition: 'all 0.2s ease' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#e84393'; e.currentTarget.style.color = 'white'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#e84393'; }}>
+                <a href={`/listings?region=${currentView}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#e64774', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none', padding: '0.65rem 1.25rem', border: '2px solid #e64774', borderRadius: '10px', transition: 'all 0.2s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#e64774'; e.currentTarget.style.color = 'white'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#e64774'; }}>
                   View All Listings in {currentRegion?.name}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
@@ -621,13 +626,13 @@ export default function IrishHillsRealty() {
           )}
 
           {/* Contact CTA */}
-          <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '3rem 2rem', textAlign: 'center', color: 'white' }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 600, marginBottom: '0.75rem' }}>Interested in {currentRegion.name}?</h2>
+          <div style={{ background: 'linear-gradient(135deg, #1a554e, #237168)', borderRadius: '16px', padding: '3rem 2rem', textAlign: 'center', color: 'white' }}>
+            <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, marginBottom: '0.75rem' }}>Interested in {currentRegion.name}?</h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
               Holly has 30+ years of expertise in this area. Get the inside scoop on properties, communities, and what it's really like to live here.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
+              <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#e64774', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
                 <Icons.phone /> Call Holly
               </a>
               <button onClick={() => setContactRegion(currentRegion.name)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', fontFamily: 'inherit' }}>
@@ -642,33 +647,34 @@ export default function IrishHillsRealty() {
 
   // ═══ HOME PAGE ═══
   const HomePage = () => (
-    <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5' }}>
       {/* Hero */}
-      <div style={{ height: '85vh', position: 'relative', background: 'linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)', overflow: 'hidden' }}>
-        <HeroVideo video="/regions/home/hero.mp4" poster="/regions/home/poster.webp" gradient="linear-gradient(135deg, #0f2940 0%, #1a3a52 50%, #0f2940 100%)" dim={0.3} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)' }} />
+      <div style={{ height: '85vh', position: 'relative', background: 'linear-gradient(135deg, #123f3a 0%, #1d5f57 50%, #123f3a 100%)', overflow: 'hidden' }}>
+        <HeroVideo video="/regions/home/hero.mp4" poster="/regions/home/poster.webp" gradient="linear-gradient(135deg, #123f3a 0%, #1d5f57 50%, #123f3a 100%)" dim={0.3} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,38,35,0.82) 0%, rgba(10,38,35,0.55) 45%, rgba(10,38,35,0.1) 80%), linear-gradient(0deg, rgba(10,38,35,0.55) 0%, transparent 45%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
             <div style={{ flex: 1, textAlign: 'left', position: 'relative', zIndex: 1 }}>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#faf9f7', marginBottom: '1rem', letterSpacing: '-0.02em', fontFamily: "'Playfair Display', serif" }}>
-                Holly Griewahn
+              <h1 style={{ margin: '0 0 1rem -0.4rem', lineHeight: 0 }}>
+                <span className="sr-only">Holly Griewahn</span>
+                <img className="sig-ink" src="/images/signature-blush.webp" alt="" aria-hidden="true" width="900" height="238" style={{ width: 'clamp(260px, 42vw, 520px)', height: 'auto', filter: 'drop-shadow(0 2px 12px rgba(10,38,35,0.45))' }} />
               </h1>
-              <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 300 }}>
+              <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: 'rgba(255,255,255,0.9)', marginBottom: '0.5rem', fontWeight: 400 }}>
                 Foundation Realty | The Irish Hills Authority
               </p>
-              <p style={{ fontSize: '1rem', color: '#60a5fa', fontWeight: 600, marginBottom: '1rem' }}>
+              <p style={{ fontSize: '1rem', color: '#f5b5c7', fontWeight: 600, marginBottom: '1rem' }}>
                 Lakes, Farms, Country Estates & Village Living
               </p>
-              <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.5)', marginBottom: '2rem', maxWidth: '520px', lineHeight: 1.7 }}>
+              <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.78)', marginBottom: '2rem', maxWidth: '520px', lineHeight: 1.7 }}>
                 From Grass Lake to Posey Lake, Michigan Center to Tecumseh - 9 distinct regions, 50+ lakes, and every type of property in between. 30+ years of knowing every road, every lake, and every neighbor.
               </p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <button onClick={() => document.getElementById('region-grid')?.scrollIntoView({ behavior: 'smooth' })} style={{ padding: '0.85rem 2rem', background: '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 8px 30px rgba(232,67,147,0.3)' }}>
+                <button onClick={() => document.getElementById('region-grid')?.scrollIntoView({ behavior: 'smooth' })} style={{ padding: '0.85rem 2rem', background: '#e64774', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 8px 30px rgba(230,71,116,0.3)' }}>
                   Explore Regions <Icons.arrow />
                 </button>
-                <button style={{ padding: '0.85rem 2rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <a href="tel:5174033413" style={{ padding: '0.85rem 2rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '10px', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
                   <Icons.phone /> Call Holly
-                </button>
+                </a>
               </div>
               {lastLake && (
                 <div style={{ marginTop: '1.25rem' }}>
@@ -688,8 +694,8 @@ export default function IrishHillsRealty() {
       </div>
 
       {/* Territory Stats Bar */}
-      <div style={{ background: '#1a2332', padding: '1.5rem 2rem' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', textAlign: 'center' }}>
+      <div style={{ background: '#1a554e', padding: '1.5rem 2rem' }}>
+        <div className="home-stats" style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '1rem', textAlign: 'center' }}>
           {[
             { val: '9', label: 'Regions' },
             { val: '50+', label: 'Lakes' },
@@ -698,26 +704,26 @@ export default function IrishHillsRealty() {
             { val: '3', label: 'Round Lakes' },
           ].map(({ val, label }) => (
             <div key={label}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e84393' }}>{val}</div>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#f5b5c7', fontFamily: "'Source Serif 4', Georgia, serif", fontVariantNumeric: 'tabular-nums' }}>{val}</div>
+              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.72)', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Region Grid */}
-      <section id="region-grid" style={{ padding: '5rem 2rem', background: '#faf9f7' }}>
+      <section id="region-grid" style={{ padding: '5rem 2rem', background: '#fdf7f5' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Explore the Territory</h2>
-            <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1rem', borderRadius: '2px' }} />
-            <p style={{ color: '#6b7a8d', fontSize: '1rem', marginBottom: '1.5rem', maxWidth: '600px', margin: '0 auto 1.5rem' }}>
+            <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2.5rem', fontWeight: 600, color: '#1c2b29', marginBottom: '0.75rem' }}>Explore the Territory</h2>
+            <div style={{ width: '40px', height: '3px', background: '#e64774', margin: '0 auto 1rem', borderRadius: '2px' }} />
+            <p style={{ color: '#66706e', fontSize: '1rem', marginBottom: '1.5rem', maxWidth: '600px', margin: '0 auto 1.5rem' }}>
               Search by lake name, town, property type, or browse by region
             </p>
             <div style={{ maxWidth: '500px', margin: '0 auto', position: 'relative' }}>
-              <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}><Icons.search /></div>
+              <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#98a3a1' }}><Icons.search /></div>
               <input type="text" placeholder='Try "Devils Lake", "farmland", "Tecumseh", "cottage"...' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{
-                width: '100%', padding: '0.85rem 1rem 0.85rem 2.5rem', borderRadius: '10px', border: '1px solid #e8e4df',
+                width: '100%', padding: '0.85rem 1rem 0.85rem 2.5rem', borderRadius: '10px', border: '1px solid #eeddd8',
                 fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit'
               }} />
             </div>
@@ -728,9 +734,9 @@ export default function IrishHillsRealty() {
               {searchResults.regions.map((region, i) => (
                 <div key={region.slug} className="region-card" onClick={() => navigateToRegion(region.slug)} style={{
                   background: 'white', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer',
-                  border: '1px solid #e8e4df', animation: `fadeUp 0.6s ease-out ${i * 0.06}s both`, opacity: 0
+                  border: '1px solid #eeddd8', animation: `fadeUp 0.6s ease-out ${i * 0.06}s both`, opacity: 0
                 }}>
-                  <div style={{ height: '160px', background: region.image ? `linear-gradient(to bottom, rgba(26,35,50,0) 30%, rgba(26,35,50,0.65) 100%), url(${region.image}) center / cover no-repeat` : region.gradient, position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '1.25rem' }}>
+                  <div style={{ height: '160px', background: region.image ? `linear-gradient(to bottom, rgba(26,85,78,0) 30%, rgba(26,85,78,0.65) 100%), url(${region.image}) center / cover no-repeat` : region.gradient, position: 'relative', display: 'flex', alignItems: 'flex-end', padding: '1.25rem' }}>
                     <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                       <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.75rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.county} County</span>
                       <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '0.75rem', color: 'white', fontWeight: 600, backdropFilter: 'blur(4px)' }}>{region.priceRange}</span>
@@ -742,17 +748,17 @@ export default function IrishHillsRealty() {
                     </div>
                   </div>
                   <div style={{ padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.25rem' }}>{region.name}</h3>
-                    <p style={{ fontSize: '0.85rem', color: '#e84393', marginBottom: '0.5rem', fontStyle: 'italic', fontWeight: 500 }}>{region.subtitle}</p>
-                    <p style={{ fontSize: '0.82rem', color: '#6b7a8d', marginBottom: '1rem', lineHeight: 1.5 }}>{region.character}</p>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.25rem' }}>{region.name}</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#e64774', marginBottom: '0.5rem', fontStyle: 'italic', fontWeight: 500 }}>{region.subtitle}</p>
+                    <p style={{ fontSize: '0.82rem', color: '#66706e', marginBottom: '1rem', lineHeight: 1.5 }}>{region.character}</p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '1rem' }}>
                       {region.propertyTypes.slice(0, 4).map(pt => (
-                        <span key={pt} style={{ padding: '0.2rem 0.5rem', background: '#f0eee9', borderRadius: '4px', fontSize: '0.75rem', color: '#6b7a8d', fontWeight: 500 }}>
+                        <span key={pt} style={{ padding: '0.2rem 0.5rem', background: '#f6e9e5', borderRadius: '4px', fontSize: '0.75rem', color: '#66706e', fontWeight: 500 }}>
                           {propertyTypes[pt]?.label || pt}
                         </span>
                       ))}
                     </div>
-                    <div className="region-card-cta" style={{ padding: '0.75rem', borderRadius: '10px', textAlign: 'center', fontWeight: 600, fontSize: '0.85rem', border: '2px solid #1a2332', color: '#1a2332', transition: 'all 0.4s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                    <div className="region-card-cta" style={{ padding: '0.75rem', borderRadius: '10px', textAlign: 'center', fontWeight: 600, fontSize: '0.85rem', border: '2px solid #1c2b29', color: '#1c2b29', transition: 'all 0.4s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                       Explore Region <Icons.arrow />
                     </div>
                   </div>
@@ -761,8 +767,8 @@ export default function IrishHillsRealty() {
             </div>
           ) : (
             <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-              <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '0.5rem' }}>No results for "{searchQuery}"</p>
-              <p style={{ color: '#6b7a8d', fontSize: '0.9rem' }}>Try a lake name, town, or property type like "farm" or "lakefront"</p>
+              <p style={{ color: '#98a3a1', fontSize: '1.1rem', marginBottom: '0.5rem' }}>No results for "{searchQuery}"</p>
+              <p style={{ color: '#66706e', fontSize: '0.9rem' }}>Try a lake name, town, or property type like "farm" or "lakefront"</p>
             </div>
           )}
         </div>
@@ -776,11 +782,11 @@ export default function IrishHillsRealty() {
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'start' }}>
           {/* Left: trust signals */}
           <div>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2.5rem', fontWeight: 600, color: '#1c2b29', marginBottom: '0.75rem', lineHeight: 1.2 }}>
               Ready to find your<br />place on the water?
             </h2>
-            <div style={{ width: '40px', height: '3px', background: '#e84393', borderRadius: '2px', marginBottom: '1.5rem' }} />
-            <p style={{ color: '#6b7a8d', fontSize: '1rem', lineHeight: 1.8, marginBottom: '1.75rem' }}>
+            <div style={{ width: '40px', height: '3px', background: '#e64774', borderRadius: '2px', marginBottom: '1.5rem' }} />
+            <p style={{ color: '#66706e', fontSize: '1rem', lineHeight: 1.8, marginBottom: '1.75rem' }}>
               Holly knows every lake, road, and neighbor in the Irish Hills. Drop her a note and she'll get back to you fast - usually the same day.
             </p>
             <div style={{ marginBottom: '1.25rem' }}><TrustStrip /></div>
@@ -791,12 +797,12 @@ export default function IrishHillsRealty() {
                 { icon: <Icons.phone />, title: 'Fast response', sub: 'Usually same-day. Call (517) 403-3413 if urgent.' },
               ].map(({ icon, title, sub }) => (
                 <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ flexShrink: 0, width: 40, height: 40, borderRadius: '10px', background: 'rgba(232,67,147,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e84393' }}>
+                  <div style={{ flexShrink: 0, width: 40, height: 40, borderRadius: '10px', background: 'rgba(230,71,116,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e64774' }}>
                     {icon}
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, color: '#1a2332', fontSize: '0.95rem' }}>{title}</div>
-                    <div style={{ color: '#6b7a8d', fontSize: '0.85rem', marginTop: '0.2rem' }}>{sub}</div>
+                    <div style={{ fontWeight: 700, color: '#1c2b29', fontSize: '0.95rem' }}>{title}</div>
+                    <div style={{ color: '#66706e', fontSize: '0.85rem', marginTop: '0.2rem' }}>{sub}</div>
                   </div>
                 </div>
               ))}
@@ -804,62 +810,62 @@ export default function IrishHillsRealty() {
           </div>
 
           {/* Right: form */}
-          <div style={{ background: 'white', borderRadius: '20px', padding: '2.5rem', border: '1px solid #e8e4df', boxShadow: '0 8px 40px rgba(26,35,50,0.06)' }}>
+          <div style={{ background: 'white', borderRadius: '20px', padding: '2.5rem', border: '1px solid #eeddd8', boxShadow: '0 8px 40px rgba(26,85,78,0.06)' }}>
             {formStatus === 'success' ? (
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-                <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(232,67,147,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.75rem' }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e84393" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(230,71,116,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.75rem' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', color: '#1a2332', marginBottom: '0.75rem' }}>Message sent!</h3>
-                <p style={{ color: '#6b7a8d', lineHeight: 1.7, marginBottom: '1.5rem' }}>Holly will be in touch soon. In the meantime, feel free to browse the regions above.</p>
-                <button onClick={() => setFormStatus('idle')} style={{ padding: '0.6rem 1.5rem', background: 'transparent', border: '2px solid #e84393', borderRadius: '8px', color: '#e84393', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'inherit' }}>
+                <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.5rem', color: '#1c2b29', marginBottom: '0.75rem' }}>Message sent!</h3>
+                <p style={{ color: '#66706e', lineHeight: 1.7, marginBottom: '1.5rem' }}>Holly will be in touch soon. In the meantime, feel free to browse the regions above.</p>
+                <button onClick={() => setFormStatus('idle')} style={{ padding: '0.6rem 1.5rem', background: 'transparent', border: '2px solid #e64774', borderRadius: '8px', color: '#e64774', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'inherit' }}>
                   Send another message
                 </button>
               </div>
             ) : (
               <form onSubmit={handleContactSubmit}>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', color: '#1a2332', marginBottom: '1.75rem' }}>Talk to Holly</h3>
+                <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.4rem', color: '#1c2b29', marginBottom: '1.75rem' }}>Talk to Holly</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>First Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>First Name *</label>
                     <input type="text" required value={formData.firstName} onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
-                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                      onFocus={e => e.target.style.borderColor = '#e84393'}
-                      onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                      onFocus={e => e.target.style.borderColor = '#e64774'}
+                      onBlur={e => e.target.style.borderColor = '#eeddd8'}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Last Name</label>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Last Name</label>
                     <input type="text" value={formData.lastName} onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
-                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                      onFocus={e => e.target.style.borderColor = '#e84393'}
-                      onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                      style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                      onFocus={e => e.target.style.borderColor = '#e64774'}
+                      onBlur={e => e.target.style.borderColor = '#eeddd8'}
                     />
                   </div>
                 </div>
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Email *</label>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Email *</label>
                   <input type="email" required value={formData.email} onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
-                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                    onFocus={e => e.target.style.borderColor = '#e84393'}
-                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.borderColor = '#e64774'}
+                    onBlur={e => e.target.style.borderColor = '#eeddd8'}
                   />
                 </div>
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Phone</label>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Phone</label>
                   <input type="tel" value={formData.phone} onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))} placeholder="(555) 000-0000"
-                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                    onFocus={e => e.target.style.borderColor = '#e84393'}
-                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.borderColor = '#e64774'}
+                    onBlur={e => e.target.style.borderColor = '#eeddd8'}
                   />
                 </div>
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#6b7a8d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Message *</label>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Message *</label>
                   <textarea required rows={4} value={formData.message} onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                     placeholder="Tell Holly what you're looking for - lake, property type, budget, timeline..."
-                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #e8e4df', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.6 }}
-                    onFocus={e => e.target.style.borderColor = '#e84393'}
-                    onBlur={e => e.target.style.borderColor = '#e8e4df'}
+                    style={{ width: '100%', padding: '0.7rem 0.9rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.6 }}
+                    onFocus={e => e.target.style.borderColor = '#e64774'}
+                    onBlur={e => e.target.style.borderColor = '#eeddd8'}
                   />
                 </div>
                 {formStatus === 'error' && (
@@ -867,9 +873,9 @@ export default function IrishHillsRealty() {
                     {formError}
                   </div>
                 )}
-<p style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+<p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
                 <button type="submit" disabled={formStatus === 'sending'}
-                  style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#6b7a8d' : '#e84393', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                  style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#66706e' : '#e64774', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   {formStatus === 'sending' ? (
                     <>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -885,30 +891,30 @@ export default function IrishHillsRealty() {
 
       {/* Blog Preview */}
       {homeArticles.length > 0 && (
-        <section style={{ padding: '4rem 2rem 5rem', background: '#faf9f7' }}>
+        <section style={{ padding: '4rem 2rem 5rem', background: '#fdf7f5' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', fontWeight: 600, color: '#1a2332', marginBottom: '0.75rem' }}>Local Knowledge Blog</h2>
-              <div style={{ width: '40px', height: '3px', background: '#e84393', margin: '0 auto 1rem', borderRadius: '2px' }} />
-              <p style={{ color: '#6b7a8d', fontSize: '1.05rem' }}>Tips, guides, and market insights from Holly</p>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2.5rem', fontWeight: 600, color: '#1c2b29', marginBottom: '0.75rem' }}>Local Knowledge Blog</h2>
+              <div style={{ width: '40px', height: '3px', background: '#e64774', margin: '0 auto 1rem', borderRadius: '2px' }} />
+              <p style={{ color: '#66706e', fontSize: '1.05rem' }}>Tips, guides, and market insights from Holly</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
               {homeArticles.map((post, i) => (
-                <a key={post.slug} href={`/blog/${post.slug}`} className="region-card" style={{ display: 'block', textDecoration: 'none', color: 'inherit', background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e8e4df', cursor: 'pointer', animation: `fadeUp 0.6s ease-out ${i * 0.1}s both`, opacity: 0 }}>
-                  <div style={{ height: '12px', background: 'linear-gradient(135deg, #e84393, #f093fb)' }} />
+                <a key={post.slug} href={`/blog/${post.slug}`} className="region-card" style={{ display: 'block', textDecoration: 'none', color: 'inherit', background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #eeddd8', cursor: 'pointer', animation: `fadeUp 0.6s ease-out ${i * 0.1}s both`, opacity: 0 }}>
+                  <div style={{ height: '12px', background: 'linear-gradient(135deg, #e64774, #f5b5c7)' }} />
                   <div style={{ padding: '1.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
+                      <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(230,71,116,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e64774', fontWeight: 600 }}>{post.category}</span>
                     </div>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
-                    <p style={{ fontSize: '0.88rem', color: '#6b7a8d', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{fmtBlogDate(post.publishedDate)}</div>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h3>
+                    <p style={{ fontSize: '0.88rem', color: '#66706e', lineHeight: 1.6, marginBottom: '1rem' }}>{post.excerpt}</p>
+                    <div style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{fmtBlogDate(post.publishedDate)}</div>
                   </div>
                 </a>
               ))}
             </div>
             <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-              <button onClick={navigateToBlog} style={{ padding: '0.75rem 2rem', background: 'white', color: '#1a2332', border: '2px solid #1a2332', borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease' }}>
+              <button onClick={navigateToBlog} style={{ padding: '0.75rem 2rem', background: 'white', color: '#1c2b29', border: '2px solid #1c2b29', borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease' }}>
                 View All Posts <Icons.arrow />
               </button>
             </div>
@@ -920,30 +926,30 @@ export default function IrishHillsRealty() {
 
   // ═══ BLOG PAGE ═══
   const BlogPage = () => (
-    <div style={{ minHeight: '100vh', background: '#faf9f7' }}>
-      <div style={{ height: '40vh', minHeight: '300px', position: 'relative', background: 'linear-gradient(135deg, #1a2332 0%, #2c3e50 100%)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5' }}>
+      <div style={{ height: '40vh', minHeight: '300px', position: 'relative', background: 'linear-gradient(135deg, #1a554e 0%, #237168 100%)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <button onClick={navigateHome} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '2rem' }}>
             <Icons.back /> Home
           </button>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', fontFamily: "'Playfair Display', serif", marginBottom: '0.75rem' }}>Local Knowledge Blog</h1>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', fontFamily: "'Source Serif 4', Georgia, serif", marginBottom: '0.75rem' }}>Local Knowledge Blog</h1>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem' }}>Tips, guides, and market insights from Holly Griewahn</p>
         </div>
       </div>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '3rem 2rem' }}>
         {blogPosts.map((post, i) => (
-          <article key={post.id} style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '2rem', marginBottom: '1.5rem', cursor: 'pointer', transition: 'all 0.3s ease', animation: `fadeUp 0.5s ease-out ${i * 0.08}s both`, opacity: 0 }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(26,35,50,0.1)'; }}
+          <article key={post.id} style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '2rem', marginBottom: '1.5rem', cursor: 'pointer', transition: 'all 0.3s ease', animation: `fadeUp 0.5s ease-out ${i * 0.08}s both`, opacity: 0 }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(26,85,78,0.1)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-              <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(232,67,147,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e84393', fontWeight: 600 }}>{post.category}</span>
-              <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{post.date}</span>
-              <span style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Icons.clock /> {post.readTime}</span>
+              <span style={{ padding: '0.25rem 0.6rem', background: 'rgba(230,71,116,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: '#e64774', fontWeight: 600 }}>{post.category}</span>
+              <span style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{post.date}</span>
+              <span style={{ fontSize: '0.78rem', color: '#98a3a1', display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Icons.clock /> {post.readTime}</span>
             </div>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1a2332', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h2>
-            <p style={{ fontSize: '0.95rem', color: '#6b7a8d', lineHeight: 1.7, marginBottom: '1rem' }}>{post.excerpt}</p>
-            <span style={{ fontSize: '0.85rem', color: '#e84393', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>Read More <Icons.arrow /></span>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1c2b29', marginBottom: '0.75rem', lineHeight: 1.4 }}>{post.title}</h2>
+            <p style={{ fontSize: '0.95rem', color: '#66706e', lineHeight: 1.7, marginBottom: '1rem' }}>{post.excerpt}</p>
+            <span style={{ fontSize: '0.85rem', color: '#e64774', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>Read More <Icons.arrow /></span>
           </article>
         ))}
       </div>
@@ -952,7 +958,7 @@ export default function IrishHillsRealty() {
 
   // ═══ MAIN RETURN ═══
   return (
-    <div style={{ fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332', minHeight: '100vh', background: '#faf9f7' }}>
+    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", color: '#1c2b29', minHeight: '100vh', background: '#fdf7f5' }}>
       <style>{css}{`
         @media (min-width: 900px) {
           .holly-photo-container { display: block !important; }
@@ -972,7 +978,7 @@ export default function IrishHillsRealty() {
       {currentView === 'home' ? <HomePage /> : currentView === 'blog' ? <BlogPage /> : <RegionDetailPage />}
 
       {/* Footer */}
-      <footer style={{ background: '#0f1923', padding: '4rem 2rem 2rem', color: '#94a3b8' }}>
+      <footer style={{ background: '#0e2d29', padding: '4rem 2rem 2rem', color: '#98a3a1' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -983,37 +989,37 @@ export default function IrishHillsRealty() {
               Holly Griewahn brings 30+ years of local expertise to every transaction. From lakefront estates to family farms, village homes to country retreats - the Irish Hills authority.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#e84393', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500 }}>
+              <a href="tel:5174033413" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#e64774', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500 }}>
                 <Icons.phone /> (517) 403-3413
               </a>
             </div>
           </div>
           <div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Explore</h3>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Explore</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {['All Regions', 'Lakefront Properties', 'Rural & Farm Properties', 'Browse Listings', 'What\'s My Home Worth?', 'Blog', 'Contact Holly'].map(link => (
                 <a key={link} href="#" onClick={(e) => { e.preventDefault(); if (link === 'All Regions') navigateHome(); if (link === 'Blog') navigateToBlog(); if (link === 'Browse Listings') window.location.href = '/listings'; if (link === 'Lakefront Properties') window.location.href = '/listings?type=lakefront'; if (link === 'Rural & Farm Properties') window.location.href = '/listings?type=rural'; if (link === "What's My Home Worth?") window.location.href = '/cma'; if (link === 'Contact Holly') { navigateHome(); setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100); } }}
-                  style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#e84393'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+                  style={{ color: '#98a3a1', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#e64774'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#98a3a1'}
                 >{link}</a>
               ))}
             </div>
           </div>
           <div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Regions</h3>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", color: 'white', marginBottom: '1rem', fontSize: '1.2rem' }}>Regions</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {Object.values(regions).slice(0, 6).map(r => (
                 <a key={r.slug} href="#" onClick={(e) => { e.preventDefault(); navigateToRegion(r.slug); }}
-                  style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#e84393'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+                  style={{ color: '#98a3a1', textDecoration: 'none', transition: 'color 0.3s ease', fontSize: '0.9rem' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#e64774'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#98a3a1'}
                 >{r.name}</a>
               ))}
             </div>
           </div>
         </div>
-        <div style={{ paddingTop: '2rem', borderTop: '1px solid rgba(232,67,147,0.2)', textAlign: 'center', fontSize: '0.9rem' }}>
+        <div style={{ paddingTop: '2rem', borderTop: '1px solid rgba(230,71,116,0.2)', textAlign: 'center', fontSize: '0.9rem' }}>
           <p>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>All listings and information deemed reliable but not guaranteed.</p>
         </div>

@@ -63,7 +63,7 @@ export default function ShareButton({ title, text, url, label = 'Share', compact
 
   const base = {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-    background: 'white', color: '#1a2332', border: '1px solid #e8e4df', borderRadius: '10px',
+    background: 'white', color: '#1c2b29', border: '1px solid #eeddd8', borderRadius: '10px',
     padding: compact ? '0.75rem' : '0.7rem 1rem', fontSize: '0.88rem', fontWeight: 700,
     fontFamily: 'inherit', cursor: 'pointer', minWidth: compact ? 48 : undefined, ...style,
   };
@@ -75,16 +75,16 @@ export default function ShareButton({ title, text, url, label = 'Share', compact
         {!compact && label}
       </button>
       {open && (
-        <div role="menu" aria-label="Share this listing" style={{ position: 'absolute', bottom: compact ? 'calc(100% + 0.5rem)' : undefined, top: compact ? undefined : 'calc(100% + 0.4rem)', right: 0, minWidth: 200, background: 'white', border: '1px solid #e8e4df', borderRadius: '12px', boxShadow: '0 16px 40px rgba(26,35,50,0.16)', padding: '0.4rem', zIndex: 200 }}>
+        <div role="menu" aria-label="Share this listing" style={{ position: 'absolute', bottom: compact ? 'calc(100% + 0.5rem)' : undefined, top: compact ? undefined : 'calc(100% + 0.4rem)', right: 0, minWidth: 200, background: 'white', border: '1px solid #eeddd8', borderRadius: '12px', boxShadow: '0 16px 40px rgba(26,85,78,0.16)', padding: '0.4rem', zIndex: 200 }}>
           {items.map((it) => it.href ? (
             <a key={it.key} role="menuitem" href={it.href} target={it.external ? '_blank' : undefined} rel={it.external ? 'noopener noreferrer' : undefined}
               onClick={() => { track('share'); setOpen(false); }}
-              style={{ display: 'block', padding: '0.65rem 0.8rem', borderRadius: '8px', color: '#1a2332', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>
+              style={{ display: 'block', padding: '0.65rem 0.8rem', borderRadius: '8px', color: '#1c2b29', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>
               {it.label}
             </a>
           ) : (
             <button key={it.key} role="menuitem" type="button" onClick={it.onClick}
-              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.65rem 0.8rem', borderRadius: '8px', background: 'none', border: 'none', color: copied ? '#059669' : '#1a2332', fontSize: '0.9rem', fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' }}>
+              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.65rem 0.8rem', borderRadius: '8px', background: 'none', border: 'none', color: copied ? '#237168' : '#1c2b29', fontSize: '0.9rem', fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' }}>
               {it.label}
             </button>
           ))}

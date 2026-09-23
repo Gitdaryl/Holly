@@ -43,26 +43,26 @@ export default async function handler(req, res) {
 
   const htmlBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #1a2332; margin-bottom: 4px;">New Contact Form Submission</h2>
-      <p style="color: #6b7a8d; font-size: 14px; margin-top: 0;">From your Irish Hills Lakes website</p>
-      <hr style="border: none; border-top: 1px solid #e8e4df; margin: 20px 0;" />
+      <h2 style="color: #1c2b29; margin-bottom: 4px;">New Contact Form Submission</h2>
+      <p style="color: #66706e; font-size: 14px; margin-top: 0;">From your Irish Hills Lakes website</p>
+      <hr style="border: none; border-top: 1px solid #eeddd8; margin: 20px 0;" />
       <table style="width: 100%; border-collapse: collapse;">
         <tr>
-          <td style="padding: 8px 0; font-weight: 600; color: #1a2332; width: 120px;">Name</td>
-          <td style="padding: 8px 0; color: #4a5568;">${fullName}</td>
+          <td style="padding: 8px 0; font-weight: 600; color: #1c2b29; width: 120px;">Name</td>
+          <td style="padding: 8px 0; color: #4a5654;">${fullName}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0; font-weight: 600; color: #1a2332;">Email</td>
-          <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #e84393;">${email}</a></td>
+          <td style="padding: 8px 0; font-weight: 600; color: #1c2b29;">Email</td>
+          <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #e64774;">${email}</a></td>
         </tr>
         ${phone ? `<tr>
-          <td style="padding: 8px 0; font-weight: 600; color: #1a2332;">Phone</td>
-          <td style="padding: 8px 0;"><a href="tel:${phone}" style="color: #e84393;">${phone}</a></td>
+          <td style="padding: 8px 0; font-weight: 600; color: #1c2b29;">Phone</td>
+          <td style="padding: 8px 0;"><a href="tel:${phone}" style="color: #e64774;">${phone}</a></td>
         </tr>` : ''}
       </table>
-      <hr style="border: none; border-top: 1px solid #e8e4df; margin: 20px 0;" />
-      <h3 style="color: #1a2332; margin-bottom: 8px;">Message</h3>
-      <p style="color: #4a5568; line-height: 1.7; white-space: pre-wrap;">${message}</p>
+      <hr style="border: none; border-top: 1px solid #eeddd8; margin: 20px 0;" />
+      <h3 style="color: #1c2b29; margin-bottom: 8px;">Message</h3>
+      <p style="color: #4a5654; line-height: 1.7; white-space: pre-wrap;">${message}</p>
     </div>
   `;
 

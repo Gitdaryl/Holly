@@ -131,26 +131,26 @@ export default function Tour() {
   } else { top = Math.max(16, vh / 2 - 130); left = Math.max(16, vw / 2 - cardW / 2); }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, fontFamily: "'Inter', system-ui, sans-serif" }}>
       {has ? (
-        <div style={{ position: 'fixed', top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2, borderRadius: '14px', boxShadow: '0 0 0 9999px rgba(15,25,35,0.62), 0 0 0 3px #e84393', pointerEvents: 'none', transition: 'all 0.3s ease' }} />
+        <div style={{ position: 'fixed', top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2, borderRadius: '14px', boxShadow: '0 0 0 9999px rgba(10,38,35,0.62), 0 0 0 3px #e64774', pointerEvents: 'none', transition: 'all 0.3s ease' }} />
       ) : (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.62)' }} />
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(10,38,35,0.62)' }} />
       )}
-      <div style={{ position: 'fixed', top, left, width: cardW, background: 'white', borderRadius: '16px', padding: '1.1rem 1.2rem', boxShadow: '0 20px 60px rgba(0,0,0,0.35)', color: '#1a2332' }}>
-        <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#e84393', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.35rem' }}>Tour · {step + 1} of {STEPS.length}</div>
-        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.25 }}>{s.title}</div>
-        <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#4a5568', margin: 0 }}>{s.text}</p>
-        {rect === 'none' && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>(Nothing to point at yet on this page; it appears once there is data.)</p>}
-        {leavingDesk && <p style={{ fontSize: '0.8rem', color: '#6b7a8d', marginTop: '0.6rem', lineHeight: 1.5 }}>That is your desk. The rest of the tour leaves it and walks the public side of your site. You can stop here and come back to it any time.</p>}
-        {onSite && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>You are on the public side of your site now. <a href="/admin" style={{ color: '#e84393', fontWeight: 700 }}>Back to your desk</a></p>}
+      <div style={{ position: 'fixed', top, left, width: cardW, background: 'white', borderRadius: '16px', padding: '1.1rem 1.2rem', boxShadow: '0 20px 60px rgba(0,0,0,0.35)', color: '#1c2b29' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#e64774', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.35rem' }}>Tour · {step + 1} of {STEPS.length}</div>
+        <div style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.25 }}>{s.title}</div>
+        <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#4a5654', margin: 0 }}>{s.text}</p>
+        {rect === 'none' && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '0.5rem' }}>(Nothing to point at yet on this page; it appears once there is data.)</p>}
+        {leavingDesk && <p style={{ fontSize: '0.8rem', color: '#66706e', marginTop: '0.6rem', lineHeight: 1.5 }}>That is your desk. The rest of the tour leaves it and walks the public side of your site. You can stop here and come back to it any time.</p>}
+        {onSite && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '0.5rem' }}>You are on the public side of your site now. <a href="/admin" style={{ color: '#e64774', fontWeight: 700 }}>Back to your desk</a></p>}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.9rem' }}>
-          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0, whiteSpace: 'nowrap' }}>{leavingDesk ? 'Stop here' : 'Skip tour'}</button>
+          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#98a3a1', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0, whiteSpace: 'nowrap' }}>{leavingDesk ? 'Stop here' : 'Skip tour'}</button>
           <div style={{ flex: 1, display: 'flex', gap: '3px', justifyContent: 'center' }}>
-            {STEPS.map((_, i) => <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: i === step ? '#e84393' : i < step ? '#1a2332' : '#e8e4df' }} />)}
+            {STEPS.map((_, i) => <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: i === step ? '#e64774' : i < step ? '#1c2b29' : '#eeddd8' }} />)}
           </div>
-          {step > 0 && <button onClick={() => go(step - 1)} style={{ background: 'white', border: '1px solid #e8e4df', color: '#1a2332', padding: '0.5rem 0.8rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>Back</button>}
-          <button onClick={() => go(step + 1)} style={{ background: '#e84393', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>{step === STEPS.length - 1 ? 'Done' : leavingDesk ? 'Show me the site' : 'Next'}</button>
+          {step > 0 && <button onClick={() => go(step - 1)} style={{ background: 'white', border: '1px solid #eeddd8', color: '#1c2b29', padding: '0.5rem 0.8rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>Back</button>}
+          <button onClick={() => go(step + 1)} style={{ background: '#e64774', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>{step === STEPS.length - 1 ? 'Done' : leavingDesk ? 'Show me the site' : 'Next'}</button>
         </div>
       </div>
     </div>

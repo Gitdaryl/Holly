@@ -22,7 +22,7 @@ export default function HeroVideo({ video, poster, gradient, dim = 0.45 }) {
           <source src={video} type="video/mp4" />
         </video>
       )}
-      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, rgba(15,41,64,${dim}) 0%, rgba(15,41,64,${dim + 0.25}) 100%)` }} />
+      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, rgba(10,38,35,${dim}) 0%, rgba(10,38,35,${dim + 0.25}) 100%)` }} />
     </>
   );
 }

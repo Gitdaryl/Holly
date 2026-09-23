@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 // opening an episode does not set third-party cookies or end on a grid of
 // somebody else's videos.
 
-const SERIF = "'Playfair Display', serif";
+const SERIF = "'Source Serif 4', Georgia, serif";
 
 function fmtDate(iso) {
   if (!iso) return '';
@@ -42,7 +42,7 @@ function Lightbox({ video, onClose }) {
       aria-modal="true"
       aria-label={video.title}
       onClick={onClose}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(15,25,35,0.94)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(10,38,35,0.94)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
     >
       <div
         ref={panelRef}
@@ -99,7 +99,7 @@ export default function VideoWall({ limit = 4, channelUrl, heading = 'Latest epi
         .vw-card:hover .vw-play { transform: scale(1.08); }
       `}</style>
 
-      <h2 style={{ fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' }}>{heading}</h2>
+      <h2 style={{ fontFamily: SERIF, fontSize: '1.4rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' }}>{heading}</h2>
 
       <div className="vw-grid">
         {videos.slice(0, limit).map((v) => (
@@ -109,21 +109,21 @@ export default function VideoWall({ limit = 4, channelUrl, heading = 'Latest epi
             className="vw-card"
             aria-label={`Play ${v.title}`}
             onClick={(e) => { triggerRef.current = e.currentTarget; setOpen(v); }}
-            style={{ all: 'unset', cursor: 'pointer', display: 'block', background: 'white', border: '1px solid #e8e4df', borderRadius: '14px', overflow: 'hidden' }}
+            style={{ all: 'unset', cursor: 'pointer', display: 'block', background: 'white', border: '1px solid #eeddd8', borderRadius: '14px', overflow: 'hidden' }}
           >
-            <div style={{ position: 'relative', aspectRatio: '16 / 9', background: '#0f1923' }}>
+            <div style={{ position: 'relative', aspectRatio: '16 / 9', background: '#0e2d29' }}>
               <img src={v.thumbnail} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               <span
                 className="vw-play"
                 aria-hidden="true"
-                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 52, height: 52, borderRadius: '50%', background: '#e84393', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.35)', transition: 'transform 0.18s' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 52, height: 52, borderRadius: '50%', background: '#e64774', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.35)', transition: 'transform 0.18s' }}
               >
                 <svg width="18" height="20" viewBox="0 0 18 20" fill="white" style={{ marginLeft: 3 }}><path d="M0 0l18 10L0 20z" /></svg>
               </span>
             </div>
             <div style={{ padding: '0.9rem 1rem 1.1rem' }}>
-              <div style={{ fontFamily: SERIF, fontSize: '1rem', fontWeight: 700, color: '#1a2332', lineHeight: 1.35, marginBottom: '0.35rem' }}>{v.title}</div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{fmtDate(v.publishedAt)}</div>
+              <div style={{ fontFamily: SERIF, fontSize: '1rem', fontWeight: 700, color: '#1c2b29', lineHeight: 1.35, marginBottom: '0.35rem' }}>{v.title}</div>
+              <div style={{ fontSize: '0.78rem', color: '#98a3a1' }}>{fmtDate(v.publishedAt)}</div>
             </div>
           </button>
         ))}
@@ -131,7 +131,7 @@ export default function VideoWall({ limit = 4, channelUrl, heading = 'Latest epi
 
       {channelUrl && (
         <div style={{ marginTop: '1.25rem' }}>
-          <a href={channelUrl} target="_blank" rel="noopener" style={{ color: '#e84393', fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem' }}>
+          <a href={channelUrl} target="_blank" rel="noopener" style={{ color: '#e64774', fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem' }}>
             Every episode on YouTube &rarr;
           </a>
         </div>

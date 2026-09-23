@@ -11,23 +11,23 @@ import SiteNav from '../components/SiteNav';
 import HeroVideo from '../components/HeroVideo';
 
 const TYPE_COLOR = {
-  'all-sports': { bg: 'rgba(59,130,246,0.1)', text: '#2563eb', label: 'All-Sports Lake' },
-  'no-wake': { bg: 'rgba(16,185,129,0.1)', text: '#059669', label: 'No-Wake Lake' },
-  'private': { bg: 'rgba(168,85,247,0.1)', text: '#7c3aed', label: 'Private Lake' },
+  'all-sports': { bg: 'rgba(35,113,104,0.1)', text: '#1a554e', label: 'All-Sports Lake' },
+  'no-wake': { bg: 'rgba(179,128,113,0.15)', text: '#8a5646', label: 'No-Wake Lake' },
+  'private': { bg: 'rgba(173,53,87,0.1)', text: '#ad3557', label: 'Private Lake' },
 };
 
 const LAKE_GRADIENTS = {
-  'all-sports': 'linear-gradient(135deg, #0f2d5e 0%, #1a4d8f 40%, #1e6fbf 100%)',
-  'no-wake': 'linear-gradient(135deg, #0d3d2b 0%, #1a5c40 40%, #1e8c5e 100%)',
-  'private': 'linear-gradient(135deg, #2d1a5e 0%, #4a2d8f 40%, #6b3fbf 100%)',
+  'all-sports': 'linear-gradient(135deg, #123f3a 0%, #1a554e 40%, #237168 100%)',
+  'no-wake': 'linear-gradient(135deg, #4a2e2a 0%, #7a4e45 40%, #b38071 100%)',
+  'private': 'linear-gradient(135deg, #4a1a2a 0%, #7d2a45 40%, #ad3557 100%)',
 };
 
 function StatCard({ label, value, sub }) {
   return (
-    <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e8e4df', padding: '1rem 1.25rem', textAlign: 'center' }}>
-      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a2332', fontFamily: "'Playfair Display', serif" }}>{value}</div>
-      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{label}</div>
-      {sub && <div style={{ fontSize: '0.75rem', color: '#cbd5e0', marginTop: '0.15rem' }}>{sub}</div>}
+    <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #eeddd8', padding: '1rem 1.25rem', textAlign: 'center' }}>
+      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1c2b29', fontFamily: "'Source Serif 4', Georgia, serif" }}>{value}</div>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{label}</div>
+      {sub && <div style={{ fontSize: '0.75rem', color: '#d5dcda', marginTop: '0.15rem' }}>{sub}</div>}
     </div>
   );
 }
@@ -66,9 +66,9 @@ export default function LakePage() {
 
   if (!lake) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#faf9f7', fontFamily: "'DM Sans', sans-serif", padding: '2rem', textAlign: 'center' }}>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: '#1a2332', marginBottom: '1rem' }}>Lake Not Found</h1>
-        <Link to="/" style={{ background: '#e84393', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700 }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fdf7f5', fontFamily: "'Inter', sans-serif", padding: '2rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '2rem', color: '#1c2b29', marginBottom: '1rem' }}>Lake Not Found</h1>
+        <Link to="/" style={{ background: '#e64774', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '10px', textDecoration: 'none', fontWeight: 700 }}>
           Browse All Regions
         </Link>
       </div>
@@ -82,9 +82,9 @@ export default function LakePage() {
   const heroPoster = lake.hero?.poster || region?.poster || null;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#faf9f7', fontFamily: "'DM Sans', -apple-system, sans-serif", color: '#1a2332' }}>
+    <div style={{ minHeight: '100vh', background: '#fdf7f5', fontFamily: "'Inter', -apple-system, sans-serif", color: '#1c2b29' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @media (max-width: 768px) { .lake-grid { grid-template-columns: repeat(2, 1fr) !important; } }
       `}</style>
@@ -125,7 +125,7 @@ export default function LakePage() {
             )}
           </div>
 
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '0.6rem' }}>
+          <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '0.6rem' }}>
             {lake.name}
           </h1>
           {lake.tagline && (
@@ -135,7 +135,7 @@ export default function LakePage() {
       </div>
 
       {/* Stats bar */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e8e4df', padding: '1.25rem 2rem' }}>
+      <div style={{ background: 'white', borderBottom: '1px solid #eeddd8', padding: '1.25rem 2rem' }}>
         <div className="lake-grid" style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
           {lake.acres ? <StatCard label="Surface Area" value={`${lake.acres.toLocaleString()} ac`} /> : null}
           {lake.depth ? <StatCard label="Max Depth" value={`${lake.depth} ft`} /> : null}
@@ -148,17 +148,17 @@ export default function LakePage() {
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2.5rem 1.5rem 4rem' }}>
 
         {/* About */}
-        <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '2rem', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' }}>
+        <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '2rem', marginBottom: '1.5rem' }}>
+          <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.4rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' }}>
             About {lake.name}
           </h2>
-          <p style={{ color: '#4a5568', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: lake.features?.length ? '1.5rem' : 0 }}>
+          <p style={{ color: '#4a5654', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: lake.features?.length ? '1.5rem' : 0 }}>
             {lake.description}
           </p>
           {lake.features?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {lake.features.map((f, i) => (
-                <span key={i} style={{ padding: '0.3rem 0.75rem', background: '#f0f9ff', borderRadius: '20px', fontSize: '0.78rem', color: '#2563eb', fontWeight: 600, border: '1px solid #bfdbfe' }}>{f}</span>
+                <span key={i} style={{ padding: '0.3rem 0.75rem', background: '#eef5f4', borderRadius: '20px', fontSize: '0.78rem', color: '#1a554e', fontWeight: 600, border: '1px solid #cfe2df' }}>{f}</span>
               ))}
             </div>
           )}
@@ -166,10 +166,10 @@ export default function LakePage() {
 
         {/* Holly on this lake */}
         {(record.sold > 0 || record.active > 0) && (
-          <div data-tour="track-record" style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
+          <div data-tour="track-record" style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.5rem 2rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, color: '#1a2332' }}>Holly on {lake.name}</h2>
-              <Link to={`/market/${lake.slug}`} style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>{lake.name} sales report →</Link>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: '#1c2b29' }}>Holly on {lake.name}</h2>
+              <Link to={`/market/${lake.slug}`} style={{ color: '#e64774', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>{lake.name} sales report →</Link>
             </div>
             <div className="lake-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               <StatCard label="Sold here" value={record.sold} />
@@ -180,9 +180,9 @@ export default function LakePage() {
             {recentSold.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '1rem' }}>
                 {recentSold.map(p => (
-                  <Link key={p.id} to={`/property/${p.slug}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.85rem', textDecoration: 'none', color: '#1a2332', padding: '0.5rem 0', borderTop: '1px solid #f0eee9' }}>
+                  <Link key={p.id} to={`/property/${p.slug}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.85rem', textDecoration: 'none', color: '#1c2b29', padding: '0.5rem 0', borderTop: '1px solid #f6e9e5' }}>
                     <span style={{ fontWeight: 600 }}>{p.title}</span>
-                    <span style={{ color: '#6b7a8d', whiteSpace: 'nowrap' }}>{soldBadge(p)}</span>
+                    <span style={{ color: '#66706e', whiteSpace: 'nowrap' }}>{soldBadge(p)}</span>
                   </Link>
                 ))}
               </div>
@@ -204,15 +204,15 @@ export default function LakePage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
 
           {lake.fishSpecies?.length > 0 && (
-            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem' }}>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e84393" strokeWidth="2"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6z"/></svg>
+            <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.5rem' }}>
+              <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6z"/></svg>
                 Fish Species
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 {lake.fishSpecies.map((f, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: '#4a5568' }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#e84393', flexShrink: 0 }} />
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: '#4a5654' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#e64774', flexShrink: 0 }} />
                     {f}
                   </div>
                 ))}
@@ -220,38 +220,38 @@ export default function LakePage() {
             </div>
           )}
 
-          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e84393" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.5rem' }}>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               Lake Details
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {lake.wakeHours && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#6b7a8d' }}>Wake hours</span>
-                  <span style={{ color: '#1a2332', fontWeight: 600 }}>{lake.wakeHours}</span>
+                  <span style={{ color: '#66706e' }}>Wake hours</span>
+                  <span style={{ color: '#1c2b29', fontWeight: 600 }}>{lake.wakeHours}</span>
                 </div>
               )}
               {lake.association && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#6b7a8d' }}>Association</span>
-                  <span style={{ color: '#1a2332', fontWeight: 600, textAlign: 'right', maxWidth: '55%' }}>{lake.association}</span>
+                  <span style={{ color: '#66706e' }}>Association</span>
+                  <span style={{ color: '#1c2b29', fontWeight: 600, textAlign: 'right', maxWidth: '55%' }}>{lake.association}</span>
                 </div>
               )}
               {lake.annualDues && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#6b7a8d' }}>Annual dues</span>
-                  <span style={{ color: '#1a2332', fontWeight: 600 }}>{lake.annualDues}</span>
+                  <span style={{ color: '#66706e' }}>Annual dues</span>
+                  <span style={{ color: '#1c2b29', fontWeight: 600 }}>{lake.annualDues}</span>
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <span style={{ color: '#6b7a8d' }}>Access</span>
-                <span style={{ color: '#1a2332', fontWeight: 600, textTransform: 'capitalize' }}>{lake.access || 'Public'}</span>
+                <span style={{ color: '#66706e' }}>Access</span>
+                <span style={{ color: '#1c2b29', fontWeight: 600, textTransform: 'capitalize' }}>{lake.access || 'Public'}</span>
               </div>
               {region && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#6b7a8d' }}>Area</span>
-                  <span style={{ color: '#1a2332', fontWeight: 600 }}>{region.county} County</span>
+                  <span style={{ color: '#66706e' }}>Area</span>
+                  <span style={{ color: '#1c2b29', fontWeight: 600 }}>{region.county} County</span>
                 </div>
               )}
             </div>
@@ -260,8 +260,8 @@ export default function LakePage() {
 
         {/* Map */}
         {region?.coordinates && (
-          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e8e4df', padding: '1.5rem', marginBottom: '1.5rem' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: '#1a2332', marginBottom: '1rem' }}>Location</h3>
+          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #eeddd8', padding: '1.5rem', marginBottom: '1.5rem' }}>
+            <h3 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.1rem', fontWeight: 700, color: '#1c2b29', marginBottom: '1rem' }}>Location</h3>
             <div style={{ borderRadius: '12px', overflow: 'hidden', height: '280px' }}>
               <iframe
                 title={`${lake.name} location map`}
@@ -277,25 +277,25 @@ export default function LakePage() {
         {nearbyProps.length > 0 && (
           <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem' }}>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 700, color: '#1a2332' }}>
+              <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.3rem', fontWeight: 700, color: '#1c2b29' }}>
                 Properties Near {lake.name}
               </h2>
-              <Link to={`/listings?region=${lake.region}`} style={{ color: '#e84393', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+              <Link to={`/listings?region=${lake.region}`} style={{ color: '#e64774', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
                 View all →
               </Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
               {nearbyProps.map(p => (
                 <Link key={p.id} to={`/property/${p.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e8e4df', transition: 'all 0.25s ease' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(26,35,50,0.1)'; }}
+                  <div style={{ background: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #eeddd8', transition: 'all 0.25s ease' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(26,85,78,0.1)'; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                   >
                     <div style={{ height: '130px', background: coverFor(p) ? `url(${coverFor(p)}) center / cover no-repeat` : p.gradient }} />
                     <div style={{ padding: '0.9rem' }}>
-                      <div style={{ fontWeight: 800, color: '#e84393', fontSize: '1.05rem', marginBottom: '0.2rem' }}>{p.price}</div>
-                      <div style={{ fontWeight: 600, color: '#1a2332', fontSize: '0.88rem', marginBottom: '0.25rem' }}>{p.title}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{propertyTypes[p.type]?.label}</div>
+                      <div style={{ fontWeight: 800, color: '#e64774', fontSize: '1.05rem', marginBottom: '0.2rem' }}>{p.price}</div>
+                      <div style={{ fontWeight: 600, color: '#1c2b29', fontSize: '0.88rem', marginBottom: '0.25rem' }}>{p.title}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#98a3a1' }}>{propertyTypes[p.type]?.label}</div>
                     </div>
                   </div>
                 </Link>
@@ -306,17 +306,17 @@ export default function LakePage() {
 
         {/* Region context */}
         {region && (
-          <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '2rem', color: 'white', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ background: 'linear-gradient(135deg, #1a554e, #237168)', borderRadius: '16px', padding: '2rem', color: 'white', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '200px' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Part of</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.4rem' }}>{region.name}</div>
+              <div style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.4rem' }}>{region.name}</div>
               <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{region.character}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <Link to={`/?region=${lake.region}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.12)', color: 'white', padding: '0.6rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.2)' }}>
                 Explore Region
               </Link>
-              <Link to="/cma" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#e84393', color: 'white', padding: '0.6rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem' }}>
+              <Link to="/cma" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#e64774', color: 'white', padding: '0.6rem 1.1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem' }}>
                 What's My Home Worth?
               </Link>
             </div>
@@ -324,8 +324,8 @@ export default function LakePage() {
         )}
       </div>
 
-      <footer style={{ background: '#0f1923', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: '#64748b', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
+      <footer style={{ background: '#0e2d29', padding: '2rem', textAlign: 'center' }}>
+        <p style={{ color: '#66706e', fontSize: '0.82rem' }}>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
       </footer>
     </div>
   );
