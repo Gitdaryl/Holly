@@ -9,6 +9,8 @@ import { notifyHolly, textLead, HOLLY_PRETTY, normalizePhone } from './lib/sms.j
 import { WRITE_REVIEW_URL } from './reviews.js'
 import { transcribeWithDeepgram } from './voice-inbound.js'
 import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
+import * as letter from './lib/newsletter-send.js'
+import { issue as readIssue } from './lib/newsletter-store.js'
 
 // Holly's admin. One function, four jobs:
 //   POST ?action=login                text Holly a 15-minute login link
@@ -18,6 +20,8 @@ import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
 //   POST ?action=review  {id, phone, name} (bearer) text the client Holly's Google review link
 //   GET  ?view=texts                    (bearer) every SMS thread, newest first
 //   POST ?action=reply   {to, body}     (bearer) send a text from the site number
+//   GET  ?view=letter | letter-new | letter-get&id= | letter-preview&id=   the newsletter
+//   POST ?action=letter-save {issue} | letter-test {id, to} | letter-send {id}   (see lib/newsletter-send.js)
 //
 // Reads are assembled from the same append-only blobs the intakes write, so
 // the admin never has a second copy of the truth. Lead status is append-only
@@ -40,6 +44,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST' && action === 'review') return askReview(req, res)
     if (req.method === 'POST' && action === 'reply') return reply(req, res)
     if (req.method === 'POST' && action === 'purge-tests') return purgeTests(req, res)
+    if (req.method === 'POST' && action?.startsWith('letter-')) return letterAction(req, res, action)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
@@ -48,6 +53,18 @@ export default async function handler(req, res) {
     if (view === 'listings') return res.status(200).json(await listings())
     if (view === 'texts') return res.status(200).json(await texts())
     if (view === 'stats') return res.status(200).json(await stats(Math.min(90, Math.max(1, parseInt(req.query.days, 10) || 7))))
+    if (view === 'letter') {
+      const [issues, subscribers] = await Promise.all([letter.listIssues(), letter.subscriberCounts()])
+      return res.status(200).json({ issues, subscribers, ready: letter.readiness(), testTo: process.env.HOLLY_CONTACT_EMAIL || null })
+    }
+    if (view === 'letter-new') return res.status(200).json(await letter.starter())
+    if (view === 'letter-get' || view === 'letter-preview') {
+      const found = await readIssue(String(req.query.id || '').replace(/[^a-z0-9-]/gi, ''))
+      if (!found) return res.status(404).json({ error: 'No such letter.' })
+      if (view === 'letter-get') return res.status(200).json(found)
+      res.setHeader('Content-Type', 'text/html; charset=utf-8')
+      return res.status(200).send(letter.preview(found))
+    }
     if (view === 'transcribe') {
       // Re-run a voicemail through Deepgram: ?view=transcribe&rec=RE...
       if (!/^RE[0-9a-f]{32}$/.test(String(req.query.rec || ''))) return res.status(400).json({ error: 'bad recording id' })
@@ -58,6 +75,25 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('admin failed:', err)
     return res.status(500).json({ error: err.message })
+  }
+}
+
+// ── newsletter ──────────────────────────────────────────────────────────
+
+async function letterAction(req, res, action) {
+  const b = req.body || {}
+  try {
+    if (action === 'letter-save') return res.status(200).json(await letter.save(b.issue))
+    if (action === 'letter-preview') return res.status(200).json({ html: letter.preview(b.issue || {}) })
+    if (action === 'letter-test') {
+      const to = String(b.to || process.env.HOLLY_CONTACT_EMAIL || '').trim()
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) return res.status(400).json({ error: 'Enter the address to send the test to.' })
+      return res.status(200).json(await letter.sendTest(b.id, to))
+    }
+    if (action === 'letter-send') return res.status(200).json(await letter.send(b.id))
+    return res.status(400).json({ error: 'unknown action' })
+  } catch (err) {
+    return res.status(err.status || 500).json({ error: err.message })
   }
 }
 

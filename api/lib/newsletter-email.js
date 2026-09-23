@@ -48,14 +48,14 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;"
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${BRAND.line};border-radius:14px;overflow:hidden;">
 
-<tr><td style="background:${BRAND.navy};padding:22px 28px;">
+<tr><td style="background:#1a554e;padding:22px 28px;">
   <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#f5b5c7;margin-bottom:7px;">Foundation Realty &middot; Irish Hills</div>
   <div style="font:400 23px/1.2 ${SERIF};color:#ffffff;">Holly Griewahn</div>
 </td></tr>
 
 ${inner}
 
-<tr><td style="background:#f8f6f3;border-top:1px solid ${BRAND.line};padding:22px 28px;font:400 12px/1.7 ${SANS};color:${BRAND.muted};">
+<tr><td style="background:#fbf0ed;border-top:1px solid ${BRAND.line};padding:22px 28px;font:400 12px/1.7 ${SANS};color:${BRAND.muted};">
   <div style="font-weight:700;color:${BRAND.navy};">Holly Griewahn &middot; Foundation Realty</div>
   <div>${esc(ADDRESS)}</div>
   <div><a href="tel:${PHONE.replace(/[^0-9+]/g, '')}" style="color:${BRAND.muted};">${esc(PRETTY_PHONE)}</a> &middot; <a href="${siteUrl}" style="color:${BRAND.muted};">${esc(siteUrl.replace(/^https?:\/\//, ''))}</a></div>

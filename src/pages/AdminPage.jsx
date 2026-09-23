@@ -60,13 +60,13 @@ const when = (iso) => {
 // ── shells ─────────────────────────────────────────────────────────────
 
 function Shell({ children, tab, setTab, onLogout }) {
-  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['stats', 'Stats']];
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats']];
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .adm-tab { flex: 1; padding: 0.85rem 0.5rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
+        .adm-tab { flex: 1; padding: 0.85rem 0.25rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
         .adm-tab.on { color: ${NAVY}; border-bottom-color: ${PINK}; }
         .adm-card { background: white; border: 1px solid ${LINE}; border-radius: 14px; padding: 1rem 1.1rem; }
         .adm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.55rem 0.9rem; border-radius: 9px; font-family: inherit; font-size: 0.82rem; font-weight: 700; text-decoration: none; cursor: pointer; border: 1px solid ${LINE}; background: white; color: ${NAVY}; }
@@ -606,6 +606,165 @@ function Stats({ session, setTab }) {
   );
 }
 
+// ── letter ─────────────────────────────────────────────────────────────
+//
+// The monthly newsletter. Start one (listings and upcoming events come
+// pre-filled), write the words, preview, test, send. Sending runs in slices
+// until the server says nothing is left, so a big list or a dropped
+// connection just means tapping Send again: nobody gets it twice.
+
+const field = { width: '100%', padding: '0.65rem 0.8rem', borderRadius: '10px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.92rem', color: NAVY, background: 'white' };
+const flabel = { display: 'block', fontSize: '0.72rem', fontWeight: 700, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0.9rem 0 0.3rem' };
+
+function LetterEditor({ session, start, ready, testTo, onDone }) {
+  const [issue, setIssue] = useState(start);
+  const [msg, setMsg] = useState('');
+  const [busy, setBusy] = useState('');
+  const [previewHtml, setPreviewHtml] = useState('');
+  const [to, setTo] = useState(testTo || '');
+  const [progress, setProgress] = useState(start.result || null);
+  const locked = issue.status !== 'draft';
+  const set = (k) => (e) => setIssue((i) => ({ ...i, [k]: e.target.value }));
+  const drop = (k, idx) => setIssue((i) => ({ ...i, [k]: i[k].filter((_, j) => j !== idx) }));
+
+  const run = async (label, fn) => {
+    setBusy(label); setMsg('');
+    try { await fn(); } catch (e) { setMsg(e.message); }
+    setBusy('');
+  };
+  const save = () => run('save', async () => { const saved = await api('/api/admin?action=letter-save', { method: 'POST', session, body: { issue } }); setIssue(saved); setMsg('Saved.'); });
+  const preview = () => run('preview', async () => { const r = await api('/api/admin?action=letter-preview', { method: 'POST', session, body: { issue } }); setPreviewHtml(r.html); });
+  const test = () => run('test', async () => {
+    const saved = locked ? issue : await api('/api/admin?action=letter-save', { method: 'POST', session, body: { issue } });
+    setIssue(saved);
+    await api('/api/admin?action=letter-test', { method: 'POST', session, body: { id: saved.id, to } });
+    setMsg(`Test sent to ${to}. Check it on your phone before sending.`);
+  });
+  const send = () => run('send', async () => {
+    if (!window.confirm(`Send "${issue.headline}" to every confirmed subscriber now? This cannot be undone.`)) return;
+    let saved = issue;
+    if (!locked) { saved = await api('/api/admin?action=letter-save', { method: 'POST', session, body: { issue } }); setIssue(saved); }
+    for (let i = 0; i < 200; i++) {
+      const r = await api('/api/admin?action=letter-send', { method: 'POST', session, body: { id: saved.id } });
+      setProgress(r);
+      if (r.error) throw new Error(`Stopped: ${r.error}. Fix that, then tap Send again to finish; nobody gets it twice.`);
+      if (r.done) { setIssue((x) => ({ ...x, status: 'sent' })); setMsg('Sent.'); return; }
+    }
+  });
+
+  return (
+    <>
+      <button className="adm-btn" onClick={onDone} style={{ marginBottom: '0.8rem' }}>← All letters</button>
+      <div className="adm-card">
+        {locked && <p style={{ fontSize: '0.85rem', color: MUTED, marginBottom: '0.5rem' }}>{issue.status === 'sent' ? 'This letter has gone out. It is shown here as it was sent.' : 'This letter is part-way through sending. Tap Send to finish.'}</p>}
+        <label style={flabel} htmlFor="lt-headline">Subject line</label>
+        <input id="lt-headline" style={field} value={issue.headline} onChange={set('headline')} disabled={locked} />
+        <label style={flabel} htmlFor="lt-pre">Preview text (shows after the subject in the inbox)</label>
+        <input id="lt-pre" style={field} value={issue.preheader} onChange={set('preheader')} disabled={locked} placeholder="One line that makes them open it" />
+        <label style={flabel} htmlFor="lt-intro">Your note</label>
+        <textarea id="lt-intro" style={{ ...field, minHeight: '130px' }} value={issue.intro} onChange={set('intro')} disabled={locked} placeholder="What is happening around the lakes this month, in your words" />
+        <label style={flabel} htmlFor="lt-market">The market (optional)</label>
+        <textarea id="lt-market" style={{ ...field, minHeight: '80px' }} value={issue.marketNote} onChange={set('marketNote')} disabled={locked} placeholder="What sold, how fast, what buyers are asking for" />
+
+        <div style={flabel}>Listings in this letter</div>
+        {issue.listings.length === 0 && <p style={{ fontSize: '0.82rem', color: MUTED }}>None.</p>}
+        {issue.listings.map((l, i) => (
+          <div key={l.slug} style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', padding: '0.45rem 0', borderTop: `1px solid ${LINE}`, fontSize: '0.85rem' }}>
+            <span><b>{l.title}</b> <span style={{ color: MUTED }}>{l.line}</span></span>
+            {!locked && <button className="adm-btn" style={{ padding: '0.2rem 0.55rem' }} onClick={() => drop('listings', i)} aria-label={`Remove ${l.title}`}>×</button>}
+          </div>
+        ))}
+
+        <label style={flabel} htmlFor="lt-evlead">What's on (optional line above the events)</label>
+        <input id="lt-evlead" style={field} value={issue.eventLead} onChange={set('eventLead')} disabled={locked} />
+        {issue.events.map((e, i) => (
+          <div key={e.name + i} style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', padding: '0.45rem 0', borderTop: `1px solid ${LINE}`, fontSize: '0.85rem' }}>
+            <span><b>{e.name}</b> <span style={{ color: MUTED }}>{e.when}</span></span>
+            {!locked && <button className="adm-btn" style={{ padding: '0.2rem 0.55rem' }} onClick={() => drop('events', i)} aria-label={`Remove ${e.name}`}>×</button>}
+          </div>
+        ))}
+
+        <label style={flabel} htmlFor="lt-close">Sign-off (optional)</label>
+        <textarea id="lt-close" style={{ ...field, minHeight: '60px' }} value={issue.closing} onChange={set('closing')} disabled={locked} placeholder="A last line before your name" />
+
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+          {!locked && <button className="adm-btn" onClick={save} disabled={!!busy}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>}
+          <button className="adm-btn" onClick={preview} disabled={!!busy}>{busy === 'preview' ? 'Loading…' : 'Preview'}</button>
+        </div>
+        {msg && <p style={{ fontSize: '0.85rem', color: /^(Saved|Sent|Test sent)/.test(msg) ? DEEP : '#9c2f4c', marginTop: '0.7rem', lineHeight: 1.5 }}>{msg}</p>}
+      </div>
+
+      {previewHtml && (
+        <div className="adm-card" style={{ padding: 0, overflow: 'hidden', marginTop: '0.75rem' }}>
+          <iframe title="Letter preview" srcDoc={previewHtml} sandbox="" style={{ width: '100%', height: '640px', border: 0, display: 'block' }} />
+        </div>
+      )}
+
+      <div className="adm-card" style={{ marginTop: '0.75rem' }}>
+        <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>Send</div>
+        {!ready.canTest && <p style={{ fontSize: '0.82rem', color: MUTED, lineHeight: 1.5, marginBottom: '0.6rem' }}>Test sends switch on once your sending address is set up. You can write and preview now.</p>}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <input style={{ ...field, flex: '1 1 180px', width: 'auto' }} value={to} onChange={(e) => setTo(e.target.value)} placeholder="Your email for the test" aria-label="Test address" />
+          <button className="adm-btn" onClick={test} disabled={!!busy || !ready.canTest}>{busy === 'test' ? 'Sending…' : 'Send me a test'}</button>
+        </div>
+        <button className="adm-btn pink" onClick={send} disabled={!!busy || !ready.canSend || issue.status === 'sent'} style={{ width: '100%', marginTop: '0.75rem', padding: '0.8rem' }}>
+          {busy === 'send' ? 'Sending…' : issue.status === 'sent' ? 'Sent' : issue.status === 'sending' ? 'Finish sending' : 'Send to your subscribers'}
+        </button>
+        {!ready.canSend && <p style={{ fontSize: '0.78rem', color: MUTED, marginTop: '0.5rem', lineHeight: 1.5 }}>Sending unlocks when everything under "Waiting on" is done.</p>}
+        {progress && <p style={{ fontSize: '0.82rem', color: NAVY, marginTop: '0.6rem' }}>{progress.sent} sent{progress.remaining ? ` · ${progress.remaining} to go` : ''}{progress.failed ? ` · ${progress.failed} refused` : ''}{progress.unconfirmed ? ` · ${progress.unconfirmed} unconfirmed (not resent)` : ''}</p>}
+      </div>
+    </>
+  );
+}
+
+function Letter({ session }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [open, setOpen] = useState(null);
+  const [starting, setStarting] = useState(false);
+  const load = useCallback(() => api('/api/admin?view=letter', { session }).then((d) => { setData(d); setError(''); }).catch((e) => setError(e.message)), [session]);
+  useEffect(() => { load(); }, [load]);
+  if (error) return <ErrorBox error={error} />;
+  if (!data) return <Loading />;
+  if (open) return <LetterEditor session={session} start={open} ready={data.ready} testTo={data.testTo} onDone={() => { setOpen(null); load(); }} />;
+
+  const begin = async () => { setStarting(true); try { setOpen(await api('/api/admin?view=letter-new', { session })); } catch (e) { setError(e.message); } setStarting(false); };
+  const edit = async (id) => { try { setOpen(await api(`/api/admin?view=letter-get&id=${encodeURIComponent(id)}`, { session })); } catch (e) { setError(e.message); } };
+  const { subscribers: c, ready } = data;
+  return (
+    <>
+      <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.25rem' }}>{c.confirmed} {c.confirmed === 1 ? 'subscriber' : 'subscribers'}</div>
+      <p style={{ fontSize: '0.82rem', color: MUTED, marginBottom: '1rem' }}>{c.pending ? `${c.pending} more signed up but have not confirmed yet. ` : ''}Only confirmed people get the letter.</p>
+
+      {ready.waitingOn.length > 0 && (
+        <div className="adm-card" style={{ borderLeft: `4px solid #a16207`, marginBottom: '0.9rem' }}>
+          <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>Waiting on</div>
+          <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem', color: MUTED, lineHeight: 1.55 }}>{ready.waitingOn.map((w) => <li key={w}>{w}</li>)}</ul>
+          <p style={{ fontSize: '0.8rem', color: MUTED, marginTop: '0.5rem' }}>You can write and preview letters in the meantime. The signup form on the site also stays hidden until then.</p>
+        </div>
+      )}
+
+      <button className="adm-btn pink" onClick={begin} disabled={starting} style={{ width: '100%', padding: '0.8rem', marginBottom: '0.9rem' }}>{starting ? 'Gathering your listings and events…' : 'Start a new letter'}</button>
+
+      {data.issues.length === 0 ? (
+        <Empty title="No letters yet" body="Start one and your active listings and the next few weeks of local events are filled in for you. You write the note." />
+      ) : (
+        <div style={{ display: 'grid', gap: '0.6rem' }}>
+          {data.issues.map((i) => (
+            <button key={i.id} className="adm-card" onClick={() => edit(i.id)} style={{ textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 700, color: NAVY }}>{i.headline || 'Untitled'}</div>
+                <div style={{ fontSize: '0.75rem', color: MUTED }}>{i.status === 'sent' ? `Sent ${when(i.sentAt)}${i.result ? ` to ${i.result.sent}` : ''}` : `Edited ${ago(i.updatedAt)}`}</div>
+              </div>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '0.25rem 0.6rem', borderRadius: '20px', background: i.status === 'sent' ? '#237168' : i.status === 'sending' ? 'rgba(161,98,7,0.14)' : '#f6e9e5', color: i.status === 'sent' ? 'white' : i.status === 'sending' ? '#a16207' : MUTED, whiteSpace: 'nowrap' }}>{i.status === 'sent' ? 'Sent' : i.status === 'sending' ? 'Sending' : 'Draft'}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── page ───────────────────────────────────────────────────────────────
 
 export default function AdminPage() {
@@ -687,6 +846,7 @@ export default function AdminPage() {
         {tab === 'texts' && <Texts session={session} />}
         {tab === 'waitlist' && <Waitlist session={session} />}
         {tab === 'listings' && <Listings session={session} />}
+        {tab === 'letter' && <Letter session={session} />}
         {tab === 'stats' && <Stats session={session} setTab={setTab} />}
       </SessionGuard>
     </Shell>
