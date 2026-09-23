@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
 import GoogleReviews from '../components/GoogleReviews';
+import NewsletterSignup from '../components/NewsletterSignup';
 import { propertiesData } from '../data/amenities';
 import { trackRecord, isSold, soldStats, fmtPrice } from '../lib/listing-stats';
 
@@ -205,6 +206,10 @@ export default function AboutPage() {
             Holly follows up after every showing, and the results are public record on the sold page.
           </WorkStep>
         </div>
+      </div>
+
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem' }}>
+        <NewsletterSignup source="about" />
       </div>
 
       {/* Closing CTA */}

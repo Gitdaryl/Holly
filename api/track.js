@@ -8,7 +8,7 @@ import { todayISO } from './lib/engage-store.js'
 // "source" is the referrer host, or the campaign tag prefixed with "utm:",
 // or "direct". Paths encode "/" as "~".
 
-const EVENTS = new Set(['view', 'waitlist', 'owner', 'showing', 'cma', 'contact', 'chat_open', 'chat_lead', 'call', 'text', 'review', 'save', 'share', 'plan_open'])
+const EVENTS = new Set(['view', 'waitlist', 'owner', 'showing', 'cma', 'contact', 'chat_open', 'chat_lead', 'call', 'text', 'review', 'save', 'share', 'plan_open', 'newsletter'])
 const SITE_HOSTS = /(^|\.)hollygriewahn\.(vercel\.app|com)$/i
 
 export default async function handler(req, res) {

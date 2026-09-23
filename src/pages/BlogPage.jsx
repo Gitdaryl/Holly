@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HeroVideo from '../components/HeroVideo';
 import SiteNav from '../components/SiteNav';
+import NewsletterSignup from '../components/NewsletterSignup';
 
 const CATEGORIES = ['All', 'Lake Living', 'Real Estate Tips', 'Area Guide', 'Seasonal', 'Buyer Education', 'Community'];
 
@@ -211,6 +212,10 @@ export default function BlogPage() {
           </div>
         )}
       </main>
+
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1.5rem 2rem' }}>
+        <NewsletterSignup source="blog" heading="Get these by email" blurb="Once a month: what sold around the lakes, what came up, and what is on locally." />
+      </div>
 
       {/* Footer CTA */}
       <div style={{ background: '#1a2332', padding: '4rem 2rem', textAlign: 'center' }}>

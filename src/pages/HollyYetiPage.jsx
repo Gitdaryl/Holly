@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
 import VideoWall from '../components/VideoWall';
 import GoogleReviews from '../components/GoogleReviews';
+import NewsletterSignup from '../components/NewsletterSignup';
 import { propertiesData } from '../data/amenities';
 import { trackRecord, isSold, soldStats, fmtPrice } from '../lib/listing-stats';
 import { SHOW } from '../data/profiles';
@@ -176,6 +177,12 @@ export default function HollyYetiPage() {
         <section style={{ marginBottom: '3rem' }}>
           <GoogleReviews limit={3} />
         </section>
+
+        <NewsletterSignup
+          source="holly-yeti"
+          heading="Between episodes"
+          blurb="Once a month from Holly: what sold around the lakes, what came up, and what is on locally."
+        />
 
         {/* Closing CTA */}
         <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '2.5rem 2rem', textAlign: 'center', marginBottom: '3rem' }}>

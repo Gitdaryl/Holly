@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
 import { TrustStrip } from '../components/GoogleReviews';
+import NewsletterSignup from '../components/NewsletterSignup';
 import { lakes } from '../data/lakes';
 import { regions } from '../data/regions';
 import { TOWN_KEYWORDS, groupByMonth, categories, shortDate, dateOf } from '../lib/events';
@@ -251,6 +252,12 @@ export default function EventsPage() {
         <div style={{ margin: '2rem 0 3rem' }}>
           <TrustStrip align="center" />
         </div>
+
+        <NewsletterSignup
+          source="events"
+          heading="Want this in your inbox?"
+          blurb="Once a month: what is on around the lakes, what sold, and what came up for sale. No pitch."
+        />
 
         {/* Closing CTA */}
         <div style={{ background: 'linear-gradient(135deg, #1a2332, #2c3e50)', borderRadius: '16px', padding: '2.5rem 2rem', textAlign: 'center', marginBottom: '3rem' }}>
