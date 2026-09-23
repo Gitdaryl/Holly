@@ -139,6 +139,13 @@ export default async function handler(req, res) {
   const email = normalize(b?.email)
   if (!validEmail(email)) return res.status(400).json({ error: 'That email address does not look right.' })
 
+  // Fail closed and say why. Without the secret we cannot key a subscriber
+  // pathname, and an unkeyed one would sit behind a guessable public URL.
+  if (!process.env.NEWSLETTER_SECRET) {
+    console.error('newsletter: NEWSLETTER_SECRET is not set; refusing to store a subscriber')
+    return res.status(503).json({ error: 'The newsletter is not switched on yet. Text Holly at (517) 403-3413 and she will add you.' })
+  }
+
   const hash = hashEmail(email)
   const existing = await readSub(hash)
 

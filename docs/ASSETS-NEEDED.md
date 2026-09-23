@@ -126,6 +126,35 @@ feed, which needs no key and has no quota. The key is only a fallback.
 
 ## 11. Environment variables still needed
 
+- `NEWSLETTER_SECRET` - any long random string, e.g.
+  `openssl rand -hex 32`. Until it is set, the newsletter signup form does
+  not appear anywhere on the site (it checks
+  `/api/newsletter?action=health` and hides itself), so nothing is half-live.
+
+  **Treat this one as permanent.** It signs every unsubscribe link, and those
+  links sit in people's inboxes for a year; it also keys the pathname each
+  subscriber record is stored under. Changing it after the first send
+  orphans every subscriber record AND breaks every unsubscribe link already
+  delivered, which is a CAN-SPAM problem, not an inconvenience. Rotating it
+  is a migration, not a config change.
+
+- `NEWSLETTER_FROM` - the From header, e.g.
+  `Holly Griewahn <holly@news.hollygriewahn.com>`. Needs the sending domain
+  set up first (see below).
+
+- **Resend sending domain `news.hollygriewahn.com`** - add it in Resend,
+  publish the SPF and DKIM records it gives you, and add a
+  `_dmarc.hollygriewahn.com` TXT record at `p=none` with an address you
+  actually read.
+
+  Start this now. It is independent of where the website points, so it can
+  be done at the current DNS host today without touching the Placester site,
+  and sending reputation is per-domain and cannot be transferred. Every week
+  of warming skipped is a week of worse inbox placement after the move.
+
+  A subdomain rather than the root domain so that a bad newsletter run
+  cannot damage the deliverability of her ordinary mail.
+
 - `VERCEL_DEPLOY_HOOK_URL` - create a Deploy Hook on the Vercel project
   (Settings, Git, Deploy Hooks; branch `main`) and set it as an env var.
   Without it `api/cron-refresh.js` runs, reports `not set`, and changes
