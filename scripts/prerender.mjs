@@ -19,8 +19,9 @@ import { regions } from '../src/data/regions.js'
 import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
 import { marketFor, marketIndex } from '../src/lib/market.js'
-import { buildSameAs, BROKERAGE, PHONE } from '../src/data/profiles.js'
+import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs } from '../src/data/profiles.js'
 import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
+import { fetchVideos } from '../api/lib/youtube-feed.js'
 
 const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
 
@@ -189,6 +190,7 @@ const reviews = await fetchJson(`${FETCH_ORIGIN}/api/reviews`)
     <h2>Current listings</h2><ul>${active.map(listingLi).join('')}</ul>
     ${rev}
     <h2>Sellers</h2><p><a href="/cma">What is my lake home worth?</a> Holly answers with recent sales on your lake, not a national estimate.</p>
+    <h2>Around the lakes</h2><p>Holly co-hosts <a href="/holly-yeti">Holly &amp; The Yeti</a>, a show about life on Devils Lake and the Irish Hills, and keeps an <a href="/events">events calendar</a> for the area.</p>
   `)
   routes.push(write('/', {
     title: 'Holly Griewahn | Irish Hills Lakes Real Estate | Foundation Realty',
@@ -362,7 +364,7 @@ for (const p of propertiesData) {
       <li>A seller update every week: views, saves and showing requests.</li>
       <li>Showings and feedback, with results public on <a href="/sold">the sold page</a>.</li>
     </ul>
-    ${reviews?.reviews?.length ? `<h2>What clients say</h2><p>${reviews.rating.toFixed(1)} stars from ${reviews.count} Google reviews.</p>` : ''}
+    ${reviews?.reviews?.length ? `<h2>On the show</h2><p>Holly co-hosts <a href="/holly-yeti">Holly &amp; The Yeti</a>, a show about life around Devils Lake and the Irish Hills.</p><h2>What clients say</h2><p>${reviews.rating.toFixed(1)} stars from ${reviews.count} Google reviews.</p>` : ''}
     <p><a href="/cma">What is my home worth?</a> or <a href="/listings">see current listings</a>. Call or text (517) 403-3413.</p>
   `)
   routes.push(write('/about', {
@@ -466,6 +468,77 @@ for (const p of propertiesData) {
     }))
     llms.push(`- [${l.name} ${year} sales report](${SITE}/market/${l.slug}): ${st.sold} sold${range ? `, ${range}` : ''}${st.avgDays !== null ? `, ${st.avgDays} days avg` : ''}`)
   }
+}
+
+// Holly & The Yeti.
+//
+// Her page for the show, not a copy of manitoubeachmichigan.com/holly-yeti:
+// two near-identical pages on two domains compete and neither reads as
+// canonical. The schema is a CreativeWorkSeries, NOT a second Person - AGENT
+// already owns ${SITE}/#agent and /about emits the Person, and a third node
+// describing the same human is exactly the entity fragmenting that
+// src/data/profiles.js exists to prevent. Not PodcastSeries either: that
+// expects a webFeed and there is no podcast RSS, so the honest general type
+// beats claiming a feed that does not exist.
+{
+  // Straight from the channel feed, not through our own deployed API.
+  const { videos } = await fetchVideos()
+
+  const seriesId = `${SITE}/holly-yeti#series`
+  const series = {
+    '@type': 'CreativeWorkSeries',
+    '@id': seriesId,
+    name: SHOW.name,
+    url: `${SITE}/holly-yeti`,
+    description: 'A show about life around Devils Lake and the Irish Hills of Michigan, co-hosted by Realtor Holly Griewahn and filmmaker Daryl, "The Yeti".',
+    inLanguage: 'en-US',
+    sameAs: showSameAs(),
+    author: [{ '@id': `${SITE}/#agent` }, { '@type': 'Person', name: 'Daryl, The Yeti' }],
+  }
+
+  // VideoObject is only safe because api/cron-refresh.js rebuilds daily, which
+  // bounds how stale this list can get. If that cron is ever removed, remove
+  // this too rather than advertise a video that may be gone.
+  const videoSchema = videos.slice(0, 6).map((v) => ({
+    '@type': 'VideoObject',
+    name: v.title,
+    description: v.description || v.title,
+    thumbnailUrl: v.thumbnail,
+    uploadDate: v.publishedAt,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${v.videoId}`,
+    url: `https://www.youtube.com/watch?v=${v.videoId}`,
+    isPartOf: { '@id': seriesId },
+  }))
+
+  const body = WRAP(`
+    <p><a href="/">Irish Hills</a> › Holly &amp; The Yeti</p>
+    <h1>Holly &amp; The Yeti</h1>
+    <p>Holly Griewahn co-hosts Holly &amp; The Yeti, a show about life around Devils Lake and the Irish Hills of Michigan, with filmmaker Daryl, "The Yeti". Holly is a Realtor with Foundation Realty in Manitou Beach and has sold lake, cottage, farm and village property here for more than thirty years.</p>
+    ${videos.length ? `<h2>Latest episodes</h2><ul>${videos.map((v) => `<li><a href="https://www.youtube.com/watch?v=${esc(v.videoId)}">${esc(v.title)}</a>${v.publishedAt ? ` (${esc(v.publishedAt)})` : ''}</li>`).join('')}</ul>` : ''}
+    <h2>Watch and follow</h2>
+    <ul>
+      <li><a href="${SHOW.youtube}">Holly &amp; The Yeti on YouTube</a></li>
+      <li><a href="${SHOW.facebook}">Holly &amp; The Yeti on Facebook</a></li>
+      <li><a href="${SHOW.instagram}">Holly &amp; The Yeti on Instagram</a></li>
+    </ul>
+    <h2>The Realtor from the show</h2>
+    <p>${record.sold} homes sold in 2026, ${money(record.volume)} in volume, ${record.listSides} as the listing agent. <a href="/sold">Every sale</a> · <a href="/listings">For sale now</a> · <a href="/cma">What is my home worth?</a> · <a href="/about">About Holly</a>. Call or text (517) 403-3413.</p>
+    <h2>Questions</h2>
+    <h3>Who is Holly Griewahn?</h3><p>Holly Griewahn is a Realtor with Foundation Realty at 100 Walnut St, Manitou Beach, Michigan, specialising in Irish Hills lake property, and the co-host of Holly &amp; The Yeti.</p>
+    <h3>What is Holly &amp; The Yeti about?</h3><p>Life around Devils Lake and the Irish Hills: the businesses, the events, the lakes themselves and the people who live on them.</p>
+    <h3>Where can I watch Holly &amp; The Yeti?</h3><p>On <a href="${SHOW.youtube}">YouTube</a>, and on the show's <a href="${SHOW.facebook}">Facebook</a> and <a href="${SHOW.instagram}">Instagram</a> pages.</p>
+  `)
+
+  routes.push(write('/holly-yeti', {
+    title: 'Holly & The Yeti | The Show, and the Irish Hills Realtor Behind It',
+    description: 'Holly Griewahn co-hosts Holly & The Yeti, a show about life around Devils Lake and the Irish Hills. Watch the episodes, then see what she has for sale on the lakes.',
+    image: '/regions/manitou-beach/poster.webp',
+    jsonld: [series, ...videoSchema, breadcrumbs([['Irish Hills', '/'], ['Holly & The Yeti', '/holly-yeti']])],
+    body,
+  }))
+
+  llms.push(`\n## Holly & The Yeti (the show)\n`)
+  llms.push(`- [Holly & The Yeti](${SITE}/holly-yeti): Holly Griewahn co-hosts a show about life around Devils Lake and the Irish Hills with filmmaker Daryl, "The Yeti".${videos.length ? ` ${videos.length} recent episodes listed.` : ''} Watch: ${SHOW.youtube}`)
 }
 
 // Events (Manitou Beach Michigan's calendar, collected for buyers).

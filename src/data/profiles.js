@@ -25,6 +25,21 @@ export const PROFILES = [
   { name: 'Current public site', url: 'https://hollygriewahn.com' },
 ];
 
+// The podcast Holly co-hosts. These URLs describe THE SHOW, not Holly, so
+// they belong on the CreativeWorkSeries node's sameAs and deliberately NOT in
+// PROFILES above: sameAs on a Person means "a page that unambiguously
+// identifies this person", and a co-hosted channel identifies the show. The
+// link back to Holly is made by naming her as an author of the series, which
+// is the honest edge and the one a search engine can actually traverse.
+export const SHOW = {
+  name: 'Holly & The Yeti',
+  youtube: 'https://www.youtube.com/@HollyandtheYetipodcast',
+  facebook: 'https://www.facebook.com/HollyandtheYeti',
+  instagram: 'https://www.instagram.com/hollyandtheyeti',
+};
+
+export const showSameAs = () => [SHOW.youtube, SHOW.facebook, SHOW.instagram];
+
 export const BROKERAGE = {
   name: 'Foundation Realty',
   url: 'https://www.foundationlenawee.com/',

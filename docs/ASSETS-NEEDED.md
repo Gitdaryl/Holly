@@ -92,3 +92,43 @@ When hollygriewahn.com moves off Placester:
   (canonicals, sitemap, schema and OG tags all key off it)
 - Add the domain to the Vercel project; the old site's listing URLs will 404,
   so send me the top 10 old URLs if you want redirects
+
+## 10. Holly & The Yeti page
+
+`/holly-yeti` is live and works with no images at all: the hero is the same
+gradient the other pages use, and the episode wall fills itself from the
+channel's RSS feed. These only make it better, none of them block anything.
+
+1. **Show logo or wordmark** - transparent PNG, 1200px wide or better
+   -> `public/images/holly-yeti/logo.png`
+2. **A hero still of the two of them** - 1920x1080 JPG
+   -> `public/images/holly-yeti/hero.jpg`
+3. **An OG card** - 1200x630 JPG, **stays JPG** (the webp sweep skips social
+   cards because some scrapers will not render webp)
+   -> `public/images/holly-yeti/og.jpg`
+   Until this exists the page shares with the Manitou Beach region poster.
+4. **Yeti character portrait** - square, 800x800 or larger. Send the SOURCE
+   file, not the `.webp` from the Manitou repo: re-encoding webp to webp
+   throws away quality for nothing.
+5. **Two or three sentences about the show in Holly's voice**, plus one line
+   on what it is *for*. The page currently uses copy I wrote, deliberately
+   different from the Manitou version so the two pages do not compete.
+6. **A "start here" episode**, if there is one, to pin first in the wall.
+
+Confirmations worth a minute:
+
+- The channel ID is `UCnjEuUEFlrsNzkWDyLkarcA` (its feed reports the channel
+  name as `HollyandtheYeti`). Override with `YOUTUBE_CHANNEL_ID` if wrong.
+- The three social URLs in `src/data/profiles.js` under `SHOW`.
+
+`YOUTUBE_API_KEY` is **optional**. The page reads the channel's public RSS
+feed, which needs no key and has no quota. The key is only a fallback.
+
+## 11. Environment variables still needed
+
+- `VERCEL_DEPLOY_HOOK_URL` - create a Deploy Hook on the Vercel project
+  (Settings, Git, Deploy Hooks; branch `main`) and set it as an env var.
+  Without it `api/cron-refresh.js` runs, reports `not set`, and changes
+  nothing: the prerendered pages a crawler reads then only refresh when
+  somebody pushes. With it, they refresh daily at 5:30am ET and within
+  minutes of the article cron publishing.
