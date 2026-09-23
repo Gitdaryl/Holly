@@ -42,8 +42,8 @@ export const STEPS = [
     text: 'Type the address and the lake, copy the link, text it to the seller before you meet. They open a page built for their house: how many buyers are waiting on their lake, what you sold there, what happens the day you list, and a sample of the Friday report. Nothing to save; the link builds the page.' },
   { path: '/', target: '[data-tour="reviews"]', title: 'Your Google reviews, live', site: true,
     text: 'Your 5.0 rating and newest reviews pull straight from Google, so the site never shows a stale quote. The rating also sits on every listing page next to your name. Keep asking at closing; the desk has a one-tap review text for that.' },
-  { path: '/', target: '[aria-label="Chat with Holly\'s assistant"]', title: 'The chat knows what you know', site: true,
-    text: 'It answers from the same data as the site: every lake, your listings, your sales. It will not invent a price or a listing. When someone wants you, it collects their name and number and they land in your desk. Ask it something on your own phone; you will see.' },
+  { path: '/', target: '[aria-label^="Chat with Heather"]', title: 'Heather knows what you know', site: true,
+    text: 'Heather is your assistant on the site, named by you. Heather answers from the same data the site shows: every lake, your listings, your sales, and will not invent a price or a listing. When someone wants you, Heather takes their name and number and they land in your desk. Ask Heather something on your own phone; you will see.' },
   { path: '/admin?tab=inbox', target: '[data-tour="desk"]', title: 'What runs by itself',
     text: 'Leads text you and get an auto-reply. Untouched leads nudge you. Waitlist buyers and home-value askers get follow-ups on a schedule. Sellers get a Friday report. Calls to the site number ring your cell and take a voicemail with a transcript. Reviews, sold pages, lake reports and the chat update from the data. You answer the phone and go to appointments. That is the whole job.' },
 ];

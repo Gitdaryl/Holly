@@ -7,7 +7,7 @@ const SESSION_ID = Math.random().toString(36).slice(2);
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: "Hi! I'm Holly's assistant. I know every lake and neighborhood in the Irish Hills. What are you looking for?",
+  content: "Hi, I'm Heather, Holly's assistant. I know every lake and back road in the Irish Hills. What are you looking for?",
 };
 
 const LEAD_PROMPT_AFTER = 2;
@@ -112,7 +112,7 @@ export default function ChatWidget() {
       <button
         className="chat-fab"
         onClick={() => { if (!open) track('chat_open'); setOpen(o => !o); }}
-        aria-label="Chat with Holly's assistant"
+        aria-label="Chat with Heather, Holly's assistant"
         style={{
           position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 999,
           width: 56, height: 56, borderRadius: '50%',
@@ -174,7 +174,7 @@ export default function ChatWidget() {
               <span style={{ color: 'white', fontWeight: 800, fontSize: '0.9rem' }}>H</span>
             </div>
             <div>
-              <div style={{ color: 'white', fontWeight: 700, fontSize: '0.9rem' }}>Holly's Assistant</div>
+              <div style={{ color: 'white', fontWeight: 700, fontSize: '0.9rem' }}>Heather</div>
               <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                 Online now
