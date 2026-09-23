@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { upcomingWithin, localFirst, shortDate } from '../lib/events';
 
 // "Coming up around {lake}" card on the lake page. Pulls the shared Irish
 // Hills events feed (proxied through /api/events), prefers events whose
 // location matches this lake's town, and fills out to 4 with the soonest
 // events overall since the whole feed is Irish Hills anyway.
+//
+// Selection and date formatting live in src/lib/events.js, shared with the
+// /events page so the two can't disagree about which lake owns which event.
 
-const TOWN_KEYWORDS = {
-  'manitou-beach': ['Manitou Beach', 'Devils Lake', 'Addison'],
-  'onsted-hayes': ['Onsted', 'Hayes'],
-  'cambridge-corridor': ['Cambridge', 'Onsted', 'US-12', 'Brooklyn'],
-  'clark-lake': ['Clark Lake', 'Brooklyn'],
-  'brooklyn-columbia': ['Brooklyn', 'Columbia'],
-  'jerome-somerset': ['Jerome', 'Somerset'],
-  'southern-lakes': ['Hudson', 'Osseo', 'Pittsford'],
-  'grass-lake-michigan-center': ['Grass Lake', 'Michigan Center'],
-  'tecumseh-eastern': ['Tecumseh'],
-};
-
-const DAY_MS = 24 * 60 * 60 * 1000;
 const WINDOW_DAYS = 21;
 const MIN_LOCAL = 3;
 const MAX_ROWS = 4;
 
-function shortDate(iso) {
-  if (!iso) return '';
-  const d = new Date(`${iso}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-}
+// Most upstream records have no eventUrl, but every one has an id, and the
+// detail page is always /events/<id>.
+const eventHref = (e) =>
+  e.eventUrl || (e.id ? `https://manitoubeachmichigan.com/events/${e.id}` : 'https://manitoubeachmichigan.com/events');
 
 export default function LakeEvents({ lake }) {
   const [events, setEvents] = useState(null);
@@ -43,28 +32,10 @@ export default function LakeEvents({ lake }) {
 
   if (!lake || !events || events.length === 0) return null;
 
-  const now = new Date();
-  const cutoff = new Date(now.getTime() + WINDOW_DAYS * DAY_MS);
-  const upcoming = events.filter((e) => {
-    const d = new Date(`${e.date}T12:00:00`);
-    return !Number.isNaN(d.getTime()) && d >= now && d <= cutoff;
-  });
+  const upcoming = upcomingWithin(events, WINDOW_DAYS);
   if (upcoming.length === 0) return null;
 
-  const keywords = TOWN_KEYWORDS[lake.region] || [];
-  const matchesTown = (e) => keywords.some((k) => (e.location || '').toLowerCase().includes(k.toLowerCase()));
-
-  const local = upcoming.filter(matchesTown);
-  let rows = local.slice(0, MAX_ROWS);
-  if (rows.length < MIN_LOCAL) {
-    const usedIds = new Set(rows.map((e) => e.id));
-    for (const e of upcoming) {
-      if (rows.length >= MAX_ROWS) break;
-      if (usedIds.has(e.id)) continue;
-      rows.push(e);
-      usedIds.add(e.id);
-    }
-  }
+  const rows = localFirst(upcoming, lake.region, { min: MIN_LOCAL, max: MAX_ROWS });
   if (rows.length === 0) return null;
 
   return (
@@ -76,7 +47,7 @@ export default function LakeEvents({ lake }) {
         {rows.map((e) => (
           <a
             key={e.id}
-            href={e.eventUrl || 'https://manitoubeachmichigan.com/events'}
+            href={eventHref(e)}
             target="_blank"
             rel="noopener"
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem', textDecoration: 'none', color: '#1a2332', padding: '0.6rem 0', borderTop: '1px solid #f0eee9' }}

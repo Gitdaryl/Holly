@@ -13,9 +13,12 @@ import Anthropic from '@anthropic-ai/sdk';
 import { propertiesData, propertyTypes } from '../src/data/amenities.js';
 import { regions } from '../src/data/regions.js';
 import { loadCorpus, repairJson, findArticleBySlug, saveArticle } from './lib/article-utils.js';
+import { triggerRebuild } from './lib/deploy-hook.js'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const SITE_URL = process.env.SITE_URL || 'https://hollygriewahn.vercel.app';
+// Same source of truth as every other absolute URL on the site, so the domain
+// move is one environment variable and not a hunt.
+const SITE_URL = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://hollygriewahn.vercel.app';
 const EVENTS_URL = 'https://manitoubeachmichigan.com/api/events';
 const EVENTS_PAGE = 'https://manitoubeachmichigan.com/events';
 const EVENT_WINDOW_DAYS = 45;
@@ -205,8 +208,11 @@ export default async function handler(req, res) {
     });
 
     console.log(`[cron-seasonal-article] Saved "${built.article.title}" (${autonomous ? 'published' : 'draft'})`);
+    const rebuild = autonomous ? await triggerRebuild('seasonal-article') : { ok: false, why: 'draft' };
+
     return res.status(200).json({
       success: true,
+      rebuild,
       slug: built.slug,
       title: built.article.title,
       mode: autonomous ? 'autonomous' : 'safe',

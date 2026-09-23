@@ -5,6 +5,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { triggerRebuild } from './lib/deploy-hook.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -286,12 +287,18 @@ Return ONLY valid JSON:
 
     console.log(`[cron-publish-article] Done. Article: "${article.title}" | Mode: ${isAutonomous ? 'autonomous' : 'safe'}`);
 
+    // A published article only exists for a non-JS crawler once the site is
+    // rebuilt, because scripts/prerender.mjs snapshots /blog at build time.
+    // Drafts are not visible either way, so they do not earn a build.
+    const rebuild = isAutonomous ? await triggerRebuild('article') : { ok: false, why: 'draft' };
+
     return res.status(200).json({
       success: true,
       title: article.title,
       slug,
       mode: isAutonomous ? 'autonomous' : 'safe',
       notionUrl: articleUrl,
+      rebuild,
     });
 
   } catch (err) {

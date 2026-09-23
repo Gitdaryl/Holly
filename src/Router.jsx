@@ -17,6 +17,7 @@ import AdminPage from './pages/AdminPage.jsx';
 import MarketPage from './pages/MarketPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import SellPage from './pages/SellPage.jsx';
+import EventsPage from './pages/EventsPage.jsx';
 
 // While Holly is signed in, every public page keeps a way back to her desk.
 // Without it, one tap into her own site from the desk is a dead end on a phone.
@@ -94,6 +95,7 @@ export default function Router() {
         <Route path="/plan/:lake/:address" element={<PlanPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/sell" element={<SellPage />} />
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/*" element={<App />} />
       </Routes>
     </BrowserRouter>

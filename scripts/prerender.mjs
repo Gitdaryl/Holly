@@ -19,8 +19,18 @@ import { regions } from '../src/data/regions.js'
 import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
 import { marketFor, marketIndex } from '../src/lib/market.js'
+import { buildSameAs, BROKERAGE, PHONE } from '../src/data/profiles.js'
+import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
 
 const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
+
+// Where the BUILD reads live data from. Normally the same as SITE, but on the
+// first build after PUBLIC_SITE_URL flips to the real domain, that domain may
+// not be serving the app yet - and every build-time fetch below would quietly
+// return null, shipping /blog, /events and /holly-yeti as empty shells on the
+// one deploy that matters most. Set PRERENDER_ORIGIN to the still-serving host
+// for that build.
+const FETCH_ORIGIN = (process.env.PRERENDER_ORIGIN || SITE).replace(/\/$/, '')
 const DIST = path.resolve('dist')
 const TEMPLATE = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8')
 const PUBLIC_DIR = path.resolve('public')
@@ -46,13 +56,16 @@ const AGENT = {
   '@id': `${SITE}/#agent`,
   name: 'Holly Griewahn, Realtor - Foundation Realty',
   url: SITE,
-  telephone: '+1-517-403-3413',
+  telephone: PHONE,
   email: 'hollygriewahn@gmail.com',
   image: `${SITE}/images/holly-headshot.webp`,
   address: { '@type': 'PostalAddress', streetAddress: '100 Walnut St', addressLocality: 'Manitou Beach', addressRegion: 'MI', postalCode: '49253', addressCountry: 'US' },
   areaServed: Object.values(lakes).map((l) => ({ '@type': 'Place', name: `${l.name}, Michigan` })),
-  parentOrganization: { '@type': 'Organization', name: 'Foundation Realty' },
-  sameAs: ['https://maps.google.com/?cid=16517987812903164506', 'https://hollygriewahn.com'],
+  parentOrganization: { '@type': 'RealEstateAgent', name: BROKERAGE.name, url: BROKERAGE.url,
+    address: { '@type': 'PostalAddress', streetAddress: BROKERAGE.address.street, addressLocality: BROKERAGE.address.city, addressRegion: BROKERAGE.address.region, postalCode: BROKERAGE.address.postal, addressCountry: 'US' } },
+  // Every other place she exists online. Self-referencing entries are dropped
+  // automatically when the site moves to her own domain.
+  sameAs: buildSameAs(SITE),
 }
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -91,7 +104,10 @@ function write(route, { title, description, body, jsonld = [], noindex = false, 
 
 // Minimal styling so the fallback is readable if it is ever seen by a person
 // (React replaces it within a second).
-const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a2332"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · <a href="/listings">Listings</a> · <a href="/sold">Sold</a> · <a href="/sell">Sell</a> · <a href="/cma">Home value</a> · <a href="/blog">Blog</a> · <a href="/about">About</a> · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
+// Keep in sync with NAV_LINKS in src/components/SiteNav.jsx. This copy is what
+// a non-JS crawler follows, so a page missing here is a page they cannot reach.
+const NAV = [['Listings', '/listings'], ['Sold', '/sold'], ['Sell', '/sell'], ['Home value', '/cma'], ['Events', '/events'], ['Blog', '/blog'], ['About', '/about']]
+const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a2332"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · ${NAV.map(([label, url]) => `<a href="${url}">${label}</a>`).join(' · ')} · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
 
 // ── data helpers ──────────────────────────────────────────────────────────
 
@@ -156,7 +172,7 @@ const routes = []
 const llms = []
 
 // Home
-const reviews = await fetchJson(`${SITE}/api/reviews`)
+const reviews = await fetchJson(`${FETCH_ORIGIN}/api/reviews`)
 {
   const lakeLinks = Object.values(lakes).map((l) => `<li><a href="/lakes/${l.slug}">${esc(l.name)}</a> — ${esc(l.tagline || '')}</li>`).join('')
   const regionLinks = Object.values(regions).map((r) => `<li><a href="/?region=${r.slug}">${esc(r.name)}</a>: ${esc(r.subtitle || '')}. ${esc(r.character || '')}</li>`).join('')
@@ -359,7 +375,7 @@ for (const p of propertiesData) {
         name: 'Holly Griewahn',
         jobTitle: 'Realtor',
         worksFor: { '@type': 'Organization', name: 'Foundation Realty' },
-        telephone: '+1-517-403-3413',
+        telephone: PHONE,
         areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
         image: `${SITE}/images/holly-headshot.webp`,
         url: `${SITE}/about`,
@@ -452,8 +468,121 @@ for (const p of propertiesData) {
   }
 }
 
+// Events (Manitou Beach Michigan's calendar, collected for buyers).
+//
+// Deliberately NOT schema.org/Event: Holly is not the source of truth for
+// these, the upstream flags its own records as liable to change, and marking
+// up an event that moved is a factual claim on a licensed Realtor's site.
+// CollectionPage + ItemList claims only "here is a list of links", which is
+// true, and isBasedOn is the machine-readable credit.
+//
+// Unlike the blog block below, this writes the page even when the fetch
+// fails. A route that sometimes does not exist is worse than an empty one.
+{
+  // Straight from the upstream feed, not through our own /api/events: the
+  // build must not depend on the deployed site answering, least of all on
+  // cutover day. Same fetcher the proxy and the newsletter use.
+  const { events } = await fetchEvents({ full: true })
+  const evUrl = (e) => EVENT_PAGE(e.id)
+
+  const months = []
+  for (const e of events) {
+    const key = String(e.date || '').slice(0, 7)
+    if (!key) continue
+    let m = months.find((x) => x.key === key)
+    if (!m) months.push((m = { key, label: new Date(`${e.date}T12:00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), events: [] }))
+    m.events.push(e)
+  }
+
+  const evLi = (e) => {
+    const when = [new Date(`${e.date}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }), e.time].filter(Boolean).join(', ')
+    const where = e.location ? ` at ${esc(e.location)}` : ''
+    const cost = e.cost ? ` (${esc(e.cost)})` : ''
+    return `<li><a href="${evUrl(e)}">${esc(e.name)}</a> — ${esc(when)}${where}${cost}</li>`
+  }
+
+  const towns = ['Manitou Beach', 'Devils Lake', 'Onsted', 'Brooklyn', 'Addison', 'Tecumseh']
+  const countIn = (t) => events.filter((e) => (e.location || '').toLowerCase().includes(t.toLowerCase())).length
+  const music = events.filter((e) => /music/i.test(e.category || '')).length
+  // location is a free-text address ("Two Lakes Tavern, 110 Walnut St, ...").
+  // Take the part before the first comma, and drop the ones that are a street
+  // address or a generic phrase rather than a place a person would name.
+  const venueName = (loc) => String(loc || '').split(',')[0].trim()
+  // Dedupe on a normalised key so "Gypsy Blue Vineyard" and "... Vineyards"
+  // are one venue, and drop placeholders.
+  const venues = []
+  const seenVenue = new Set()
+  for (const e of events) {
+    const v = venueName(e.location)
+    if (!v || /^\d/.test(v) || /^(participating|tbd|tba|various)\b/i.test(v)) continue
+    const key = v.toLowerCase().replace(/[^a-z]/g, '').replace(/s$/, '')
+    if (seenVenue.has(key)) continue
+    seenVenue.add(key)
+    venues.push(v)
+  }
+
+  const faq = [
+    ['What is there to do around Devils Lake and the Irish Hills?',
+      events.length
+        ? `There are ${events.length} events on the Irish Hills calendar right now, running through ${new Date(`${events[events.length - 1].date}T12:00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}: live music, festivals, markets and community nights across ${venues.length} venues in Manitou Beach, Devils Lake, Onsted, Brooklyn and Addison.`
+        : 'Live music, festivals, markets and community nights run year round around Devils Lake, Manitou Beach, Onsted and Brooklyn. The full calendar is kept by Manitou Beach Michigan.'],
+    ['Where is there live music near Manitou Beach?',
+      music
+        ? `${music} of the ${events.length} events currently listed are live music, at venues including ${venues.slice(0, 6).join(', ')}.`
+        : 'Live music runs most weekends around Devils Lake and Manitou Beach; the current lineup is on the Manitou Beach Michigan calendar.'],
+    ['Is there anything going on around the Irish Hills in winter?',
+      'Yes. The lakes are a summer destination, but the taverns, wineries and community halls around Devils Lake, Manitou Beach and Brooklyn run music and events through the winter, and ice fishing brings its own calendar.'],
+    ['Which towns do these events cover?',
+      `Manitou Beach, Devils Lake, Addison, Onsted, Brooklyn, Cambridge Junction, Tecumseh and the surrounding Irish Hills.${events.length ? ` Right now: ${towns.map((t) => `${t} ${countIn(t)}`).filter((x) => !/ 0$/.test(x)).join(', ')}.` : ''}`],
+    ['Who sells homes around these lakes?',
+      `Holly Griewahn of Foundation Realty in Manitou Beach has sold Irish Hills lake, cottage, farm and village property for 30+ years. ${record.sold} homes sold in 2026, ${money(record.volume)}. Call or text (517) 403-3413.`],
+  ]
+
+  const body = WRAP(`
+    <p><a href="/">Irish Hills</a> › Events</p>
+    <h1>What's On Around the Irish Hills Lakes</h1>
+    ${events.length
+      ? `<p>${events.length} upcoming events around Devils Lake, Manitou Beach, Onsted, Brooklyn and the Irish Hills: live music, festivals, markets and community nights. Listed and maintained by <a href="https://manitoubeachmichigan.com">Manitou Beach Michigan</a>; every listing links to their page for details and tickets.</p>
+         ${months.map((m) => `<h2>${esc(m.label)}</h2><ul>${m.events.map(evLi).join('')}</ul>`).join('')}`
+      : `<p>Live music, festivals and lake happenings run year round around Devils Lake and Manitou Beach. The full Irish Hills calendar is kept at <a href="https://manitoubeachmichigan.com/events">Manitou Beach Michigan</a>.</p>`}
+    <h2>Thinking about owning here?</h2>
+    <p>Holly Griewahn has sold around these lakes for thirty years. <a href="/cma">What is my lake home worth?</a> · <a href="/listings">Homes for sale now</a> · <a href="/sold">Every sale in 2026</a>. Call or text (517) 403-3413.</p>
+    <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
+    <p><em>Events as listed by Manitou Beach Michigan on ${TODAY}. Dates and times can change; check their page before you go.</em></p>
+  `)
+
+  routes.push(write('/events', {
+    title: "Irish Hills & Devils Lake Events | What's On Around the Lakes",
+    description: `Live music, festivals and lake happenings around Devils Lake, Manitou Beach, Onsted and Brooklyn${events.length ? `. ${events.length} events listed now` : ''}. Collected by Holly Griewahn, Foundation Realty, from the Manitou Beach Michigan calendar.`.slice(0, 300),
+    image: '/regions/manitou-beach/poster.webp',
+    jsonld: [
+      {
+        '@type': 'CollectionPage',
+        name: 'Irish Hills & Devils Lake events',
+        url: `${SITE}/events`,
+        isBasedOn: 'https://manitoubeachmichigan.com/events',
+        publisher: { '@id': `${SITE}/#agent` },
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: events.length,
+          itemListElement: events.slice(0, 30).map((e, i) => ({ '@type': 'ListItem', position: i + 1, name: e.name, url: evUrl(e) })),
+        },
+      },
+      { '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+      breadcrumbs([['Irish Hills', '/'], ['Events', '/events']]),
+    ],
+    body,
+  }))
+
+  llms.push('\n## Events around the lakes\n')
+  llms.push(`- [Irish Hills & Devils Lake events](${SITE}/events): ${events.length} upcoming events around Devils Lake, Manitou Beach, Onsted and Brooklyn, from the Manitou Beach Michigan calendar as of ${TODAY}.`)
+  for (const e of events.slice(0, 40)) {
+    llms.push(`  - ${e.name} — ${e.date}${e.time ? `, ${e.time}` : ''}${e.location ? `, ${e.location}` : ''}${e.cost ? `, ${e.cost}` : ''} ([details](${evUrl(e)}))`)
+  }
+}
+
 // Blog (from the live articles endpoint; skipped silently if unreachable)
-const list = await fetchJson(`${SITE}/api/holly-articles`)
+const list = await fetchJson(`${FETCH_ORIGIN}/api/holly-articles`)
 const articles = list?.articles || []
 if (articles.length) {
   routes.push(write('/blog', {
@@ -463,7 +592,7 @@ if (articles.length) {
   }))
   llms.push('\n## Articles\n')
   for (const a of articles) {
-    const full = await fetchJson(`${SITE}/api/holly-articles?slug=${encodeURIComponent(a.slug)}`)
+    const full = await fetchJson(`${FETCH_ORIGIN}/api/holly-articles?slug=${encodeURIComponent(a.slug)}`)
     const blocks = full?.article?.content || []
     const html = blocks.map((b) => b.type === 'h2' ? `<h2>${esc(b.text)}</h2>` : b.type === 'h3' ? `<h3>${esc(b.text)}</h3>` : b.type === 'li' ? `<li>${esc(b.text)}</li>` : b.text ? `<p>${esc(b.text)}</p>` : '').join('')
     routes.push(write(`/blog/${a.slug}`, {
@@ -484,18 +613,43 @@ for (const r of ['/admin', '/plan']) {
 
 // ── robots, sitemap, llms.txt ─────────────────────────────────────────────
 
-fs.writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /plan
-Disallow: /api/
+// robots.txt
+//
+// The AI crawlers are named explicitly rather than left to the `*` group. The
+// one that carries real information is Google-Extended, which is the separate
+// lever for Gemini and is not covered by Googlebot; the rest make the policy
+// auditable and make a future "allow retrieval, block training" split a
+// one-line change.
+//
+// Every group is GENERATED from one DISALLOW list on purpose. robots.txt
+// groups are most-specific-wins and DO NOT INHERIT: the moment a named agent
+// appears, it stops reading the `*` group entirely, including Disallow: /admin.
+// Hand-writing these would be fifteen chances to leak Holly's desk.
+const AI_AGENTS = [
+  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User',
+  'ClaudeBot', 'Claude-User', 'Claude-SearchBot', 'anthropic-ai',
+  'PerplexityBot', 'Perplexity-User',
+  'Google-Extended', 'Applebot-Extended',
+  'CCBot', 'Amazonbot', 'meta-externalagent', 'Bytespider',
+]
+const DISALLOW = ['/admin', '/plan', '/api/']
+// Disallow lines come FIRST. RFC 9309 parsers pick the longest match, so
+// order would not matter to them, but older first-match-wins parsers would
+// let `Allow: /` swallow the rest. This ordering is correct under both.
+const robotsGroup = (ua) => `User-agent: ${ua}\n${DISALLOW.map((d) => `Disallow: ${d}`).join('\n')}\nAllow: /\n`
+
+fs.writeFileSync(path.join(DIST, 'robots.txt'), `${robotsGroup('*')}
+${AI_AGENTS.map(robotsGroup).join('\n')}
+# Plain-text summaries written for language models:
+#   ${SITE}/llms.txt
+#   ${SITE}/llms-full.txt
 
 Sitemap: ${SITE}/sitemap.xml
 `)
 
 fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map((r) => `  <url><loc>${SITE}${r}</loc><lastmod>${TODAY}</lastmod><changefreq>${r === '/' || r === '/listings' || r === '/sold' ? 'daily' : 'weekly'}</changefreq></url>`).join('\n')}
+${routes.map((r) => `  <url><loc>${SITE}${r}</loc><lastmod>${TODAY}</lastmod><changefreq>${['/', '/listings', '/sold', '/events'].includes(r) ? 'daily' : 'weekly'}</changefreq></url>`).join('\n')}
 </urlset>
 `)
 

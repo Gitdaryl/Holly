@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { key: 'sell', label: 'Sell', to: '/sell' },
   { key: 'cma', label: 'Home Value', to: '/cma' },
   { key: 'blog', label: 'Blog', to: '/blog' },
+  { key: 'events', label: 'Events', to: '/events' },
   { key: 'about', label: 'About', to: '/about' },
 ];
 
