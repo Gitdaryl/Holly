@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { pageview, track } from './lib/track.js';
 import Tour from './components/Tour.jsx';
@@ -17,6 +17,32 @@ import AdminPage from './pages/AdminPage.jsx';
 import MarketPage from './pages/MarketPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import SellPage from './pages/SellPage.jsx';
+
+// While Holly is signed in, every public page keeps a way back to her desk.
+// Without it, one tap into her own site from the desk is a dead end on a phone.
+function DeskChip() {
+  const { pathname } = useLocation();
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => {
+    try { setSignedIn(Boolean(localStorage.getItem('hg-admin-session'))); } catch { /* ignore */ }
+  }, [pathname]);
+  if (!signedIn || /^\/(admin|plan)(\/|$)/.test(pathname)) return null;
+  return (
+    <>
+      <style>{`@media (max-width: 600px) { .hg-desk-chip { bottom: 5.25rem !important; } }`}</style>
+      <a href="/admin" className="hg-desk-chip" style={{
+        position: 'fixed', left: '1.25rem', bottom: '1.5rem', zIndex: 998,
+        display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+        background: '#1a2332', color: 'white', textDecoration: 'none',
+        padding: '0.55rem 0.95rem', borderRadius: '30px', fontSize: '0.8rem', fontWeight: 700,
+        fontFamily: "'DM Sans', system-ui, sans-serif", boxShadow: '0 6px 20px rgba(15,25,35,0.28)',
+      }}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Your desk
+      </a>
+    </>
+  );
+}
 
 // Page views on every route change, plus taps on phone, text and review links.
 function Tracker() {
@@ -49,6 +75,7 @@ export default function Router() {
     <BrowserRouter>
       <Tracker />
       <Tour />
+      <DeskChip />
       <MobileActionBar />
       <ChatWidget />
       <Routes>

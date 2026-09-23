@@ -415,6 +415,36 @@ function Listings({ session }) {
   );
 }
 
+// Tells her how to put the desk on her home screen, once, on a phone, and only
+// while she is still opening it in a browser. After that it never appears.
+function AddToHomeScreen() {
+  const [hide, setHide] = useState(() => {
+    try {
+      if (localStorage.getItem('hg-a2hs') === '1') return true;
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) return true;
+      return !/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    } catch { return true; }
+  });
+  if (hide) return null;
+  const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return (
+    <div className="adm-card" style={{ background: NAVY, color: 'white', borderColor: NAVY, marginBottom: '0.9rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'flex-start' }}>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>Put this on your home screen</div>
+          <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.55, margin: 0 }}>
+            {ios
+              ? 'Tap the Share button at the bottom of Safari, then "Add to Home Screen". It becomes an icon like an app, and you will not need a login link again.'
+              : 'Open your browser menu and choose "Add to Home screen" or "Install app". It becomes an icon like an app, and you will not need a login link again.'}
+          </p>
+        </div>
+        <button onClick={() => { try { localStorage.setItem('hg-a2hs', '1'); } catch { /* ignore */ } setHide(true); }}
+          style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', fontSize: '1.1rem', cursor: 'pointer', lineHeight: 1, padding: 0 }} aria-label="Dismiss">×</button>
+      </div>
+    </div>
+  );
+}
+
 // ── stats ──────────────────────────────────────────────────────────────
 
 const LEVEL = { act: { bg: 'rgba(232,67,147,0.1)', fg: PINK, label: 'Do now' }, watch: { bg: 'rgba(245,179,1,0.14)', fg: '#a16207', label: 'Look' }, good: { bg: 'rgba(16,185,129,0.12)', fg: '#047857', label: 'Good' }, info: { bg: '#f0eee9', fg: MUTED, label: 'FYI' } };
@@ -504,9 +534,23 @@ export default function AdminPage() {
   const [linkError, setLinkError] = useState('');
 
   useEffect(() => {
-    const meta = document.createElement('meta'); meta.name = 'robots'; meta.content = 'noindex,nofollow'; document.head.appendChild(meta);
     document.title = "Holly's desk";
-    return () => { document.head.removeChild(meta); };
+    // iOS uses the page it was added from, so these only exist while she is on
+    // the desk: the home screen icon then opens straight here, full screen.
+    const tags = [
+      ['meta', { name: 'robots', content: 'noindex,nofollow' }],
+      ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
+      ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
+      ['meta', { name: 'apple-mobile-web-app-title', content: "Holly's desk" }],
+      ['link', { rel: 'manifest', href: '/desk.webmanifest' }],
+      ['link', { rel: 'apple-touch-icon', href: '/desk-192.png' }],
+    ].map(([tag, attrs]) => {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      document.head.appendChild(el);
+      return el;
+    });
+    return () => tags.forEach((el) => el.remove());
   }, []);
 
   // Arriving from the texted link: trade it for a session, then clean the URL.
@@ -520,11 +564,15 @@ export default function AdminPage() {
   }, [params, navigate]);
 
   const onSession = useCallback((s) => { setSession(s); setSess(s); }, []);
-  // First sign-in on this phone: run the tour once.
+  // The tour is offered, never forced: it walks onto the public site partway
+  // through, and auto-running it made the login link look like it opened the
+  // website instead of the desk.
+  const [firstTime, setFirstTime] = useState(false);
   useEffect(() => {
     if (!session) return;
-    try { if (!localStorage.getItem('hg-tour-seen') && !sessionStorage.getItem('hg-tour-step')) { localStorage.setItem('hg-tour-seen', '1'); startTour(); } } catch { /* ignore */ }
+    try { setFirstTime(!localStorage.getItem('hg-tour-seen')); } catch { /* ignore */ }
   }, [session]);
+  const dismissWelcome = () => { try { localStorage.setItem('hg-tour-seen', '1'); } catch { /* ignore */ } setFirstTime(false); };
   const logout = () => { setSession(''); setSess(''); };
 
   if (exchanging) return <div style={{ minHeight: '100vh', background: NAVY, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT }}>Signing you in…</div>;
@@ -538,6 +586,19 @@ export default function AdminPage() {
   return (
     <Shell tab={tab} setTab={setTab} onLogout={logout}>
       <SessionGuard session={session} onExpired={logout}>
+        {firstTime && (
+          <div className="adm-card" style={{ borderLeft: `4px solid ${PINK}`, marginBottom: '0.9rem' }}>
+            <div style={{ fontFamily: SERIF, fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.3rem' }}>Welcome to your desk, Holly.</div>
+            <p style={{ fontSize: '0.88rem', color: MUTED, lineHeight: 1.55, margin: '0 0 0.8rem' }}>
+              Every lead from your site lands here, and your phone gets a text the moment one arrives. The tour takes about two minutes: the first half stays right here, then it offers to show you the public side of your site.
+            </p>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <button className="adm-btn pink" onClick={() => { dismissWelcome(); startTour(); }}>Take the tour</button>
+              <button className="adm-btn" onClick={dismissWelcome}>Not now</button>
+            </div>
+          </div>
+        )}
+        <AddToHomeScreen />
         {tab === 'inbox' && <Inbox session={session} />}
         {tab === 'texts' && <Texts session={session} />}
         {tab === 'waitlist' && <Waitlist session={session} />}

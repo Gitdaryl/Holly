@@ -23,23 +23,26 @@ export const STEPS = [
     text: 'Views, saves, showing requests and buyers-on-the-lake for each active listing. "Your report" is the full picture with buyer names; "Copy seller link" is the counts-only version you can send. Every Friday a finished seller report is emailed to you with a one-click send button, so sellers hear from you weekly without you writing anything.' },
   { path: '/admin?tab=stats', target: '[data-tour="tab-stats"]', title: 'Where to look',
     text: 'Visitors, what they read, where they came from, and what they did. The top of this tab is a short list of things worth your attention: a lead waiting too long, a lake page people read but nobody signs up on, a listing with lookers and no showings. Read the list, ignore the rest.' },
-  { path: '/lakes/devils-lake', target: '[data-tour="track-record"]', title: 'Every lake page carries your record',
+  // Everything from here on leaves the desk and walks the public site, so the
+  // tour asks first. Holly's demo ended up on her own homepage because these
+  // steps navigated away without warning.
+  { path: '/lakes/devils-lake', target: '[data-tour="track-record"]', title: 'Every lake page carries your record', site: true,
     text: 'Sold here, days to sell, what is for sale now. When a seller on Devils Lake Googles the lake, this is what they find. It fills in automatically as sales are added.' },
-  { path: '/lakes/devils-lake', target: '#waitlist', title: 'Get first look',
+  { path: '/lakes/devils-lake', target: '#waitlist', title: 'Get first look', site: true,
     text: 'Buyers register here. They get a text from your number within seconds, you get a text with their budget and timing, and they hear from you again on day 3 and day 14 unless you have already talked. Sellers love hearing that buyers are waiting; this is where those buyers come from.' },
-  { path: '/market/devils-lake', target: '[data-tour="sold-map"]', title: 'Lake sales reports',
+  { path: '/market/devils-lake', target: '[data-tour="sold-map"]', title: 'Lake sales reports', site: true,
     text: 'One page per lake with your sales on it: median, range, days to sell, closings by month, and a map. Pink pins are this lake, grey pins are the rest of your year. Hover a pin for the sale. Satellite button top right if you want the shoreline.' },
-  { path: '/market/devils-lake', target: '#waitlist', title: 'Owners sign up here',
+  { path: '/market/devils-lake', target: '#waitlist', title: 'Owners sign up here', site: true,
     text: 'An owner who asks for updates on their lake is a future listing. They get "Holly texts you when a Devils Lake home sells or lists" and you get their street and whether they are thinking of selling. Call those, do not just text.' },
-  { path: `/property/${firstActive.slug}`, target: '#request-tour', title: 'A listing page that works for you',
+  { path: `/property/${firstActive.slug}`, target: '#request-tour', title: 'A listing page that works for you', site: true,
     text: 'Request a showing goes to your phone and to the desk within seconds; the buyer gets a confirmation text from your number. Save this home tells us who is coming back. Both feed the seller report. Every listing also gets an aerial or your photos, the numbers, and the map.' },
-  { path: '/sold', target: '[data-tour="sold-tiles"]', title: 'Sold never disappears',
+  { path: '/sold', target: '[data-tour="sold-tiles"]', title: 'Sold never disappears', site: true,
     text: 'Every closed sale stays on the site with the two numbers a seller cares about: how fast and for how much. This is the page to text a seller the night before an appointment. Mark a listing sold and it moves here on its own.' },
-  { path: '/plan', target: '[data-tour="plan-builder"]', title: 'The night-before link',
+  { path: '/plan', target: '[data-tour="plan-builder"]', title: 'The night-before link', site: true,
     text: 'Type the address and the lake, copy the link, text it to the seller before you meet. They open a page built for their house: how many buyers are waiting on their lake, what you sold there, what happens the day you list, and a sample of the Friday report. Nothing to save; the link builds the page.' },
-  { path: '/', target: '[data-tour="reviews"]', title: 'Your Google reviews, live',
+  { path: '/', target: '[data-tour="reviews"]', title: 'Your Google reviews, live', site: true,
     text: 'Your 5.0 rating and newest reviews pull straight from Google, so the site never shows a stale quote. The rating also sits on every listing page next to your name. Keep asking at closing; the desk has a one-tap review text for that.' },
-  { path: '/', target: '[aria-label="Chat with Holly\'s assistant"]', title: 'The chat knows what you know',
+  { path: '/', target: '[aria-label="Chat with Holly\'s assistant"]', title: 'The chat knows what you know', site: true,
     text: 'It answers from the same data as the site: every lake, your listings, your sales. It will not invent a price or a listing. When someone wants you, it collects their name and number and they land in your desk. Ask it something on your own phone; you will see.' },
   { path: '/admin?tab=inbox', target: '[data-tour="desk"]', title: 'What runs by itself',
     text: 'Leads text you and get an auto-reply. Untouched leads nudge you. Waitlist buyers and home-value askers get follow-ups on a schedule. Sellers get a Friday report. Calls to the site number ring your cell and take a voicemail with a transcript. Reviews, sold pages, lake reports and the chat update from the data. You answer the phone and go to appointments. That is the whole job.' },
@@ -70,11 +73,13 @@ export default function Tour() {
     if (n === null || n < 0 || n >= STEPS.length) {
       try { sessionStorage.removeItem(KEY); localStorage.setItem(SEEN, '1'); } catch { /* ignore */ }
       setStep(null); setRect(null);
+      // Always land back where the tour started, never stranded on a public page.
+      if (window.location.pathname !== '/admin') navigate('/admin');
       return;
     }
     try { sessionStorage.setItem(KEY, String(n)); } catch { /* ignore */ }
     setStep(n); setRect(null);
-  }, []);
+  }, [navigate]);
 
   // Navigate to the step's page, then find and measure the target.
   useEffect(() => {
@@ -108,6 +113,8 @@ export default function Tour() {
 
   if (step === null) return null;
   const s = STEPS[step];
+  const leavingDesk = !s.site && STEPS[step + 1]?.site;
+  const onSite = Boolean(s.site);
   const has = rect && rect !== 'none';
   const pad = 10;
   const vw = window.innerWidth, vh = window.innerHeight;
@@ -135,13 +142,15 @@ export default function Tour() {
         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.25 }}>{s.title}</div>
         <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#4a5568', margin: 0 }}>{s.text}</p>
         {rect === 'none' && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>(Nothing to point at yet on this page; it appears once there is data.)</p>}
+        {leavingDesk && <p style={{ fontSize: '0.8rem', color: '#6b7a8d', marginTop: '0.6rem', lineHeight: 1.5 }}>That is your desk. The rest of the tour leaves it and walks the public side of your site. You can stop here and come back to it any time.</p>}
+        {onSite && <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>You are on the public side of your site now. <a href="/admin" style={{ color: '#e84393', fontWeight: 700 }}>Back to your desk</a></p>}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.9rem' }}>
-          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0, whiteSpace: 'nowrap' }}>Skip tour</button>
+          <button onClick={() => go(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', padding: 0, whiteSpace: 'nowrap' }}>{leavingDesk ? 'Stop here' : 'Skip tour'}</button>
           <div style={{ flex: 1, display: 'flex', gap: '3px', justifyContent: 'center' }}>
             {STEPS.map((_, i) => <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: i === step ? '#e84393' : i < step ? '#1a2332' : '#e8e4df' }} />)}
           </div>
           {step > 0 && <button onClick={() => go(step - 1)} style={{ background: 'white', border: '1px solid #e8e4df', color: '#1a2332', padding: '0.5rem 0.8rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>Back</button>}
-          <button onClick={() => go(step + 1)} style={{ background: '#e84393', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>{step === STEPS.length - 1 ? 'Done' : 'Next'}</button>
+          <button onClick={() => go(step + 1)} style={{ background: '#e84393', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '9px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'inherit' }}>{step === STEPS.length - 1 ? 'Done' : leavingDesk ? 'Show me the site' : 'Next'}</button>
         </div>
       </div>
     </div>
