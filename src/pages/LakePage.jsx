@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { lakes } from '../data/lakes';
+import CountUp from '../components/CountUp';
 import { regions } from '../data/regions';
 import { propertiesData, propertyTypes } from '../data/amenities';
 import LakeWaitlist from '../components/LakeWaitlist';
@@ -22,10 +23,10 @@ const LAKE_GRADIENTS = {
   'private': 'linear-gradient(135deg, #4a1a2a 0%, #7d2a45 40%, #ad3557 100%)',
 };
 
-function StatCard({ label, value, sub }) {
+function StatCard({ label, value, sub, count }) {
   return (
     <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #eeddd8', padding: '1rem 1.25rem', textAlign: 'center' }}>
-      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1c2b29', fontFamily: "'Source Serif 4', Georgia, serif" }}>{value}</div>
+      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1c2b29', fontFamily: "'Source Serif 4', Georgia, serif" }}>{count ? <CountUp value={value} /> : value}</div>
       <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.25rem' }}>{label}</div>
       {sub && <div style={{ fontSize: '0.75rem', color: '#d5dcda', marginTop: '0.15rem' }}>{sub}</div>}
     </div>
@@ -172,9 +173,9 @@ export default function LakePage() {
               <Link to={`/market/${lake.slug}`} style={{ color: '#e64774', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>{lake.name} sales report →</Link>
             </div>
             <div className="lake-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-              <StatCard label="Sold here" value={record.sold} />
-              {record.avgDays !== null ? <StatCard label="Avg days to sell" value={record.avgDays} /> : null}
-              {record.avgPct ? <StatCard label="Of list price" value={`${record.avgPct}%`} /> : null}
+              <StatCard label="Sold here" value={record.sold} count />
+              {record.avgDays !== null ? <StatCard label="Avg days to sell" value={record.avgDays} count /> : null}
+              {record.avgPct ? <StatCard label="Of list price" value={`${record.avgPct}%`} count /> : null}
               <StatCard label="For sale now" value={record.active} />
             </div>
             {recentSold.length > 0 && (

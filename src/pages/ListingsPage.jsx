@@ -42,6 +42,7 @@ export function PropertyCard({ property }) {
         <div style={{ height: '200px', background: property.gradient, position: 'relative', flexShrink: 0, overflow: 'hidden' }}>
           {coverFor(property) && (
             <img src={coverFor(property)} alt={property.title} loading="lazy"
+              onLoad={e => e.currentTarget.classList.add('hg-photo')}
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           )}
           {property.type && <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
@@ -59,7 +60,7 @@ export function PropertyCard({ property }) {
                 background: isActive(property) ? 'rgba(35,113,104,0.9)' : isSold(property) ? 'rgba(26,85,78,0.92)' : 'rgba(100,116,139,0.9)',
                 color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700,
               }}>
-                {isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
+                {isActive(property) && <span className="hg-live-dot" aria-hidden="true" />}{isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
               </span>
             </div>
           )}

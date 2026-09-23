@@ -71,7 +71,7 @@ function Shell({ children, tab, setTab, onLogout }) {
         .adm-card { background: white; border: 1px solid ${LINE}; border-radius: 14px; padding: 1rem 1.1rem; }
         .adm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.55rem 0.9rem; border-radius: 9px; font-family: inherit; font-size: 0.82rem; font-weight: 700; text-decoration: none; cursor: pointer; border: 1px solid ${LINE}; background: white; color: ${NAVY}; }
         .adm-btn.pink { background: ${PINK}; color: white; border-color: ${PINK}; }
-        select.adm-status { font-family: inherit; font-size: 0.78rem; font-weight: 700; border-radius: 20px; padding: 0.3rem 1.6rem 0.3rem 0.7rem; border: 1px solid transparent; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%236b7a8d'/></svg>"); background-repeat: no-repeat; background-position: right 0.6rem center; }
+        select.adm-status { transition: background-color 0.3s, color 0.3s; font-family: inherit; font-size: 0.78rem; font-weight: 700; border-radius: 20px; padding: 0.3rem 1.6rem 0.3rem 0.7rem; border: 1px solid transparent; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%236b7a8d'/></svg>"); background-repeat: no-repeat; background-position: right 0.6rem center; }
       `}</style>
       <header data-tour="desk" style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(253,247,245,0.96)', backdropFilter: 'blur(10px)', borderBottom: `1px solid ${LINE}` }}>
         <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0.75rem 1rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -168,7 +168,22 @@ function Login({ onSession }) {
 
 // ── inbox ──────────────────────────────────────────────────────────────
 
-function LeadCard({ lead, session, onStatus }) {
+// The desk lives on her home screen, where the phone keeps it in memory for
+// days. Reload whenever she comes back to it so the list is never stale.
+function useOnReturn(fn) {
+  useEffect(() => {
+    const on = () => { if (document.visibilityState === 'visible') fn(); };
+    document.addEventListener('visibilitychange', on);
+    return () => document.removeEventListener('visibilitychange', on);
+  }, [fn]);
+}
+
+const SEEN_KEY = 'hg-inbox-seen';
+function readSeen() { try { return Number(localStorage.getItem(SEEN_KEY)) || 0; } catch { return 0; } }
+function writeSeen() { try { localStorage.setItem(SEEN_KEY, String(Date.now())); } catch { /* ignore */ } }
+
+
+function LeadCard({ lead, session, onStatus, fresh }) {
   const st = STATUS[lead.status] || STATUS.new;
   const [busy, setBusy] = useState(false);
   const [asked, setAsked] = useState(Boolean(lead.reviewAskedAt));
@@ -187,10 +202,10 @@ function LeadCard({ lead, session, onStatus }) {
     setBusy(false);
   };
   return (
-    <div className="adm-card" style={{ opacity: lead.status === 'dead' ? 0.55 : 1 }}>
+    <div className={`adm-card${fresh ? ' hg-land' : ''}`} style={{ opacity: lead.status === 'dead' ? 0.55 : 1 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.4rem' }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: '1rem', lineHeight: 1.3 }}>{lead.name}</div>
+          <div style={{ fontWeight: 700, fontSize: '1rem', lineHeight: 1.3 }}>{fresh && <span className="hg-ring" aria-label="Arrived since you last looked" />}{lead.name}</div>
           <div style={{ fontSize: '0.75rem', color: MUTED, marginTop: '0.15rem' }}>
             <span style={{ fontWeight: 700, color: PINK }}>{lead.source}</span>
             {lead.about ? <> · {lead.link ? <Link to={lead.link} style={{ color: MUTED }}>{lead.about}</Link> : lead.about}</> : null}
@@ -221,7 +236,17 @@ function Inbox({ session }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('open');
-  useEffect(() => { api('/api/admin?view=inbox', { session }).then(setData).catch((e) => setError(e.message)); }, [session]);
+  const [fresh, setFresh] = useState(() => new Set());
+  // Leads that arrived since she last opened the inbox drop in and ring.
+  const load = useCallback(() => {
+    const since = readSeen();
+    return api('/api/admin?view=inbox', { session }).then((d) => {
+      setFresh(new Set(since ? d.items.filter((l) => new Date(l.when).getTime() > since).map((l) => l.id) : []));
+      writeSeen(); setData(d); setError('');
+    }).catch((e) => setError(e.message));
+  }, [session]);
+  useEffect(() => { load(); }, [load]);
+  useOnReturn(load);
   if (error) return <ErrorBox error={error} />;
   if (!data) return <Loading />;
   const onStatus = (id, status) => setData((d) => ({ ...d, items: d.items.map((l) => (l.id === id ? { ...l, status } : l)) }));
@@ -240,7 +265,7 @@ function Inbox({ session }) {
       {items.length === 0 ? (
         <Empty title="Nothing here" body={filter === 'open' ? 'Every lead is handled. When someone fills in a form on the site it shows up here and on your phone.' : 'No leads match that filter.'} />
       ) : (
-        <div style={{ display: 'grid', gap: '0.75rem' }}>{items.map((l) => <LeadCard key={l.id} lead={l} session={session} onStatus={onStatus} />)}</div>
+        <div style={{ display: 'grid', gap: '0.75rem' }}>{items.map((l) => <LeadCard key={l.id} lead={l} session={session} onStatus={onStatus} fresh={fresh.has(l.id)} />)}</div>
       )}
       {data.capped && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '1rem', textAlign: 'center' }}>Showing the latest {data.items.length}.</p>}
     </>
@@ -292,7 +317,9 @@ function Texts({ session }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [open, setOpen] = useState(null);
-  useEffect(() => { api('/api/admin?view=texts', { session }).then(setData).catch((e) => setError(e.message)); }, [session]);
+  const load = useCallback(() => api('/api/admin?view=texts', { session }).then((d) => { setData(d); setError(''); }).catch((e) => setError(e.message)), [session]);
+  useEffect(() => { load(); }, [load]);
+  useOnReturn(load);
   if (error) return <ErrorBox error={error} />;
   if (!data) return <Loading />;
   const onSent = (phone, body) => setData((d) => ({ ...d, threads: d.threads.map((t) => t.phone === phone ? { ...t, unanswered: false, messages: [...t.messages, { direction: 'out', body, author: 'holly', receivedAt: new Date().toISOString() }] } : t) }));

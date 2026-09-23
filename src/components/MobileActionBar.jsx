@@ -60,10 +60,14 @@ export default function MobileActionBar({ textBody }) {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
             Text
           </a>
-          <a href="/cma" style={itemStyle}>
+          <a href="/cma" style={{ ...itemStyle, borderRight: '1px solid #f6e9e5' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Home Value
           </a>
+          <button type="button" onClick={() => window.dispatchEvent(new Event('hg:open-chat'))} aria-label="Ask Heather, Holly's assistant" style={{ ...itemStyle, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e64774" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Ask
+          </button>
         </div>
       </nav>
     </>

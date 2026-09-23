@@ -14,6 +14,8 @@ const LEAD_PROMPT_AFTER = 2;
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const openRef = useRef(false);
+  openRef.current = open;
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,6 +28,13 @@ export default function ChatWidget() {
   const { pathname } = useLocation();
 
   const userMessageCount = messages.filter(m => m.role === 'user').length;
+
+  // The mobile action bar's Ask slot opens the chat from outside.
+  useEffect(() => {
+    const onOpen = () => { if (!openRef.current) track('chat_open'); setOpen(true); };
+    window.addEventListener('hg:open-chat', onOpen);
+    return () => window.removeEventListener('hg:open-chat', onOpen);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -105,6 +114,10 @@ export default function ChatWidget() {
         @media (max-width: 768px) {
           .chat-fab { bottom: 6.5rem !important; }
           .chat-panel { bottom: 10rem !important; height: min(520px, calc(100vh - 12rem)) !important; }
+          /* Where the action bar shows, Heather lives in its Ask slot instead of
+             a floating bubble that covers cards and the hero buttons. */
+          body.has-mobile-action-bar .chat-fab { display: none !important; }
+          body.has-mobile-action-bar .chat-panel { bottom: calc(64px + env(safe-area-inset-bottom) + 0.75rem) !important; height: min(560px, calc(100dvh - 64px - 6rem)) !important; }
         }
       `}</style>
 

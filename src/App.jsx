@@ -4,6 +4,7 @@ import { lakes, lakeSearchIndex } from './data/lakes';
 import { amenityData, propertiesData, blogPosts, propertyTypes } from './data/amenities';
 import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
 import { track } from './lib/track';
+import CountUp from './components/CountUp';
 import HeroVideo from './components/HeroVideo';
 import SiteNav from './components/SiteNav';
 
@@ -704,7 +705,7 @@ export default function IrishHillsRealty() {
             { val: '3', label: 'Round Lakes' },
           ].map(({ val, label }) => (
             <div key={label}>
-              <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#f5b5c7', fontFamily: "'Source Serif 4', Georgia, serif", fontVariantNumeric: 'tabular-nums' }}>{val}</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#f5b5c7', fontFamily: "'Source Serif 4', Georgia, serif", fontVariantNumeric: 'tabular-nums' }}><CountUp value={val} /></div>
               <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.72)', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
             </div>
           ))}

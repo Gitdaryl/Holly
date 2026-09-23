@@ -101,6 +101,7 @@ export default function PropertyPage() {
   const property = propertiesData.find(p => p.slug === id || String(p.id) === String(id));
   // Hook must run before the not-found early return.
   const { counts, saved, toggleSave } = useEngagement(property?.slug);
+  const [pop, setPop] = useState(0);
   const region = property ? regions[property.region] : null;
   const sold = property ? isSold(property) : false;
   const shareLakeName = property.lake && lakes[property.lake] ? lakes[property.lake].name : null;
@@ -201,9 +202,9 @@ export default function PropertyPage() {
               {propertyTypes[property.type]?.label || property.type}
             </span>}
             {sold ? (
-              <span style={{ background: 'rgba(26,85,78,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
+              <span className="hg-rider" style={{ background: 'rgba(26,85,78,0.92)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.35)' }}>{soldBadge(property)}</span>
             ) : (
-              <span style={{ background: 'rgba(35,113,104,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>Active</span>
+              <span className="hg-rider" style={{ background: 'rgba(35,113,104,0.85)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}><span className="hg-live-dot" aria-hidden="true" />Active</span>
             )}
           </div>
           <h1 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '0.5rem' }}>
@@ -377,7 +378,7 @@ export default function PropertyPage() {
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <button
                 type="button"
-                onClick={toggleSave}
+                onClick={() => { if (!saved) setPop((n) => n + 1); toggleSave(); }}
                 aria-pressed={saved}
                 style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
@@ -387,7 +388,7 @@ export default function PropertyPage() {
                   cursor: 'pointer', transition: 'all 0.2s ease',
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e64774'} strokeWidth="2">
+                <svg key={pop} className={pop ? 'hg-pop' : undefined} width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'white' : 'none'} stroke={saved ? 'white' : '#e64774'} strokeWidth="2">
                   <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/>
                 </svg>
                 {saved ? 'Saved' : 'Save this home'}

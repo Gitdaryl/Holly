@@ -1,0 +1,37 @@
+/* Holly's motion kit. Every piece comes from her world: the sign rider in the
+   yard, her signature, a listing photo coming up like a print. One headline
+   moment per page (signature on home, rider on a property); everything else is
+   short. Content is readable before and after every animation, and all of it
+   is off under reduced motion. Demos: https://claude.ai/artifact/GqBWYWiHaF4Pwf8NTyLvAW */
+
+/* Status rider: hangs from two hooks and settles like it was just hung. */
+@keyframes hg-rider {
+  0% { transform: rotate(-12deg); } 30% { transform: rotate(7deg); } 55% { transform: rotate(-3.5deg); }
+  78% { transform: rotate(1.5deg); } 100% { transform: rotate(0); }
+}
+.hg-rider { position: relative; display: inline-block; transform-origin: 50% -8px; animation: hg-rider 1.5s cubic-bezier(0.3, 0.6, 0.35, 1) 0.35s both; }
+.hg-rider::before, .hg-rider::after { content: ""; position: absolute; top: -8px; width: 2px; height: 8px; border-radius: 1px; background: rgba(255, 255, 255, 0.75); }
+.hg-rider::before { left: 22%; }
+.hg-rider::after { right: 22%; }
+
+/* Listing photo develops instead of snapping in. Added on the img's load. */
+@keyframes hg-develop { from { filter: saturate(0.25) brightness(1.12); transform: scale(1.05); } to { filter: none; transform: none; } }
+.hg-photo { animation: hg-develop 1s ease-out both; }
+
+/* Save heart springs. */
+@keyframes hg-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.3); } 100% { transform: scale(1); } }
+.hg-pop { animation: hg-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1); }
+
+/* "Active" breathes. */
+@keyframes hg-breathe { 50% { opacity: 0.35; } }
+.hg-live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #a7c6c3; margin-right: 5px; vertical-align: 1px; animation: hg-breathe 2.4s ease-in-out infinite; }
+
+/* Desk: a lead that arrived since she last looked drops in and rings 3 times. */
+@keyframes hg-land { from { transform: translateY(-12px) scale(0.98); } to { transform: none; } }
+@keyframes hg-ring { from { box-shadow: 0 0 0 0 rgba(230, 71, 116, 0.5); } to { box-shadow: 0 0 0 9px rgba(230, 71, 116, 0); } }
+.hg-land { animation: hg-land 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; border-color: #f5b5c7 !important; }
+.hg-ring { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e64774; margin-right: 6px; vertical-align: 1px; animation: hg-ring 1.6s ease-out 3; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-rider, .hg-photo, .hg-pop, .hg-live-dot, .hg-land, .hg-ring { animation: none !important; }
+}
