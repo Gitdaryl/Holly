@@ -5,6 +5,7 @@ import { amenityData, propertiesData, blogPosts, propertyTypes } from './data/am
 import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
 import { track } from './lib/track';
 import CountUp from './components/CountUp';
+import ScrollSignature from './components/ScrollSignature';
 import HeroVideo from './components/HeroVideo';
 import SiteNav from './components/SiteNav';
 
@@ -790,6 +791,7 @@ export default function IrishHillsRealty() {
             <p style={{ color: '#66706e', fontSize: '1rem', lineHeight: 1.8, marginBottom: '1.75rem' }}>
               Holly knows every lake, road, and neighbor in the Irish Hills. Drop her a note and she'll get back to you fast - usually the same day.
             </p>
+            <ScrollSignature width="clamp(190px, 26vw, 250px)" style={{ margin: '-0.75rem 0 1.5rem -0.25rem' }} />
             <div style={{ marginBottom: '1.25rem' }}><TrustStrip /></div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[

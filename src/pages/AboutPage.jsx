@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
+import ScrollSignature from '../components/ScrollSignature';
 import GoogleReviews from '../components/GoogleReviews';
 import NewsletterSignup from '../components/NewsletterSignup';
 import { propertiesData } from '../data/amenities';
@@ -170,6 +171,7 @@ export default function AboutPage() {
           <p style={{ fontSize: '1.02rem', lineHeight: 1.8, color: '#4a5654' }}>
             Lake homes here often change hands before they ever reach the MLS. Holly keeps a waitlist for each lake, so buyers hear about a home the day it comes available and sellers can walk into a listing appointment already knowing who is waiting.
           </p>
+          <ScrollSignature width="clamp(200px, 30vw, 260px)" style={{ margin: '0.75rem 0 0 auto' }} />
         </div>
 
         <AboutPhotoStrip />
