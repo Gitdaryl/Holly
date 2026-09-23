@@ -6,6 +6,7 @@ import GoogleReviews, { TrustStrip } from './components/GoogleReviews';
 import { track } from './lib/track';
 import CountUp from './components/CountUp';
 import ScrollSignature from './components/ScrollSignature';
+import BrokerSignature from './components/BrokerSignature';
 import HeroVideo from './components/HeroVideo';
 import SiteNav from './components/SiteNav';
 
@@ -657,12 +658,12 @@ export default function IrishHillsRealty() {
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', maxWidth: '1200px', width: '100%' }}>
             <div style={{ flex: 1, textAlign: 'left', position: 'relative', zIndex: 1 }}>
-              <h1 style={{ margin: '0 0 1rem -0.4rem', lineHeight: 0 }}>
-                <span className="sr-only">Holly Griewahn</span>
-                <img className="sig-ink" src="/images/signature-blush.webp" alt="" aria-hidden="true" width="900" height="238" style={{ width: 'clamp(260px, 42vw, 520px)', height: 'auto', filter: 'drop-shadow(0 2px 12px rgba(10,38,35,0.45))' }} />
+              <h1 style={{ margin: '0 0 1.1rem', lineHeight: 0 }}>
+                <span className="sr-only">Holly Griewahn, Foundation Realty</span>
+                <BrokerSignature animate />
               </h1>
               <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: 'rgba(255,255,255,0.9)', marginBottom: '0.5rem', fontWeight: 400 }}>
-                Foundation Realty | The Irish Hills Authority
+                The Irish Hills Authority
               </p>
               <p style={{ fontSize: '1rem', color: '#f5b5c7', fontWeight: 600, marginBottom: '1rem' }}>
                 Lakes, Farms, Country Estates & Village Living

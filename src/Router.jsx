@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from '
 import { pageview, track } from './lib/track.js';
 import Tour from './components/Tour.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
+import BrokerNotice from './components/BrokerNotice.jsx';
 import MobileActionBar from './components/MobileActionBar.jsx';
 import App from './App.jsx';
 import BlogPage from './pages/BlogPage.jsx';
@@ -100,6 +101,7 @@ export default function Router() {
         <Route path="/holly-yeti" element={<HollyYetiPage />} />
         <Route path="/*" element={<App />} />
       </Routes>
+      <BrokerNotice />
     </BrowserRouter>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
 import ScrollSignature from '../components/ScrollSignature';
+import BrokerSignature from '../components/BrokerSignature';
 import GoogleReviews from '../components/GoogleReviews';
 import NewsletterSignup from '../components/NewsletterSignup';
 import { propertiesData } from '../data/amenities';
@@ -140,9 +141,9 @@ export default function AboutPage() {
         </div>
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '1100px', margin: '0 auto', width: '100%', padding: '9rem 1.5rem 3rem' }}>
           <div style={{ maxWidth: '600px' }}>
-            <h1 style={{ margin: '0 0 0.6rem -0.3rem', lineHeight: 0 }}>
-              <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>Holly Griewahn</span>
-              <img src="/images/signature-blush.webp" alt="" aria-hidden="true" width="900" height="238" style={{ width: 'clamp(240px, 40vw, 440px)', height: 'auto', filter: 'drop-shadow(0 2px 12px rgba(10,38,35,0.45))' }} />
+            <h1 style={{ margin: '0 0 0.9rem', lineHeight: 0 }}>
+              <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>Holly Griewahn, Foundation Realty</span>
+              <BrokerSignature width="clamp(210px, 28vw, 360px)" />
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: '1.05rem', marginBottom: '1.75rem' }}>Foundation Realty &middot; Manitou Beach, Michigan</p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
