@@ -118,10 +118,22 @@ function Login({ onSession }) {
     try { await api('/api/admin?action=login', { method: 'POST' }); setState('sent'); }
     catch (e) { setState('idle'); setError(e.message); }
   };
+  // Accepts an admin key, a session, or a pasted login link (even the whole
+  // text message): people paste the link here instead of the address bar.
   const useKey = async (e) => {
     e.preventDefault();
-    try { await api('/api/admin?view=ping', { session: key.trim() }); onSession(key.trim()); }
-    catch { setError('That key did not work.'); }
+    const raw = key.trim();
+    const fromLink = raw.match(/[?&]t=([^\s&#]+)/);
+    const candidate = fromLink ? decodeURIComponent(fromLink[1]) : raw;
+    setError('');
+    try { await api('/api/admin?view=ping', { session: candidate }); onSession(candidate); return; }
+    catch { /* not a key or a live session; it may be a 15-minute login token */ }
+    try {
+      const d = await api(`/api/admin?action=session&t=${encodeURIComponent(candidate)}`);
+      onSession(d.session);
+    } catch {
+      setError(fromLink ? 'That link has expired. Ask for a new one.' : 'That key did not work.');
+    }
   };
 
   return (
@@ -141,10 +153,10 @@ function Login({ onSession }) {
           </button>
         )}
         {error && <p style={{ color: '#b91c1c', fontSize: '0.82rem', marginTop: '0.75rem' }}>{error}</p>}
-        <button onClick={() => setShowKey((v) => !v)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.72rem', marginTop: '1.25rem', cursor: 'pointer', fontFamily: 'inherit' }}>Have a key instead?</button>
+        <button onClick={() => setShowKey((v) => !v)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.72rem', marginTop: '1.25rem', cursor: 'pointer', fontFamily: 'inherit' }}>Have a link or a key?</button>
         {showKey && (
           <form onSubmit={useKey} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.6rem' }}>
-            <input value={key} onChange={(e) => setKey(e.target.value)} placeholder="Admin key" style={{ flex: 1, padding: '0.6rem 0.75rem', borderRadius: '8px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.85rem' }} />
+            <input value={key} onChange={(e) => setKey(e.target.value)} placeholder="Paste your login link or admin key" style={{ flex: 1, padding: '0.6rem 0.75rem', borderRadius: '8px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.85rem' }} />
             <button className="adm-btn" type="submit" style={{ fontFamily: 'inherit' }}>Go</button>
           </form>
         )}
