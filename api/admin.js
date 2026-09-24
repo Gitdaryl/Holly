@@ -58,6 +58,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ issues, subscribers, ready: letter.readiness(), testTo: process.env.HOLLY_CONTACT_EMAIL || null })
     }
     if (view === 'letter-new') return res.status(200).json(await letter.starter())
+    // The Idea Greenhouse (Yeti's shared idea board) inside the desk. The code
+    // only ever leaves the server to a signed-in desk; the page then hands it
+    // to the Greenhouse frame by postMessage. Set GREENHOUSE_CODE to the
+    // Greenhouse project's ACCESS_CODE; if one changes, change the other.
+    if (view === 'greenhouse') {
+      if (!process.env.GREENHOUSE_CODE) return res.status(503).json({ error: 'GREENHOUSE_CODE is not set.' })
+      return res.status(200).json({ url: process.env.GREENHOUSE_URL || 'https://idea-greenhouse-pi.vercel.app', code: process.env.GREENHOUSE_CODE, who: 'Holly' })
+    }
     if (view === 'letter-get' || view === 'letter-preview') {
       const found = await readIssue(String(req.query.id || '').replace(/[^a-z0-9-]/gi, ''))
       if (!found) return res.status(404).json({ error: 'No such letter.' })

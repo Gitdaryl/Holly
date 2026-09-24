@@ -59,8 +59,9 @@ const when = (iso) => {
 
 // ── shells ─────────────────────────────────────────────────────────────
 
-function Shell({ children, tab, setTab, onLogout }) {
-  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats']];
+function Shell({ children, tab, setTab, onLogout, session }) {
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats'], ['ideas', 'Ideas']];
+  const wide = tab === 'ideas';
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
@@ -68,6 +69,9 @@ function Shell({ children, tab, setTab, onLogout }) {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .adm-tab { flex: 1; padding: 0.85rem 0.25rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
         .adm-tab.on { color: ${NAVY}; border-bottom-color: ${PINK}; }
+        .adm-tab-ideas, .adm-ideas-link { display: none; }
+        @media (min-width: 900px) { .adm-tab-ideas { display: block; } }
+        @media (max-width: 899px) { .adm-ideas-link { display: inline; } }
         .adm-card { background: white; border: 1px solid ${LINE}; border-radius: 14px; padding: 1rem 1.1rem; }
         .adm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.55rem 0.9rem; border-radius: 9px; font-family: inherit; font-size: 0.82rem; font-weight: 700; text-decoration: none; cursor: pointer; border: 1px solid ${LINE}; background: white; color: ${NAVY}; }
         .adm-btn.pink { background: ${PINK}; color: white; border-color: ${PINK}; }
@@ -79,16 +83,17 @@ function Shell({ children, tab, setTab, onLogout }) {
             <img src="/images/foundation-logo.png" alt="Foundation Realty" style={{ height: '24px' }} />
             <span style={{ fontWeight: 700, color: NAVY, fontSize: '0.85rem' }}>Holly's desk</span>
           </Link>
-          <div style={{ display: 'flex', gap: '0.9rem' }}>
+          <div style={{ display: 'flex', gap: '0.9rem', alignItems: 'center' }}>
+            <IdeasLink session={session} />
             <button onClick={startTour} style={{ background: 'none', border: 'none', color: PINK, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Take the tour</button>
             <button onClick={onLogout} style={{ background: 'none', border: 'none', color: MUTED, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
           </div>
         </div>
         <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex' }}>
-          {tabs.map(([k, l]) => <button key={k} data-tour={`tab-${k}`} className={`adm-tab${tab === k ? ' on' : ''}`} onClick={() => setTab(k)}>{l}</button>)}
+          {tabs.map(([k, l]) => <button key={k} data-tour={`tab-${k}`} className={`adm-tab${tab === k ? ' on' : ''}${k === 'ideas' ? ' adm-tab-ideas' : ''}`} onClick={() => setTab(k)}>{l}</button>)}
         </div>
       </header>
-      <main style={{ maxWidth: '760px', margin: '0 auto', padding: '1rem 1rem 4rem' }}>{children}</main>
+      <main style={{ maxWidth: wide ? 'none' : '760px', margin: '0 auto', padding: wide ? '0.75rem 1rem 1rem' : '1rem 1rem 4rem' }}>{children}</main>
     </div>
   );
 }
@@ -765,6 +770,53 @@ function Letter({ session }) {
   );
 }
 
+// ── ideas ──────────────────────────────────────────────────────────────
+//
+// The Idea Greenhouse, full width, signed in as Holly without the code
+// screen. The Greenhouse says 'gh-ready' when it loads; we answer with the
+// code (fetched from the server, never in this bundle) and her name, sent
+// only to the Greenhouse's own origin.
+
+function useGreenhouse(session) {
+  const [gh, setGh] = useState(null);
+  const [error, setError] = useState('');
+  useEffect(() => { api('/api/admin?view=greenhouse', { session }).then(setGh).catch((e) => setError(e.message)); }, [session]);
+  useEffect(() => {
+    if (!gh) return undefined;
+    const origin = new URL(gh.url).origin;
+    const onMsg = (e) => {
+      if (e.origin !== origin || e.data?.type !== 'gh-ready') return;
+      e.source?.postMessage({ type: 'gh-signin', code: gh.code, who: gh.who }, origin);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [gh]);
+  return { gh, error };
+}
+
+function Ideas({ session }) {
+  const { gh, error } = useGreenhouse(session);
+  if (error) return <ErrorBox error={error} />;
+  if (!gh) return <Loading />;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', height: 'calc(100dvh - 118px)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1rem' }}>
+        <div style={{ fontSize: '0.82rem', color: MUTED }}>Your ideas with Yeti and Alivia. Changes save as you go.</div>
+        <a href={gh.url} target="_blank" rel="opener" style={{ fontSize: '0.8rem', fontWeight: 700, color: PINK, whiteSpace: 'nowrap' }}>Open in its own window</a>
+      </div>
+      <iframe title="Idea Greenhouse" src={gh.url} style={{ flex: 1, width: '100%', border: `1px solid ${LINE}`, borderRadius: '14px', background: 'white' }} />
+    </div>
+  );
+}
+
+// On a phone a seventh tab squeezes the rest, so Ideas is a header link that
+// opens the Greenhouse as its own window (signed in the same way, via opener).
+function IdeasLink({ session }) {
+  const { gh } = useGreenhouse(session);
+  if (!gh) return null;
+  return <a className="adm-ideas-link" href={gh.url} target="_blank" rel="opener" style={{ color: PINK, fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none' }}>Ideas</a>;
+}
+
 // ── page ───────────────────────────────────────────────────────────────
 
 export default function AdminPage() {
@@ -827,7 +879,7 @@ export default function AdminPage() {
   );
 
   return (
-    <Shell tab={tab} setTab={setTab} onLogout={logout}>
+    <Shell tab={tab} setTab={setTab} onLogout={logout} session={session}>
       <SessionGuard session={session} onExpired={logout}>
         {firstTime && (
           <div className="adm-card" style={{ borderLeft: `4px solid ${PINK}`, marginBottom: '0.9rem' }}>
@@ -848,6 +900,7 @@ export default function AdminPage() {
         {tab === 'listings' && <Listings session={session} />}
         {tab === 'letter' && <Letter session={session} />}
         {tab === 'stats' && <Stats session={session} setTab={setTab} />}
+        {tab === 'ideas' && <Ideas session={session} />}
       </SessionGuard>
     </Shell>
   );
