@@ -45,23 +45,28 @@ export function PropertyCard({ property }) {
               onLoad={e => e.currentTarget.classList.add('hg-photo')}
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           )}
-          {property.type && <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
-            <span style={{
-              background: 'rgba(230,71,116,0.92)', color: 'white',
-              padding: '0.3rem 0.75rem', borderRadius: '20px',
-              fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
-            }}>
-              {propertyTypes[property.type]?.label || property.type}
-            </span>
-          </div>}
-          {property.status && (
-            <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
-              <span style={{
-                background: isActive(property) ? 'rgba(35,113,104,0.9)' : isSold(property) ? 'rgba(26,85,78,0.92)' : 'rgba(100,116,139,0.9)',
-                color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700,
-              }}>
-                {isActive(property) && <span className="hg-live-dot" aria-hidden="true" />}{isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
-              </span>
+          {/* One row for both badges: when the card is too narrow for both, the
+              status drops to its own line instead of sliding under the type. */}
+          {(property.type || property.status) && (
+            <div style={{ position: 'absolute', top: '1rem', left: '1rem', right: '1rem', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '0.4rem' }}>
+              {property.type && (
+                <span style={{
+                  background: 'rgba(230,71,116,0.92)', color: 'white', whiteSpace: 'nowrap',
+                  padding: '0.3rem 0.75rem', borderRadius: '20px',
+                  fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
+                }}>
+                  {propertyTypes[property.type]?.label || property.type}
+                </span>
+              )}
+              {property.status && (
+                <span style={{
+                  marginLeft: 'auto', whiteSpace: 'nowrap',
+                  background: isActive(property) ? 'rgba(35,113,104,0.9)' : isSold(property) ? 'rgba(26,85,78,0.92)' : 'rgba(100,116,139,0.9)',
+                  color: 'white', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700,
+                }}>
+                  {isActive(property) && <span className="hg-live-dot" aria-hidden="true" />}{isSold(property) ? soldBadge(property) : property.status.charAt(0).toUpperCase() + property.status.slice(1)}
+                </span>
+              )}
             </div>
           )}
           {!coverFor(property) && (
