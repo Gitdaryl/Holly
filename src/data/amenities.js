@@ -755,7 +755,7 @@ export const propertiesData = [
     region: 'tecumseh-eastern', lake: null, type: null,
     title: '2262 Heatherwood Drive', address: '2262 Heatherwood Drive, Adrian, MI',
     price: null, beds: null, baths: null, sqft: null, yearBuilt: null,
-    summary: null, description: null, image: '/images/sold/2262-heatherwood-drive-adrian.webp', photos: [],
+    summary: null, description: null, image: null, photos: [],
     gradient: 'linear-gradient(135deg, #1c2b29 0%, #237168 100%)',
     listedOn: null, status: 'sold', soldOn: '2026-01-20', soldPrice: '$38,600', dom: 0, side: 'buyer',
     sellerName: null, sellerEmail: null,
