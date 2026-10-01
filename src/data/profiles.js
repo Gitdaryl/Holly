@@ -48,6 +48,15 @@ export const BROKERAGE = {
 
 export const PHONE = '+1-517-403-3413';
 
+// Honors, in one place: the About section, the home hero pill and the
+// schema.org `award` field all read this. Titles as shown at the Michigan
+// REALTORS convention (Acme, Sep 30 - Oct 2 2026). Add new ones at the top.
+export const AWARDS = [
+  { title: 'REALTOR® of the Year', by: 'Lenawee County Association of REALTORS®', short: 'Lenawee County REALTOR® of the Year', year: 2026 },
+  { title: 'Michigan REALTOR® of the Year, Finalist', by: 'Michigan REALTORS®', short: 'Michigan REALTOR® of the Year Finalist', year: 2026 },
+];
+export const awardText = (a) => `${a.year} ${a.short}`;
+
 // Profiles that are not this site, whatever this site's domain happens to be.
 export function buildSameAs(siteUrl) {
   let host = '';

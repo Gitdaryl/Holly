@@ -7,6 +7,7 @@ import { track } from './lib/track';
 import CountUp from './components/CountUp';
 import ScrollSignature from './components/ScrollSignature';
 import BrokerSignature from './components/BrokerSignature';
+import { AWARDS, awardText } from './data/profiles';
 import HeroVideo from './components/HeroVideo';
 import SiteNav from './components/SiteNav';
 
@@ -662,6 +663,9 @@ export default function IrishHillsRealty() {
                 <span className="sr-only">Holly Griewahn, Foundation Realty</span>
                 <BrokerSignature animate />
               </h1>
+              <a href="/about#about-award" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', padding: '0.35rem 0.85rem', marginBottom: '0.9rem', borderRadius: '999px', background: 'rgba(245,181,199,0.16)', border: '1px solid rgba(245,181,199,0.45)', color: '#fbeae6', fontSize: 'clamp(0.72rem, 3.1vw, 0.82rem)', whiteSpace: 'nowrap', fontWeight: 600, textDecoration: 'none', backdropFilter: 'blur(6px)' }}>
+                <span aria-hidden="true" style={{ color: '#f5b5c7' }}>&#9733;</span>{awardText(AWARDS[0])}
+              </a>
               <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', color: 'rgba(255,255,255,0.9)', marginBottom: '0.5rem', fontWeight: 400 }}>
                 The Irish Hills Authority
               </p>

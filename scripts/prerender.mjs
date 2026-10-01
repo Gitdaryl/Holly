@@ -19,7 +19,7 @@ import { regions } from '../src/data/regions.js'
 import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
 import { marketFor, marketIndex } from '../src/lib/market.js'
-import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs } from '../src/data/profiles.js'
+import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs, AWARDS } from '../src/data/profiles.js'
 import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
 import { fetchVideos } from '../api/lib/youtube-feed.js'
 
@@ -67,6 +67,7 @@ const AGENT = {
   // Every other place she exists online. Self-referencing entries are dropped
   // automatically when the site moves to her own domain.
   sameAs: buildSameAs(SITE),
+  award: AWARDS.map((a) => `${a.year} ${a.title}, ${a.by}`),
 }
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -182,7 +183,7 @@ const reviews = await fetchJson(`${FETCH_ORIGIN}/api/reviews`)
     : ''
   const body = WRAP(`
     <h1>Holly Griewahn, Realtor — Foundation Realty, Manitou Beach, Michigan</h1>
-    <p>Lakefront, lake-access, farm, cottage and village real estate across the Irish Hills of Lenawee, Jackson and Hillsdale counties: Devils Lake, Round Lake, Wamplers Lake, Clark Lake, Lake Columbia, Sand Lake, Vineyard Lake and more. 30+ years of local expertise, based at 100 Walnut St, Manitou Beach, MI 49253. Call or text (517) 403-3413.</p>
+    <p>Lakefront, lake-access, farm, cottage and village real estate across the Irish Hills of Lenawee, Jackson and Hillsdale counties: Devils Lake, Round Lake, Wamplers Lake, Clark Lake, Lake Columbia, Sand Lake, Vineyard Lake and more. 30+ years of local expertise, based at 100 Walnut St, Manitou Beach, MI 49253. ${AWARDS[0].year} ${esc(AWARDS[0].short)}. Call or text (517) 403-3413.</p>
     <h2>Track record</h2>
     <p>${record.sold} homes sold in 2026 so far, ${money(record.volume)} in volume, ${record.listSides} as the listing agent${record.avgDays !== null ? `, averaging ${record.avgDays} days to sell` : ''}. <a href="/sold">See every sale</a>.</p>
     <h2>Regions</h2><ul>${regionLinks}</ul>
@@ -199,7 +200,7 @@ const reviews = await fetchJson(`${FETCH_ORIGIN}/api/reviews`)
     jsonld: [AGENT, { '@type': 'WebSite', url: SITE, name: 'Holly Griewahn | Irish Hills Lakes', publisher: { '@id': `${SITE}/#agent` } }],
     body,
   }))
-  llms.push(`# Holly Griewahn, Realtor (Foundation Realty)\n\n> Irish Hills, Michigan lake real estate. ${record.sold} homes sold in 2026, ${money(record.volume)}. Office: 100 Walnut St, Manitou Beach, MI 49253. Phone (517) 403-3413. ${reviews ? `${reviews.rating.toFixed(1)} stars, ${reviews.count} Google reviews.` : ''}\n`)
+  llms.push(`# Holly Griewahn, Realtor (Foundation Realty)\n\n> Irish Hills, Michigan lake real estate. ${record.sold} homes sold in 2026, ${money(record.volume)}. Office: 100 Walnut St, Manitou Beach, MI 49253. Phone (517) 403-3413. ${AWARDS.map((x) => `${x.year} ${x.title} (${x.by}).`).join(' ')} ${reviews ? `${reviews.rating.toFixed(1)} stars, ${reviews.count} Google reviews.` : ''}\n`)
 }
 
 // Lakes
@@ -350,6 +351,8 @@ for (const p of propertiesData) {
   const body = WRAP(`
     <h1>About Holly Griewahn, Realtor - Foundation Realty</h1>
     <p>Holly Griewahn sells lake, farm, cottage, village and commercial property across the Irish Hills, based in Manitou Beach, Michigan on Devils Lake. 30+ years in the business, working Lenawee, Jackson, Hillsdale and Washtenaw counties. Lake homes here often change hands before they reach the MLS, so Holly keeps a buyer waitlist for each lake.</p>
+    <h2>Honors</h2>
+    <ul>${AWARDS.map((a) => `<li>${a.year} ${esc(a.title)}, ${esc(a.by)}</li>`).join('')}</ul>
     <h2>By the numbers, ${aboutYear}</h2>
     <ul>
       <li>${aboutRecord.sold} homes sold</li>
@@ -381,6 +384,7 @@ for (const p of propertiesData) {
         areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
         image: `${SITE}/images/holly-headshot.webp`,
         url: `${SITE}/about`,
+        award: AWARDS.map((a) => `${a.year} ${a.title}, ${a.by}`),
       },
       breadcrumbs([['Irish Hills', '/'], ['About', '/about']]),
     ],

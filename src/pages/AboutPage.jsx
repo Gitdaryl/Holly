@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
 import ScrollSignature from '../components/ScrollSignature';
+import { AWARDS } from '../data/profiles';
 import BrokerSignature from '../components/BrokerSignature';
 import GoogleReviews from '../components/GoogleReviews';
 import NewsletterSignup from '../components/NewsletterSignup';
@@ -174,6 +175,27 @@ export default function AboutPage() {
           </p>
           <ScrollSignature width="clamp(200px, 30vw, 260px)" style={{ margin: '0.75rem 0 0 auto' }} />
         </div>
+
+        {/* Honors: photo from the 2026 Michigan REALTORS convention */}
+        <section aria-labelledby="about-award" className="about-award" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 340px) minmax(0, 1fr)', gap: '2rem', alignItems: 'center', background: 'white', border: '1px solid #eeddd8', borderRadius: '18px', padding: '1.5rem', margin: '2.5rem auto', maxWidth: '900px' }}>
+          <style>{`@media (max-width: 720px) { .about-award { grid-template-columns: 1fr !important; } .about-award img { margin: 0 auto; } }`}</style>
+          <img src="/images/about/award-2026.webp" alt="Holly Griewahn holding her REALTOR of the Year award at the 2026 Michigan REALTORS convention" width="900" height="1200" loading="lazy" style={{ width: '100%', maxWidth: '340px', height: 'auto', borderRadius: '12px', display: 'block' }} />
+          <div>
+            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#e64774', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '0.5rem' }}>{AWARDS[0].year}</div>
+            <h2 id="about-award" style={{ fontFamily: SERIF, fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', fontWeight: 700, lineHeight: 1.2, marginBottom: '0.9rem', textWrap: 'balance' }}>Lenawee County REALTOR&reg; of the Year</h2>
+            <p style={{ fontSize: '1.02rem', lineHeight: 1.8, color: '#4a5654', marginBottom: '1.1rem' }}>
+              The Lenawee County Association of REALTORS&reg; named Holly its REALTOR&reg; of the Year, and she represented Lenawee at the Michigan REALTORS&reg; convention as a finalist for Michigan REALTOR&reg; of the Year.
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '0.5rem' }}>
+              {AWARDS.map((a) => (
+                <li key={a.title} style={{ display: 'flex', gap: '0.6rem', alignItems: 'baseline', justifyContent: 'inherit', fontSize: '0.92rem', color: '#1c2b29' }}>
+                  <span aria-hidden="true" style={{ color: '#e64774' }}>&#9733;</span>
+                  <span><strong>{a.year} {a.title}</strong> <span style={{ color: '#66706e' }}>&middot; {a.by}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
         <AboutPhotoStrip />
 
