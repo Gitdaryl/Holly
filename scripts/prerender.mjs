@@ -508,7 +508,7 @@ for (const p of propertiesData) {
       <li>Professional photos: bright, sharp, true-to-life photos of the house, the yard and the water. In the National Association of REALTORS 2025 survey, 81% of buyers who browse online rated photos very useful, the top-rated listing feature of all.</li>
       <li>A video walk-through: a short film that walks buyers through the home and out to the water. In the same survey 52% of buyers used online video sites in their home search, while only 5% of agent-marketed homes were on one. Some research suggests buyers value photos more than video (81% against 29% very useful), so video adds to great photos; it does not replace them.</li>
       <li>Drone views of the lot and shoreline: frontage, dock, lot lines and the neighborhood in one view.</li>
-      <li>A floor plan: 57% of buyers who browse online rated floor plans very useful.</li>
+      <li>A floor plan: 57% of buyers who browse online rated floor plans very useful. A sample floor plan, with and without room measurements, is shown on the page.</li>
       <li>Your own page, all the focus on your home: the full gallery, the facts, a map and a one-tap showing request, with a link that looks right pasted into Facebook or a text. 77% of buyers who browse online rated detailed property information very useful.</li>
       <li>A lake and local guide: the lake's size and type, drive times to town, and what is happening around the lake. 34% of buyers who browse online rated neighborhood information very useful.</li>
       <li>An open house: Holly can plan and host one if you want it. 48% of buyers used open houses in their home search. Some research suggests an open house rarely changes the price or speed of a sale on its own, so it is a choice, not a must.</li>

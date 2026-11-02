@@ -586,7 +586,12 @@ const OPTIONS = [
     note: 'Lake homes are bought for the water, and aerial views can show what photos from the ground cannot.' },
   { id: 'floor', title: 'A floor plan',
     body: 'A measured floor plan, so buyers can picture the layout and where their own furniture goes.',
-    stat: { big: '57%', text: 'of buyers who browse online rated floor plans "very useful".', src: NAR } }, // Exhibit 3-8
+    stat: { big: '57%', text: 'of buyers who browse online rated floor plans "very useful".', src: NAR }, // Exhibit 3-8
+    example: { caption: 'One sample floor plan, drawn for this page and not a real home, shown with and without room measurements. Yours would be made for your home.',
+      images: [
+        { src: '/images/samples/sample-floor-plan-with-measurements.svg', label: 'With room measurements', alt: 'Sample floor plan of a one-story lake home with three bedrooms, living room, kitchen, dining area and family room, every room measured, plus a deck on the lake side and a covered porch.' },
+        { src: '/images/samples/sample-floor-plan-no-measurements.svg', label: 'Without measurements', alt: 'The same sample floor plan showing room names only, without measurements.' },
+      ] } },
   { id: 'page', title: 'Your own page, all the focus on your home',
     body: 'A dedicated page for your address: the full gallery, the facts, a map and a one-tap showing request, with a link that looks right when it is pasted into Facebook or a text. No other listings competing for attention.',
     stat: { big: '77%', text: 'of buyers who browse online rated detailed property information "very useful".', src: NAR } }, // Exhibit 3-8
@@ -607,6 +612,7 @@ const OPTIONS = [
 
 function Option({ o, on, onToggle, delay }) {
   const idb = `wh-opt-${o.id}`;
+  const [showEx, setShowEx] = useState(false);
   return (
     <Reveal as="li" delay={delay} className={`wh-opt${on ? ' is-on' : ''}`}>
       <button type="button" aria-pressed={on} aria-describedby={`${idb}-d`} onClick={onToggle} className="wh-opt-head">
@@ -624,6 +630,28 @@ function Option({ o, on, onToggle, delay }) {
         )}
         {o.note && (
           <p className="wh-opt-note">{o.note}{o.noteSrc && <> <a href={o.noteSrc.href} target="_blank" rel="noopener" className="wh-opt-src">{o.noteSrc.label}</a></>}</p>
+        )}
+        {o.example && (
+          <div className="wh-ex">
+            <button type="button" className="wh-ex-btn" aria-expanded={showEx} aria-controls={`${idb}-ex`} onClick={() => setShowEx((v) => !v)}>
+              {showEx ? 'Hide the examples' : 'See an example'}
+            </button>
+            {showEx && (
+              <div id={`${idb}-ex`} className="wh-ex-body hg-rise">
+                <div className="wh-ex-grid">
+                  {o.example.images.map((im) => (
+                    <figure key={im.src} className="wh-ex-fig">
+                      <a href={im.src} target="_blank" rel="noopener" aria-label={`${im.label}, open full size`}>
+                        <img src={im.src} alt={im.alt} width="1040" height="860" loading="lazy" />
+                      </a>
+                      <figcaption>{im.label}. Tap to enlarge.</figcaption>
+                    </figure>
+                  ))}
+                </div>
+                <p className="wh-opt-note" style={{ margin: '0.6rem 0 0' }}>{o.example.caption}</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </Reveal>
@@ -1120,6 +1148,15 @@ body { margin: 0; }
 .wh-opt-stat strong { font-family: ${SERIF}; font-size: 1.7rem; font-weight: 800; color: #ad3557; line-height: 1; }
 .wh-opt-note { margin: 0.7rem 0 0 !important; font-size: 0.9rem !important; color: #4a5654 !important; }
 .wh-opt-src { color: #1a554e; font-weight: 700; text-decoration: underline; }
+.wh-ex { margin-top: 0.8rem; }
+.wh-ex-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0.4rem 1rem; border-radius: 999px; border: 1.5px solid #1a554e; background: white; color: #1a554e; font: 700 0.92rem 'Inter', system-ui, sans-serif; cursor: pointer; }
+.wh-ex-btn:hover { background: #eef5f4; }
+.wh-ex-btn:focus-visible { outline: 3px solid #237168; outline-offset: 2px; }
+.wh-ex-body { margin-top: 0.7rem; }
+.wh-ex-grid { display: grid; gap: 0.7rem; }
+.wh-ex-fig { margin: 0; }
+.wh-ex-fig img { display: block; width: 100%; height: auto; border: 1px solid #eeddd8; border-radius: 12px; background: white; }
+.wh-ex-fig figcaption { margin-top: 0.3rem; font-size: 0.85rem; font-weight: 600; color: #4a5654; }
 .wh-planbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem 1.2rem; margin-top: 1.1rem; padding: 0.9rem 1.1rem; background: #fbeae6; border-radius: 16px; }
 .wh-planbar-t { flex: 1 1 260px; line-height: 1.5; font-size: 0.98rem; }
 .wh-planbar-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
