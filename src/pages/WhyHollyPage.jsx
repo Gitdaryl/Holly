@@ -163,7 +163,7 @@ function Awards({ center }) {
   );
 }
 
-function Hero({ onPresent, present }) {
+function Hero({ onPresent, onWatch, present }) {
   return (
     <section className="wh-sec wh-dark wh-hero" aria-labelledby={present ? 'wh-title-p' : 'wh-title'}>
       <div className="wh-wrap">
@@ -187,6 +187,12 @@ function Hero({ onPresent, present }) {
               <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M7 4.5v15l12-7.5z" /></svg>
               Present this
             </button>
+            {onWatch && (
+              <button type="button" onClick={onWatch} className="wh-btn wh-btn-white">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none" /></svg>
+                Watch the 48 second video
+              </button>
+            )}
             <a href="#compare" className="wh-btn wh-btn-ghost">See the comparison</a>
           </div>
         )}
@@ -960,7 +966,51 @@ function Presenter({ start = 0, onClose }) {
 
 // ── Page ──────────────────────────────────────────────────────────────────
 
+// ── Video player (sample narrated tour) ───────────────────────────────────
+
+const VIDEO_TRANSCRIPT = [
+  'Selling a lake home is a big decision. Here is what you get when Holly Griewahn lists it.',
+  'Holly does not promise a number. She prices from what has really sold, and every one of her sales is public, so you can check her work.',
+  'When a buyer asks about your home, Holly\'s phone buzzes within seconds, any hour. Nobody is left waiting.',
+  'Every Monday you get a short note: how many people looked, how many saved it, how many asked to see it, and what she recommends next.',
+  'Then you choose how to show your home off. Great photos. A video walk-through. A floor plan. Your own page. Pick what fits.',
+  'To start, find out what homes like yours have actually sold for.',
+];
+
+function VideoModal({ onClose }) {
+  const closeRef = useRef(null);
+  useEffect(() => {
+    const back = document.activeElement;
+    if (closeRef.current) closeRef.current.focus();
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (back && back.focus) back.focus();
+    };
+  }, [onClose]);
+  return (
+    <div className="wh-vid-back" role="dialog" aria-modal="true" aria-label="Why Holly, a 48 second video" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="wh-vid-box">
+        <button ref={closeRef} type="button" className="wh-vid-x" onClick={onClose}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          Close
+        </button>
+        <video className="wh-vid" controls autoPlay playsInline preload="auto" poster="/videos/why-holly-poster.webp" src="/videos/why-holly.mp4">
+          Your browser cannot play this video. The words are written below.
+        </video>
+        <p className="wh-vid-hint">Tip: turn your phone sideways, or tap the full screen button, for a bigger picture.</p>
+        <details className="wh-vid-tx">
+          <summary>Read the words</summary>
+          {VIDEO_TRANSCRIPT.map((t) => <p key={t}>{t}</p>)}
+        </details>
+      </div>
+    </div>
+  );
+}
+
 export default function WhyHollyPage() {
+  const [watching, setWatching] = useState(false);
   const [presenting, setPresenting] = useState(() => {
     try { return new URLSearchParams(window.location.search).get('present') === '1'; } catch { return false; }
   });
@@ -990,7 +1040,7 @@ export default function WhyHollyPage() {
       <SiteNav active="why" transparent textBody="Hi Holly, I'm thinking about selling my lake home." />
 
       <main>
-        <Hero onPresent={() => setPresenting(true)} />
+        <Hero onPresent={() => setPresenting(true)} onWatch={() => setWatching(true)} />
         <Proof />
         <Priorities />
         <SpeedDemo />
@@ -1008,6 +1058,7 @@ export default function WhyHollyPage() {
       </footer>
 
       {presenting && <Presenter onClose={() => setPresenting(false)} />}
+      {watching && <VideoModal onClose={() => setWatching(false)} />}
     </div>
   );
 }
@@ -1162,6 +1213,15 @@ body { margin: 0; }
 .wh-planbar-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
 @media (max-width: 520px) { .wh-planbar-btns .wh-btn { flex: 1 1 100%; } }
 
+.wh-vid-back { position: fixed; inset: 0; z-index: 3000; background: #071916; display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
+.wh-vid-box { width: 100%; max-width: 960px; margin: auto; }
+.wh-vid-x { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.4rem 1rem; margin-bottom: 0.6rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.5); background: transparent; color: white; font: 700 0.95rem 'Inter', system-ui, sans-serif; cursor: pointer; }
+.wh-vid-x:focus-visible { outline: 3px solid #f5b5c7; outline-offset: 2px; }
+.wh-vid { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 14px; }
+.wh-vid-hint { margin: 0.7rem 0 0; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.wh-vid-tx { margin-top: 0.6rem; color: rgba(255,255,255,0.88); }
+.wh-vid-tx summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+.wh-vid-tx p { margin: 0 0 0.6rem; line-height: 1.55; font-size: 0.95rem; }
 .wh-found { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
 @media (max-width: 860px) { .wh-found { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .wh-found { grid-template-columns: 1fr; } }
