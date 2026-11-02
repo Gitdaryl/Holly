@@ -470,6 +470,7 @@ for (const p of propertiesData) {
     ['How does Holly Griewahn price a lake home?', `From what has actually closed on the lake and nearby, not from a promised number. Her own closed sales on each lake are public in the lake sales reports at ${SITE}/market.`],
     ['How fast does Holly hear about a buyer inquiry?', 'Within seconds. Every showing request, home value request, lake sign-up, contact form and chat message texts her phone, and anyone who asks to see a home, requests a value or joins a lake list gets a text back from her number. If a request has not been answered, she gets a reminder after 1 hour and again after 24 hours.'],
     ['How will I know how my listing is doing?', "Every Monday you get a short note: how many people looked at your home, how many saved it, how many asked to see it, plus what is happening in the market and what Holly recommends next. She reads and approves each one before it is sent. A private link shows the live numbers any day, so you never have to wait to know where you stand."],
+    ['What can Holly do to market my home beyond the MLS?', 'It is your choice. Every listing includes the MLS, the big home sites, a price set from closed sales, a page for your lake, a Monday update and live numbers. You can add professional photos, a video walk-through, drone views, a floor plan, your own page for the home, a lake and local guide, an open house, a social launch, and first look for buyers who signed up on your lake.'],
     ['Can I see what Holly has sold?', `Yes. ${rec.sold} homes sold in ${year}, ${money(rec.volume)} in volume, every one on ${SITE}/sold with how long it took to sell.`],
   ]
   const body = WRAP(`
@@ -491,27 +492,30 @@ for (const p of propertiesData) {
     <ul>${compare.map(([a, b]) => `<li>With Holly: ${esc(a)}. A typical listing: ${esc(b)}.</li>`).join('')}<li>On the MLS and the major portals through Foundation Realty: standard, every listing should have this.</li></ul>
     <h2>Fast answers</h2>
     <p>Any time a buyer reaches out through the site, Holly's phone buzzes right away, so no one is left waiting. One number, (517) 300-8226, handles texts and calls: calls ring her cell, and a voicemail reaches her as a text she can read. Every request lands in one place on her phone, with one tap to call or text back.</p>
-    <h2>How we sell your home, step by step</h2>
-    <h3>Before launch</h3>
-    <ol>
-      <li>Priced from closed sales: your list price is set from what has actually closed on your lake and nearby, and <a href="/market">the sales are public</a>.</li>
-      <li>Photo and video tour: professional photos, a walk-through video and drone footage of your home and the water, shot and edited before launch.</li>
-      <li>Your lake's buyers hear first: buyers who signed up for your lake are one tap away from Holly's phone, and she reaches out to them before your home goes public.</li>
-    </ol>
-    <h3>Launch week</h3>
-    <ol start="4">
-      <li>Your own page, built to share: gallery, video tour, the facts, a map and a one-tap showing request. Pasted into Facebook, a text or an Instagram bio, it shows your photo and price.</li>
-      <li>Social launch: a launch post and a short reel cut from your video, on Holly's Facebook and Instagram, pointing at your page.</li>
-      <li>MLS and the big home sites: listed through Foundation Realty on the MLS, which feeds the big home-search sites.</li>
-      <li>Your lake's page: buyers reading about your lake find your home on its page and in its sales report.</li>
-    </ol>
-    <h3>Every week after</h3>
-    <ol start="8">
-      <li>Heather, Holly's site assistant, answers buyer questions any hour from your listing's real facts, so a question asked at 11pm is not left waiting till morning.</li>
-      <li>Monday update and live numbers: how many people looked, saved it and asked to see it, every Monday, plus a private link to check the live numbers any day.</li>
-      <li>Changes made on evidence: lots of looks but no showings usually points at price or photos, nobody looking points at reach, and Holly gets a flag for both.</li>
-      <li>On the record: when it sells, your sale stays on her public sold page, with how long it took to sell.</li>
-    </ol>
+    <h2>Ways we can sell your home better</h2>
+    <p>Pick what fits. Every one is an option, not a package, and your home gets the basics either way.</p>
+    <h3>Included with every Holly listing</h3>
+    <ul>
+      <li>A price set from closed sales, with <a href="/market">the sales public</a></li>
+      <li>On the MLS and the big home sites, through Foundation Realty</li>
+      <li>Your home on its lake's page</li>
+      <li>Heather, Holly's site assistant, answering buyers any hour</li>
+      <li>A Monday update and live numbers</li>
+      <li>Your sale on the public record</li>
+    </ul>
+    <h3>Add what fits</h3>
+    <ul>
+      <li>Professional photos: bright, sharp, true-to-life photos of the house, the yard and the water. In the National Association of REALTORS 2025 survey, 81% of buyers who browse online rated photos very useful, the top-rated listing feature of all.</li>
+      <li>A video walk-through: a short film that walks buyers through the home and out to the water. In the same survey 52% of buyers used online video sites in their home search, while only 5% of agent-marketed homes were on one. Some research suggests buyers value photos more than video (81% against 29% very useful), so video adds to great photos; it does not replace them.</li>
+      <li>Drone views of the lot and shoreline: frontage, dock, lot lines and the neighborhood in one view.</li>
+      <li>A floor plan: 57% of buyers who browse online rated floor plans very useful.</li>
+      <li>Your own page, all the focus on your home: the full gallery, the facts, a map and a one-tap showing request, with a link that looks right pasted into Facebook or a text. 77% of buyers who browse online rated detailed property information very useful.</li>
+      <li>A lake and local guide: the lake's size and type, drive times to town, and what is happening around the lake. 34% of buyers who browse online rated neighborhood information very useful.</li>
+      <li>An open house: Holly can plan and host one if you want it. 48% of buyers used open houses in their home search. Some research suggests an open house rarely changes the price or speed of a sale on its own, so it is a choice, not a must.</li>
+      <li>A social launch: a launch post and a short reel on Holly's Facebook and Instagram, pointing to your page. 9% of buyers found their home through a friend, relative or neighbor.</li>
+      <li>First look for your lake's buyers: before your home goes public, Holly reaches out to buyers who signed up to hear first about homes on your lake. How many are waiting depends on the lake.</li>
+    </ul>
+    <p>Survey figures show what buyers say they use and value. They are not a promise about how any one home will sell. Source: <a href="https://www.nar.realtor/topics/profile-of-home-buyers-and-sellers">National Association of REALTORS 2025 Profile of Home Buyers and Sellers</a>, recent buyers and sellers, July 2024 to June 2025.</p>
     <h2>Where buyers find your home</h2>
     <p>When movers compare lakes on Google or ask an AI assistant, Holly's lake pages give them clear, real answers: what has sold, what homes cost, what each lake is like, and your home sits on those pages. Nobody can promise a ranking, but your home is on pages built to be found. There are ${lakeCount} <a href="/market">lake sales reports</a>, an <a href="/events">events calendar</a> for buyers, and <a href="/holly-yeti">Holly &amp; The Yeti</a>, a show about life around the lakes.</p>
     <h2>Questions to ask every agent you interview</h2>

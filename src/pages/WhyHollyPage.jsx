@@ -20,8 +20,9 @@ import { isSold, soldStats, trackRecord, fmtPrice } from '../lib/listing-stats';
 //     the clearly labelled SAMPLE Monday update.
 //   - The comparison column is "A typical listing" and is written as a
 //     question to ask, because we cannot speak for how every agent works.
-//   - Every feature named here exists in the repo (see the report that
-//     shipped with this page for the file behind each line).
+//   - The core features named here exist in the repo. The "ways we can sell
+//     it better" menu is options, and each says what it is, never that it
+//     is guaranteed; survey numbers are sourced and hedged.
 
 const FONT = "'Inter', -apple-system, sans-serif";
 const SERIF = "'Source Serif 4', Georgia, serif";
@@ -547,86 +548,120 @@ function LakePicker({ present }) {
   );
 }
 
-// ── 7. How we sell your home ──────────────────────────────────────────────
+// ── 7. Ways we can sell your home better (options, not promises) ──────────
 
-// Steps marked built: false are the plan for each listing, not software that
-// exists today (video tour, social launch set). Holly delivers them by hand
-// until they are productised. Do not demo this page for a seller without
-// knowing who produces each of them. Everything else is live in the repo.
-const PLAN = [
-  { key: 'before', tab: 'Before launch', lede: 'Before the sign goes in.', steps: [
-    { title: 'Priced from closed sales', built: true, body: 'Your list price is set from what has actually closed on your lake and nearby. The sales are public in the lake sales reports, so you can check the work.', link: '/market', cta: 'Lake sales reports' },
-    { title: 'Photo and video tour', built: false, body: 'Professional photos, a walk-through video and drone footage of your home and the water, shot and edited before launch so day one looks finished.' },
-    { title: 'Your lake\'s buyers hear first', built: true, body: 'Buyers who signed up for your lake are one tap away from Holly\'s phone. She reaches out to them before your home goes public, so the people most likely to care hear first.' },
-  ] },
-  { key: 'launch', tab: 'Launch week', lede: 'Your home goes live in every place a buyer looks.', steps: [
-    { title: 'Your own page, built to share', built: true, body: 'A page for your address: gallery, video tour, the facts, a map and a one-tap showing request. Pasted into Facebook, a text or an Instagram bio, it shows your photo and price. You can share it too.' },
-    { title: 'Social launch', built: false, body: 'A launch post and a short reel cut from your video, on Holly\'s Facebook and Instagram, pointing at your page.' },
-    { title: 'MLS and the big home sites', built: true, body: 'Listed through Foundation Realty on the MLS, which feeds the big home-search sites, like every listing should be.' },
-    { title: 'Your lake\'s page', built: true, body: 'Buyers reading about your lake find your home on its page and in its sales report.' },
-  ] },
-  { key: 'after', tab: 'Every week', lede: 'The listing keeps working, and you can see it.', steps: [
-    { title: 'Heather answers buyers, any hour', built: true, body: 'Holly\'s site assistant answers buyer questions from your listing\'s real facts and passes the buyer\'s details to Holly, so a question asked at 11pm gets an answer instead of waiting till morning.' },
-    { title: 'Monday update and live numbers', built: true, body: 'How many people looked, saved it and asked to see it, every Monday, plus a private link to check the live numbers any day. You never have to wait to know where you stand.' },
-    { title: 'Changes made on evidence', built: true, body: 'Lots of looks but no showings usually points at price or photos. Nobody looking points at reach. Holly gets a flag for both, so the next move comes from the numbers, not a hunch.' },
-    { title: 'On the record', built: true, body: 'When it sells, your sale stays on her public sold page, with how long it took to sell.' },
-  ] },
+// Survey figures come from NAR's 2025 Profile of Home Buyers and Sellers
+// (people who bought or sold a primary home July 2024 to June 2025). The
+// exhibit each number was read from is noted beside it. They describe what
+// buyers say they use and value; none of them is a promise about a sale.
+// Where the evidence is mixed the card says so ("Some research suggests").
+const NAR = { label: 'NAR 2025 survey', href: 'https://www.nar.realtor/topics/profile-of-home-buyers-and-sellers' };
+const REDFIN = { label: 'Redfin analysis of 12 million sales', href: 'https://www.redfin.com/news/spring-home-selling-tips/' };
+
+// Always part of a Holly listing. All of these exist today.
+const INCLUDED = [
+  'A price set from closed sales',
+  'On the MLS and the big home sites',
+  'Your home on its lake\'s page',
+  'Heather answering buyers, any hour',
+  'A Monday update and live numbers',
+  'Your sale on the public record',
 ];
 
-function DayWeList({ present }) {
-  const [phase, setPhase] = useState(0);
-  const tabRefs = useRef([]);
-  const idBase = present ? 'whp-p' : 'whp';
-  let n = 0;
-  const startAt = PLAN.slice(0, phase).reduce((a, p) => a + p.steps.length, 0);
-  const onKey = (e) => {
-    let next = null;
-    if (e.key === 'ArrowRight') next = (phase + 1) % PLAN.length;
-    else if (e.key === 'ArrowLeft') next = (phase + PLAN.length - 1) % PLAN.length;
-    else if (e.key === 'Home') next = 0;
-    else if (e.key === 'End') next = PLAN.length - 1;
-    if (next === null) return;
-    e.preventDefault();
-    e.stopPropagation();
-    setPhase(next);
-    tabRefs.current[next] && tabRefs.current[next].focus();
-  };
-  const cur = PLAN[phase];
+// Options the seller can add. Several (video, drone, floor plan, open house,
+// social launch) are services Holly arranges per listing, not software that
+// exists today. Do not demo this page to a seller without knowing who
+// produces each one. Only the dedicated page, lake guide and first look for
+// lake buyers are live in the repo.
+const OPTIONS = [
+  { id: 'photos', title: 'Professional photos',
+    body: 'Bright, sharp, true-to-life photos of the house, the yard and the water, edited and ready on day one.',
+    stat: { big: '81%', text: 'of buyers who browse online rated photos "very useful", the top-rated listing feature of all.', src: NAR } }, // Exhibit 3-8
+  { id: 'video', title: 'A video walk-through',
+    body: 'A short film that walks buyers through the home and out to the water, so they can feel the place before they visit.',
+    stat: { big: '52%', text: 'of buyers used online video sites in their home search, while only 5% of agent-marketed homes in the same survey were on one.', src: NAR }, // Exhibits 3-2, 7-8
+    note: 'Some research suggests buyers value photos more than video (81% against 29% "very useful"), so video adds to great photos; it does not replace them.' }, // Exhibit 3-8
+  { id: 'drone', title: 'Drone views of the lot and shoreline',
+    body: 'The whole property from above: frontage, dock, lot lines and the neighborhood around it, in one view.',
+    note: 'Lake homes are bought for the water, and aerial views can show what photos from the ground cannot.' },
+  { id: 'floor', title: 'A floor plan',
+    body: 'A measured floor plan, so buyers can picture the layout and where their own furniture goes.',
+    stat: { big: '57%', text: 'of buyers who browse online rated floor plans "very useful".', src: NAR } }, // Exhibit 3-8
+  { id: 'page', title: 'Your own page, all the focus on your home',
+    body: 'A dedicated page for your address: the full gallery, the facts, a map and a one-tap showing request, with a link that looks right when it is pasted into Facebook or a text. No other listings competing for attention.',
+    stat: { big: '77%', text: 'of buyers who browse online rated detailed property information "very useful".', src: NAR } }, // Exhibit 3-8
+  { id: 'local', title: 'A lake and local guide',
+    body: 'What living there is like: the lake\'s size and type, drive times to town, and what is happening around the lake all year.',
+    stat: { big: '34%', text: 'of buyers who browse online rated neighborhood information "very useful".', src: NAR } }, // Exhibit 3-8
+  { id: 'open', title: 'An open house',
+    body: 'A day when buyers can walk through without an appointment. Holly can plan and host it if you want one.',
+    stat: { big: '48%', text: 'of buyers used open houses in their home search.', src: NAR }, // Exhibit 3-2
+    note: 'Some research suggests an open house rarely changes the price or speed of a sale on its own, so it is a choice, not a must.', noteSrc: REDFIN },
+  { id: 'social', title: 'A social launch',
+    body: 'A launch post and a short reel on Holly\'s Facebook and Instagram, pointing to your page, so friends and neighbors can pass it along.',
+    stat: { big: '9%', text: 'of buyers found their home through a friend, relative or neighbor, and only 23% of agent-marketed homes in the survey were on social media.', src: NAR } }, // Exhibits 3-6, 7-8
+  { id: 'first', title: 'First look for your lake\'s buyers',
+    body: 'Before your home goes public, Holly reaches out to buyers who signed up to hear first about homes on your lake.',
+    note: 'How many buyers are waiting depends on the lake.' },
+];
+
+function Option({ o, on, onToggle, delay }) {
+  const idb = `wh-opt-${o.id}`;
   return (
-    <Section id="day-we-list" eyebrow="The plan" title="How we sell your home, step by step" present={present}
-      lede="Every place a buyer might look, in the order it happens.">
-      <div role="tablist" aria-label="Selling plan phases" className="wh-tabs" onKeyDown={onKey}>
-        {PLAN.map((p, i) => (
-          <button key={p.key} type="button" role="tab" id={`${idBase}-tab-${p.key}`} aria-selected={phase === i}
-            aria-controls={`${idBase}-panel`} tabIndex={phase === i ? 0 : -1}
-            ref={(el) => { tabRefs.current[i] = el; }} onClick={() => setPhase(i)}
-            className={`wh-tab${phase === i ? ' wh-tab-on' : ''}`}>
-            <span className="wh-tab-n">{i + 1}</span>{p.tab}
-          </button>
-        ))}
+    <Reveal as="li" delay={delay} className={`wh-opt${on ? ' is-on' : ''}`}>
+      <button type="button" aria-pressed={on} aria-describedby={`${idb}-d`} onClick={onToggle} className="wh-opt-head">
+        <span className="wh-chip-box" aria-hidden="true">{on ? <Check size={20} draw color="#237168" /> : null}</span>
+        <span className="wh-opt-title">{o.title}</span>
+        <span className="wh-opt-add">{on ? 'Added' : 'Add'}</span>
+      </button>
+      <div id={`${idb}-d`} className="wh-opt-body">
+        <p>{o.body}</p>
+        {o.stat && (
+          <div className="wh-opt-stat">
+            <strong>{o.stat.big}</strong>
+            <span>{o.stat.text} <a href={o.stat.src.href} target="_blank" rel="noopener" className="wh-opt-src">{o.stat.src.label}</a></span>
+          </div>
+        )}
+        {o.note && (
+          <p className="wh-opt-note">{o.note}{o.noteSrc && <> <a href={o.noteSrc.href} target="_blank" rel="noopener" className="wh-opt-src">{o.noteSrc.label}</a></>}</p>
+        )}
       </div>
-      <div role="tabpanel" id={`${idBase}-panel`} aria-labelledby={`${idBase}-tab-${cur.key}`} className="wh-plan">
-        <p className="wh-plan-lede">{cur.lede}</p>
-        <ol className="wh-steps" start={startAt + 1}>
-          {cur.steps.map((st, i) => {
-            n += 1;
-            return (
-              <Reveal as="li" key={`${cur.key}-${st.title}`} delay={i * 70} className="wh-step">
-                <span className="wh-step-num" aria-hidden="true">{startAt + n}</span>
-                <div>
-                  <div className="wh-step-title">{st.title}</div>
-                  <div className="wh-step-body">{st.body}</div>
-                  {st.link && <a href={st.link} className="wh-flink wh-flink-light">{st.cta}</a>}
-                </div>
-              </Reveal>
-            );
-          })}
-        </ol>
-        <div className="wh-plan-nav">
-          {phase > 0 && <button type="button" className="wh-btn wh-btn-ghost" onClick={() => setPhase(phase - 1)}>Back: {PLAN[phase - 1].tab}</button>}
-          {phase < PLAN.length - 1 && <button type="button" className="wh-btn wh-btn-primary" onClick={() => setPhase(phase + 1)}>Next: {PLAN[phase + 1].tab}</button>}
-        </div>
+    </Reveal>
+  );
+}
+
+function DayWeList({ present }) {
+  const [picked, setPicked] = useState([]);
+  const toggle = (id) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const chosen = OPTIONS.filter((o) => picked.includes(o.id));
+  const smsPicks = `sms:+15173008226?&body=${encodeURIComponent(`Hi Holly, I'm thinking about selling my lake home. I'm interested in: ${chosen.map((o) => o.title).join(', ')}.`)}`;
+  return (
+    <Section id="day-we-list" eyebrow="Make it yours" title="Ways we can sell your home better" present={present} wide
+      lede="Pick what fits. Every one is an option, not a package, and your home gets the basics either way.">
+      <div className="wh-sub" style={{ marginTop: 0 }}>Included with every Holly listing</div>
+      <ul className="wh-incl">
+        {INCLUDED.map((t) => <li key={t}><Check size={18} /> <span>{t}</span></li>)}
+      </ul>
+      <div className="wh-sub">Add what fits</div>
+      <ul className="wh-opts">
+        {OPTIONS.map((o, i) => <Option key={o.id} o={o} on={picked.includes(o.id)} onToggle={() => toggle(o.id)} delay={Math.min(i, 5) * 50} />)}
+      </ul>
+      <div className="wh-planbar" aria-live="polite">
+        {chosen.length === 0 ? (
+          <div className="wh-planbar-t">Tap any that fit your home. Nothing here is required.</div>
+        ) : (
+          <>
+            <div className="wh-planbar-t"><strong>{chosen.length} {chosen.length === 1 ? 'extra' : 'extras'} picked:</strong> {chosen.map((o) => o.title).join(', ')}.</div>
+            <div className="wh-planbar-btns">
+              <a href={smsPicks} className="wh-btn wh-btn-primary">Text Holly my picks</a>
+              <button type="button" className="wh-btn wh-btn-outline" onClick={() => setPicked([])}>Clear</button>
+            </div>
+          </>
+        )}
       </div>
+      <p className="wh-sample-note" style={{ color: '#4a5654' }}>
+        Survey figures show what buyers say they use and value. They are not a promise about how any one home will sell. Source: National Association of REALTORS&reg; 2025 Profile of Home Buyers and Sellers, recent buyers and sellers, July 2024 to June 2025.
+      </p>
     </Section>
   );
 }
@@ -771,7 +806,7 @@ const SLIDES = [
   { key: 'speed', label: 'Fast answers', render: (p) => <SpeedDemo {...p} /> },
   { key: 'compare', label: 'Side by side', render: (p) => <Compare {...p} /> },
   { key: 'lake', label: 'Your lake', render: (p) => <LakePicker {...p} /> },
-  { key: 'day', label: 'How we sell', render: (p) => <DayWeList {...p} /> },
+  { key: 'day', label: 'Ways to sell better', render: (p) => <DayWeList {...p} /> },
   { key: 'monday', label: 'Every Monday', render: (p) => <MondayUpdate {...p} /> },
   { key: 'found', label: 'Reach', render: (p) => <Found {...p} /> },
   { key: 'questions', label: 'Questions to ask', render: (p) => <Questions {...p} /> },
@@ -1057,8 +1092,6 @@ body { margin: 0; }
 .wh-timeline li { position: relative; padding: 0 0 1.5rem; }
 .wh-dot { position: absolute; left: calc(-2rem + 0.2rem); top: 0.15rem; width: 17px; height: 17px; border-radius: 50%; background: white; border: 3px solid #e64774; }
 .wh-when { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #ad3557; }
-.wh-step-title { font-weight: 750; font-size: 1.08rem; margin: 0.15rem 0 0.25rem; }
-.wh-step-body { color: #4a5654; line-height: 1.6; font-size: 0.97rem; max-width: 620px; }
 
 .wh-mail { background: white; border-radius: 18px; box-shadow: 0 18px 50px rgba(28,43,41,0.12); padding: 1.4rem; max-width: 620px; border-top: 6px solid #e64774; }
 .wh-mail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f6e9e5; }
@@ -1069,20 +1102,28 @@ body { margin: 0; }
 .wh-mail-sec p { margin: 0; line-height: 1.6; color: #1c2b29; font-size: 0.97rem; }
 .wh-approved { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f6e9e5; font-weight: 700; color: #1a554e; font-size: 0.92rem; }
 
-.wh-tabs { display: flex; gap: 0.5rem; margin: 0.25rem 0 1.1rem; flex-wrap: wrap; }
-.wh-tab { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 0.95rem 0.5rem 0.55rem; border-radius: 999px; border: 1.5px solid #eeddd8; background: white; color: #1c2b29; font: 700 0.92rem 'Inter', system-ui, sans-serif; cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s; }
-.wh-tab:hover { border-color: #ad3557; }
-.wh-tab:focus-visible { outline: 3px solid #237168; outline-offset: 2px; }
-.wh-tab-n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fbeae6; color: #ad3557; font-size: 0.8rem; font-weight: 800; }
-.wh-tab-on { background: #1a554e; border-color: #1a554e; color: white; }
-.wh-tab-on .wh-tab-n { background: #f5b5c7; color: #1a554e; }
-.wh-plan-lede { margin: 0 0 1rem; color: #4a5654; font-size: 1.02rem; line-height: 1.55; }
-.wh-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
-.wh-step { display: grid; grid-template-columns: 40px 1fr; gap: 0.9rem; align-items: start; background: white; border: 1px solid #eeddd8; border-radius: 16px; padding: 1rem 1.1rem; }
-.wh-step-num { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #e64774; color: white; font-family: ${SERIF}; font-weight: 800; font-size: 1.05rem; }
-.wh-flink.wh-flink-light { color: #ad3557; }
-.wh-plan-nav { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.1rem; }
-@media (max-width: 520px) { .wh-tabs { flex-wrap: nowrap; gap: 0.35rem; } .wh-tab { flex: 1 1 0; justify-content: center; text-align: center; padding: 0.4rem 0.35rem; font-size: 0.82rem; line-height: 1.2; border-radius: 14px; } .wh-tab-n { display: none; } .wh-plan-nav .wh-btn { flex: 1 1 100%; } }
+
+.wh-incl { list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.wh-incl li { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 40px; padding: 0.4rem 0.9rem 0.4rem 0.6rem; background: #eef5f4; border: 1px solid #cfe3e0; border-radius: 30px; font-size: 0.92rem; font-weight: 600; color: #1a554e; }
+.wh-opts { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; align-items: start; }
+@media (max-width: 820px) { .wh-opts { grid-template-columns: 1fr; } }
+.wh-opt { background: white; border: 1.5px solid #eeddd8; border-radius: 16px; overflow: hidden; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.wh-opt.is-on { border-color: #1a554e; box-shadow: 0 8px 24px rgba(26,85,78,0.12); }
+.wh-opt-head { display: flex; align-items: center; gap: 0.7rem; width: 100%; min-height: 56px; padding: 0.7rem 0.9rem; background: transparent; border: 0; text-align: left; cursor: pointer; font-family: ${FONT}; color: #1c2b29; }
+.wh-opt-head:focus-visible { outline: 3px solid #237168; outline-offset: -3px; }
+.wh-opt-title { flex: 1; font-family: ${SERIF}; font-size: 1.15rem; font-weight: 700; line-height: 1.25; }
+.wh-opt-add { font-size: 0.82rem; font-weight: 800; color: #ad3557; border: 1.5px solid #ad3557; border-radius: 999px; padding: 0.2rem 0.7rem; }
+.wh-opt.is-on .wh-opt-add { background: #1a554e; border-color: #1a554e; color: white; }
+.wh-opt-body { padding: 0 1rem 1rem 1rem; }
+.wh-opt-body p { margin: 0 0 0.7rem; line-height: 1.55; font-size: 0.97rem; color: #1c2b29; }
+.wh-opt-stat { display: flex; gap: 0.75rem; align-items: baseline; background: #fdf7f5; border-radius: 12px; padding: 0.7rem 0.85rem; font-size: 0.9rem; line-height: 1.5; color: #4a5654; }
+.wh-opt-stat strong { font-family: ${SERIF}; font-size: 1.7rem; font-weight: 800; color: #ad3557; line-height: 1; }
+.wh-opt-note { margin: 0.7rem 0 0 !important; font-size: 0.9rem !important; color: #4a5654 !important; }
+.wh-opt-src { color: #1a554e; font-weight: 700; text-decoration: underline; }
+.wh-planbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem 1.2rem; margin-top: 1.1rem; padding: 0.9rem 1.1rem; background: #fbeae6; border-radius: 16px; }
+.wh-planbar-t { flex: 1 1 260px; line-height: 1.5; font-size: 0.98rem; }
+.wh-planbar-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+@media (max-width: 520px) { .wh-planbar-btns .wh-btn { flex: 1 1 100%; } }
 
 .wh-found { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
 @media (max-width: 860px) { .wh-found { grid-template-columns: repeat(2, 1fr); } }
