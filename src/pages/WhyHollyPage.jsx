@@ -178,7 +178,7 @@ function Hero({ onPresent, present }) {
           Price it to what is <span className="hg-underline">really closing</span>. Then watch it work, every week.
         </h1>
         <p className="wh-lede" style={{ maxWidth: 620 }}>
-          This page does not promise you a number. It shows what you get instead: proof of what sold, buyers answered in seconds, and a report on your listing every Monday.
+          No promised number here. Here is what you get instead: proof of what has really sold, a fast answer for every buyer who reaches out, and a clear update on your home every Monday.
         </p>
         {!present && (
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', margin: '1.75rem 0 1.75rem' }}>
@@ -214,13 +214,13 @@ function Proof({ present }) {
       lede="Counted from Holly's closed sales, the same records behind her public sold page. Nothing here is an estimate.">
       <div className="wh-tiles">
         <ProofTile value={String(PROOF.sold)} label={`Homes sold in ${PROOF.year}`} delay={0} />
-        <ProofTile value={short(PROOF.volume)} label="Sold volume" delay={80} />
-        <ProofTile value={String(PROOF.fast)} label="Listings sold in 7 days or less" delay={160} />
+        <ProofTile value={short(PROOF.volume)} label="Total sold" delay={80} />
+        <ProofTile value={String(PROOF.fast)} label="Homes sold in a week or less" delay={160} />
         <ProofTile value={String(PROOF.bothSides)} label="Sales where Holly also brought the buyer" delay={240} />
       </div>
       <p className="wh-note">
-        {PROOF.avgDays !== null && <>Average days to sell across her {PROOF.listSides} listing-side sales: <strong>{PROOF.avgDays}</strong>. </>}
-        Every sale is listed with its own days on market, photos, and a map.
+        {PROOF.avgDays !== null && <>Homes Holly listed took <strong>{PROOF.avgDays}</strong> days to sell on average, across {PROOF.listSides} sales. </>}
+        Every sale is on her public page with how long it took, photos and a map, so you can check her work before you hire her.
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem 1.5rem', marginTop: '1.25rem' }}>
         <Link to="/sold" className="wh-btn wh-btn-primary">See every sale and the sold map</Link>
@@ -240,23 +240,23 @@ function Proof({ present }) {
 
 const PRIORITIES = [
   { id: 'price', label: 'The highest price', honest: true,
-    answer: 'A price is a forecast, not a promise. Holly sets it from what has actually closed on your lake and nearby, then the Monday numbers show whether buyers agree, so any change is made on evidence.' },
+    answer: 'A price is a forecast, not a promise, and Holly will not promise you a number. She sets it from what has really sold on your lake and nearby. Then every Monday you see whether buyers agree, so any change is made on evidence, not hope.' },
   { id: 'reply', label: 'Buyers answered fast',
-    answer: 'A showing request texts Holly within seconds, any hour, and the buyer gets a confirmation text from her number right away.' },
+    answer: 'When a buyer asks to see your home, Holly\'s phone buzzes within seconds, any hour, and the buyer hears back from her number right away, so nobody is left waiting.' },
   { id: 'informed', label: 'Knowing what is happening',
-    answer: 'Every Monday: views, saves, showing requests and buyers on your lake, plus a written market note and Holly\'s recommendation. She approves each one before it goes to you.' },
+    answer: 'Every Monday you get a short note: how many people looked at your home, how many saved it, how many asked to see it, and what Holly recommends next. She reads and approves each one before it reaches you, so you are never guessing.' },
   { id: 'proof', label: 'Proof, not talk',
-    answer: `${PROOF.sold} sales in ${PROOF.year}, every one on the public sold page with days on market.` },
+    answer: `${PROOF.sold} sales in ${PROOF.year}, every one on her public sold page with how long it took. You can check her work before you hire her.` },
   { id: 'buyers', label: 'Buyers already looking',
-    answer: `Each of the ${PROOF.lakeCount} lake pages has a buyer waitlist, and waitlist buyers get check-in texts from Holly.` },
-  { id: 'found', label: 'Being found online',
-    answer: 'Pages are built so search engines and AI assistants can read them: readable HTML, structured data, an llms.txt summary, and crawler rules that welcome the major assistants. Nobody can guarantee a ranking; this is built to be found.' },
+    answer: `Buyers can sign up on any of the ${PROOF.lakeCount} lake pages to hear first. When your home comes up, Holly reaches out to any buyers waiting on your lake.` },
+  { id: 'found', label: 'Buyers finding your home',
+    answer: 'When movers compare lakes on Google or ask an AI assistant, Holly\'s lake pages give them clear, real answers about what has sold and what each lake is like, and your home sits on those pages. Nobody can promise a ranking, but your home is on pages built to be found.' },
   { id: 'calls', label: 'No missed calls',
-    answer: 'Calls to her website number ring her cell. If she cannot pick up, the voicemail is transcribed and texted to her.' },
+    answer: 'Calls to Holly\'s website number ring her cell. If she cannot pick up, the caller leaves a message and she gets it as a text she can read at a glance, so a buyer is never lost to voicemail.' },
   { id: 'local', label: 'Someone who knows the lakes',
-    answer: `${awardText(AWARDS[0])}. A lake page and a sales report for each of the ${PROOF.lakeCount} lakes.` },
+    answer: `${awardText(AWARDS[0])}. And a page with real sales and facts for each of the ${PROOF.lakeCount} lakes.` },
   { id: 'late', label: 'Questions answered at night',
-    answer: 'Heather, the site assistant, answers from Holly\'s real listings and sales at any hour, and passes the buyer\'s details to Holly.' },
+    answer: 'Heather, Holly\'s site assistant, answers buyer questions any hour from Holly\'s real listings, sales and lake facts, then passes the buyer\'s details to Holly. A question asked at 11pm is not left waiting till morning.' },
 ];
 
 function Priorities({ present }) {
@@ -273,7 +273,7 @@ function Priorities({ present }) {
   const frac = chosen.length ? systems / chosen.length : 0;
   return (
     <Section id="matters" eyebrow="Your priorities" title="What matters most to you?" present={present}
-      lede="Tap everything that applies. Each one opens to show how it is handled.">
+      lede="Tap everything that applies. Each one shows how Holly handles it.">
       <div className="wh-pri-grid">
         <div className="wh-chips" role="group" aria-label="Seller priorities">
           {PRIORITIES.map((p) => {
@@ -298,8 +298,8 @@ function Priorities({ present }) {
               <div style={{ fontWeight: 700 }}>Pick a few to start.</div>
             ) : (
               <>
-                <div style={{ fontWeight: 800, fontSize: '1.05rem' }}>{systems} of your {chosen.length} {chosen.length === 1 ? 'pick has' : 'picks have'} a built system behind {chosen.length === 1 ? 'it' : 'them'}.</div>
-                {chosen.some((p) => p.honest) && <div style={{ color: '#4a5654', fontSize: '0.9rem', marginTop: '0.25rem' }}>Price gets an honest answer instead of a promise.</div>}
+                <div style={{ fontWeight: 800, fontSize: '1.05rem' }}>{systems} of your {chosen.length} {chosen.length === 1 ? 'pick is' : 'picks are'} backed by something you can see and check.</div>
+                {chosen.some((p) => p.honest) && <div style={{ color: '#4a5654', fontSize: '0.9rem', marginTop: '0.25rem' }}>On price, you get a straight answer instead of a promise.</div>}
               </>
             )}
           </div>
@@ -309,7 +309,7 @@ function Priorities({ present }) {
         <ul className="wh-answers">
           {chosen.map((p) => (
             <li key={p.id} className="hg-rise">
-              {p.honest ? <span className="wh-tag wh-tag-berry">Honest answer</span> : <span className="wh-tag">Built</span>}
+              {p.honest ? <span className="wh-tag wh-tag-berry">Straight answer</span> : <span className="wh-tag">How Holly handles it</span>}
               <strong>{p.label}.</strong> {p.answer}
             </li>
           ))}
@@ -354,8 +354,8 @@ function SpeedDemo({ present }) {
   }, [present, reduce, step]);
 
   return (
-    <Section id="speed" tone="dark" eyebrow="Speed to lead" title="A buyer asks at 9pm. Holly knows in seconds." present={present} wide
-      lede="Every inquiry on the site, showing, home value, waitlist, contact form or chat, texts Holly's phone the moment it lands.">
+    <Section id="speed" tone="dark" eyebrow="Fast answers" title="A buyer asks at 9pm. Holly knows in seconds." present={present} wide
+      lede="Any time a buyer reaches out through the site, by showing request, home value form, lake sign-up, message or chat, Holly's phone buzzes right away.">
       <div ref={ref} className="wh-phones">
         <Phone label="Holly's phone" dark buzz={step === 1 || step === 4}>
           <div style={{ textAlign: 'center', color: 'white', padding: '1.6rem 0 1rem' }}>
@@ -370,11 +370,11 @@ function SpeedDemo({ present }) {
           )}
           {step >= 4 && (
             <div className="wh-banner hg-bubble" style={{ marginTop: '0.5rem' }}>
-              <div className="wh-banner-app">If nobody has answered <span>1h, then 24h</span></div>
+              <div className="wh-banner-app">Still waiting <span>1h, then 24h</span></div>
               Still waiting on you: Sam (showing request, 1h ago). Open your desk or tap to call.
             </div>
           )}
-          {step === 0 && <div style={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center', fontSize: '0.85rem' }}>Waiting for a lead</div>}
+          {step === 0 && <div style={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center', fontSize: '0.85rem' }}>Waiting for a buyer</div>}
         </Phone>
         <Phone label="The buyer's phone" innerRef={buyerRef}>
           <div style={{ textAlign: 'center', padding: '0.9rem 0 0.6rem', borderBottom: '1px solid #f1e4e0', marginBottom: '0.75rem' }}>
@@ -397,10 +397,10 @@ function SpeedDemo({ present }) {
         </button>
       )}
       <ul className="wh-facts">
-        <li><Check size={22} /> <span>Showing, home value and waitlist requests get an automatic confirmation text from her number.</span></li>
-        <li><Check size={22} /> <span>A new lead nobody has answered re-nudges Holly at 1 hour and again at 24 hours.</span></li>
-        <li><Check size={22} /> <span>Her own number, (517) 300-8226: two-way texting, calls screened to her cell, voicemail transcribed and texted to her.</span></li>
-        <li><Check size={22} /> <span>Every lead lands in her desk app on her phone, with one-tap call and text.</span></li>
+        <li><Check size={22} /> <span>Anyone who asks to see a home, requests a home value or joins a lake list gets a text back from Holly's number right away, so they know they were heard.</span></li>
+        <li><Check size={22} /> <span>If a new request has not been answered, Holly gets a reminder after 1 hour and again after 24 hours, so nothing slips through.</span></li>
+        <li><Check size={22} /> <span>One number for texts and calls, (517) 300-8226. Calls ring her cell, and a voicemail reaches her as a text she can read.</span></li>
+        <li><Check size={22} /> <span>Every request lands in one place on her phone, with one tap to call or text back.</span></li>
       </ul>
     </Section>
   );
@@ -410,16 +410,16 @@ function SpeedDemo({ present }) {
 
 const COMPARE = [
   { what: 'A list price set from homes that actually closed, and you see those sales', holly: 'Lake sales reports, public', link: '/market', them: 'Ask what the number is based on' },
-  { what: 'Every inquiry texts the agent within seconds', holly: 'Forms and chat, any hour', them: 'Ask how fast they hear about a lead' },
-  { what: 'Buyers get a confirmation text right away', holly: 'Showing, home value, waitlist', them: 'Ask them' },
-  { what: 'An unanswered lead re-nudges the agent', holly: 'At 1 hour and 24 hours', them: 'Ask them' },
-  { what: 'A written update every Monday', holly: 'Numbers, market note, recommendation', them: 'Ask how often, and ask for a sample' },
+  { what: 'The agent hears about every buyer request within seconds', holly: 'Any hour, any way they reach out', them: 'Ask how fast they hear about a buyer' },
+  { what: 'Buyers hear back right away', holly: 'Showing and home value requests, lake sign-ups', them: 'Ask them' },
+  { what: 'Nothing slips through if the agent is busy', holly: 'A reminder at 1 hour and 24 hours', them: 'Ask what happens if a request is missed' },
+  { what: 'A written update every Monday', holly: 'Who looked, who asked, what to do next', them: 'Ask how often, and ask for a sample' },
   { what: 'Your listing\'s live numbers, any day', holly: 'A private link for you', them: 'Ask them' },
   { what: 'Every sale this year, public', holly: `${PROOF.sold} sales on the sold page`, link: '/sold', them: 'Ask to see the full list' },
-  { what: 'A buyer waitlist for your lake', holly: `On all ${PROOF.lakeCount} lake pages`, them: 'Ask who is already waiting' },
+  { what: 'Buyers who want first look at your lake', holly: `On all ${PROOF.lakeCount} lake pages`, them: 'Ask who is already waiting' },
   { what: 'Buyer questions answered at 2am', holly: 'Heather, the site assistant', them: 'Ask them' },
-  { what: 'Pages built for search engines and AI assistants to read', holly: 'Structured data, llms.txt', link: '/llms.txt', them: 'Ask them' },
-  { what: 'On the MLS and the big portals', holly: 'Through Foundation Realty', them: 'Standard. Every listing should have this.', same: true },
+  { what: 'Your home is easy to find on Google and in AI assistants', holly: 'Pages built to be found', them: 'Ask how buyers will find it' },
+  { what: 'On the MLS and the big home sites', holly: 'Through Foundation Realty', them: 'Standard. Every listing should have this.', same: true },
 ];
 
 function CompareRow({ row, i }) {
@@ -512,7 +512,7 @@ function LakePicker({ present }) {
             <div className="wh-sub">Holly's sales {v.scope}, {v.m.year}</div>
             <div className="wh-tiles wh-tiles-sm">
               <div className="wh-tile"><div className="wh-tile-num"><CountUp value={String(v.st.sold)} /></div><div className="wh-tile-label">Closed {v.st.sold === 1 ? 'sale' : 'sales'}</div></div>
-              <div className="wh-tile"><div className="wh-tile-num"><CountUp value={short(v.st.median)} /></div><div className="wh-tile-label">{v.st.sold === 1 ? 'Sale price' : 'Median price'}</div></div>
+              <div className="wh-tile"><div className="wh-tile-num"><CountUp value={short(v.st.median)} /></div><div className="wh-tile-label">{v.st.sold === 1 ? 'Sale price' : 'Typical sale price'}</div></div>
               {v.st.avgDays !== null && <div className="wh-tile"><div className="wh-tile-num"><CountUp value={String(v.st.avgDays)} /></div><div className="wh-tile-label">{v.st.listSides === 1 ? 'Days to sell' : 'Avg days to sell'}</div></div>}
               <div className="wh-tile"><div className="wh-tile-num"><CountUp value={String(v.m.forSale.length)} /></div><div className="wh-tile-label">For sale with Holly now</div></div>
             </div>
@@ -529,7 +529,7 @@ function LakePicker({ present }) {
             <div className="wh-sub" style={{ marginTop: 0 }}>Buyers on this lake</div>
             {waiting
               ? <p style={{ margin: 0 }}><strong style={{ fontSize: '1.3rem' }}>{waiting}</strong> buyers registered for {lake.name}.</p>
-              : <p style={{ margin: 0 }}>The {lake.name} waitlist is open. Buyers who register get a text from Holly and check-ins after that.</p>}
+              : <p style={{ margin: 0 }}>Buyers can sign up to hear about homes on {lake.name} first, and Holly keeps in touch with them.</p>}
           </div>
           {v.drives.length > 0 && (
             <div>
@@ -547,36 +547,85 @@ function LakePicker({ present }) {
   );
 }
 
-// ── 7. The day we list ────────────────────────────────────────────────────
+// ── 7. How we sell your home ──────────────────────────────────────────────
 
-const TIMELINE = [
-  { when: 'Night before', title: 'A plan built for your address', body: 'Holly can text you a link the night before you meet: the buyers on your lake, her sales, and this timeline, made for your home.' },
-  { when: 'Before public', title: 'Your lake\'s waitlist hears first', body: 'Buyers registered for your lake are on Holly\'s desk with one-tap contact, so they can hear about your home before it goes public.' },
-  { when: 'Day 1', title: 'Your own property page', body: 'A full gallery, the numbers, a one-tap showing request that texts Holly within seconds, and a save button that counts who comes back.' },
-  { when: 'Day 1', title: 'On your lake\'s page and report', body: 'Buyers searching your lake land on a page about the lake, with your home on it.' },
-  { when: 'Day 1', title: 'MLS and the portals', body: 'Listed through Foundation Realty on the MLS, like every listing should be.' },
-  { when: 'Every Monday', title: 'Your seller update', body: 'Views, saves, showing requests, buyers on your lake, a market note and a recommendation. Holly approves it before it is sent.' },
-  { when: 'Any day', title: 'Your live numbers', body: 'A private link to your listing\'s views, saves and showing requests, so you never wait for Monday to know.' },
-  { when: 'Closing', title: 'On the record', body: 'Your sale stays on the public sold page with its days on market.' },
+// Steps marked built: false are the plan for each listing, not software that
+// exists today (video tour, social launch set). Holly delivers them by hand
+// until they are productised. Do not demo this page for a seller without
+// knowing who produces each of them. Everything else is live in the repo.
+const PLAN = [
+  { key: 'before', tab: 'Before launch', lede: 'Before the sign goes in.', steps: [
+    { title: 'Priced from closed sales', built: true, body: 'Your list price is set from what has actually closed on your lake and nearby. The sales are public in the lake sales reports, so you can check the work.', link: '/market', cta: 'Lake sales reports' },
+    { title: 'Photo and video tour', built: false, body: 'Professional photos, a walk-through video and drone footage of your home and the water, shot and edited before launch so day one looks finished.' },
+    { title: 'Your lake\'s buyers hear first', built: true, body: 'Buyers who signed up for your lake are one tap away from Holly\'s phone. She reaches out to them before your home goes public, so the people most likely to care hear first.' },
+  ] },
+  { key: 'launch', tab: 'Launch week', lede: 'Your home goes live in every place a buyer looks.', steps: [
+    { title: 'Your own page, built to share', built: true, body: 'A page for your address: gallery, video tour, the facts, a map and a one-tap showing request. Pasted into Facebook, a text or an Instagram bio, it shows your photo and price. You can share it too.' },
+    { title: 'Social launch', built: false, body: 'A launch post and a short reel cut from your video, on Holly\'s Facebook and Instagram, pointing at your page.' },
+    { title: 'MLS and the big home sites', built: true, body: 'Listed through Foundation Realty on the MLS, which feeds the big home-search sites, like every listing should be.' },
+    { title: 'Your lake\'s page', built: true, body: 'Buyers reading about your lake find your home on its page and in its sales report.' },
+  ] },
+  { key: 'after', tab: 'Every week', lede: 'The listing keeps working, and you can see it.', steps: [
+    { title: 'Heather answers buyers, any hour', built: true, body: 'Holly\'s site assistant answers buyer questions from your listing\'s real facts and passes the buyer\'s details to Holly, so a question asked at 11pm gets an answer instead of waiting till morning.' },
+    { title: 'Monday update and live numbers', built: true, body: 'How many people looked, saved it and asked to see it, every Monday, plus a private link to check the live numbers any day. You never have to wait to know where you stand.' },
+    { title: 'Changes made on evidence', built: true, body: 'Lots of looks but no showings usually points at price or photos. Nobody looking points at reach. Holly gets a flag for both, so the next move comes from the numbers, not a hunch.' },
+    { title: 'On the record', built: true, body: 'When it sells, your sale stays on her public sold page, with how long it took to sell.' },
+  ] },
 ];
 
 function DayWeList({ present }) {
-  const [ref, seen] = useInView();
-  const [animate] = useState(motionOK);
+  const [phase, setPhase] = useState(0);
+  const tabRefs = useRef([]);
+  const idBase = present ? 'whp-p' : 'whp';
+  let n = 0;
+  const startAt = PLAN.slice(0, phase).reduce((a, p) => a + p.steps.length, 0);
+  const onKey = (e) => {
+    let next = null;
+    if (e.key === 'ArrowRight') next = (phase + 1) % PLAN.length;
+    else if (e.key === 'ArrowLeft') next = (phase + PLAN.length - 1) % PLAN.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = PLAN.length - 1;
+    if (next === null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setPhase(next);
+    tabRefs.current[next] && tabRefs.current[next].focus();
+  };
+  const cur = PLAN[phase];
   return (
-    <Section id="day-we-list" eyebrow="The plan" title="The day we list, and every week after" present={present}>
-      <div ref={ref} style={{ position: 'relative' }}>
-      <span aria-hidden="true" className={`wh-line${animate ? (seen ? ' hg-grow' : ' wh-pending') : ''}`} />
-      <ol className="wh-timeline">
-        {TIMELINE.map((s, i) => (
-          <Reveal as="li" key={s.title} delay={i * 70}>
-            <span className="wh-dot" aria-hidden="true" />
-            <div className="wh-when">{s.when}</div>
-            <div className="wh-step-title">{s.title}</div>
-            <div className="wh-step-body">{s.body}</div>
-          </Reveal>
+    <Section id="day-we-list" eyebrow="The plan" title="How we sell your home, step by step" present={present}
+      lede="Every place a buyer might look, in the order it happens.">
+      <div role="tablist" aria-label="Selling plan phases" className="wh-tabs" onKeyDown={onKey}>
+        {PLAN.map((p, i) => (
+          <button key={p.key} type="button" role="tab" id={`${idBase}-tab-${p.key}`} aria-selected={phase === i}
+            aria-controls={`${idBase}-panel`} tabIndex={phase === i ? 0 : -1}
+            ref={(el) => { tabRefs.current[i] = el; }} onClick={() => setPhase(i)}
+            className={`wh-tab${phase === i ? ' wh-tab-on' : ''}`}>
+            <span className="wh-tab-n">{i + 1}</span>{p.tab}
+          </button>
         ))}
-      </ol>
+      </div>
+      <div role="tabpanel" id={`${idBase}-panel`} aria-labelledby={`${idBase}-tab-${cur.key}`} className="wh-plan">
+        <p className="wh-plan-lede">{cur.lede}</p>
+        <ol className="wh-steps" start={startAt + 1}>
+          {cur.steps.map((st, i) => {
+            n += 1;
+            return (
+              <Reveal as="li" key={`${cur.key}-${st.title}`} delay={i * 70} className="wh-step">
+                <span className="wh-step-num" aria-hidden="true">{startAt + n}</span>
+                <div>
+                  <div className="wh-step-title">{st.title}</div>
+                  <div className="wh-step-body">{st.body}</div>
+                  {st.link && <a href={st.link} className="wh-flink wh-flink-light">{st.cta}</a>}
+                </div>
+              </Reveal>
+            );
+          })}
+        </ol>
+        <div className="wh-plan-nav">
+          {phase > 0 && <button type="button" className="wh-btn wh-btn-ghost" onClick={() => setPhase(phase - 1)}>Back: {PLAN[phase - 1].tab}</button>}
+          {phase < PLAN.length - 1 && <button type="button" className="wh-btn wh-btn-primary" onClick={() => setPhase(phase + 1)}>Next: {PLAN[phase + 1].tab}</button>}
+        </div>
       </div>
     </Section>
   );
@@ -586,7 +635,7 @@ function DayWeList({ present }) {
 
 function MondayUpdate({ present }) {
   // SAMPLE numbers. Labelled on the card itself; not from any real listing.
-  const tiles = [['41', 'Page views'], ['6', 'Saves'], ['2', 'Showing requests']];
+  const tiles = [['41', 'People looked'], ['6', 'Saved it'], ['2', 'Asked to see it']];
   return (
     <Section id="monday" tone="blush" eyebrow="Every Monday" title="Your inbox, every Monday morning" present={present}
       lede="Built from your listing's real numbers and Holly's sales on your lake. Nothing reaches you until Holly has read it and approved it.">
@@ -616,18 +665,18 @@ function MondayUpdate({ present }) {
 // ── 9. Found everywhere ───────────────────────────────────────────────────
 
 const FOUND = [
-  { t: 'Built to be found', b: 'Every public page ships as readable HTML with structured data, lake sales reports carry FAQ markup, there is an llms.txt summary, and the crawler rules welcome the major AI assistants. Built so the answer is readable; nobody can promise a ranking or a citation.', link: '/llms.txt', cta: 'Read llms.txt' },
-  { t: 'Heather, at any hour', b: 'The site assistant answers buyers from Holly\'s real listings, sales and lake facts, and passes their details to Holly.' },
-  { t: 'A page for every lake', b: `${PROOF.lakeCount} lake pages and ${PROOF.lakeCount} lake sales reports, each with its own buyer waitlist sign-up.`, link: '/market', cta: 'Lake reports' },
-  { t: 'Things to do, for buyers', b: 'An events calendar for the lakes, so buyers picture the life, not just the house.', link: '/events', cta: 'Events' },
-  { t: 'Holly & The Yeti', b: 'The show about life around Devils Lake and the Irish Hills that Holly co-hosts.', link: '/holly-yeti', cta: 'Watch' },
-  { t: 'Her desk, on her phone', b: 'Every lead from every source in one inbox, installable like an app, with one-tap call and text.' },
+  { t: 'Easy for buyers to find', b: 'When movers compare lakes on Google or ask an AI assistant, Holly\'s lake pages give them clear, real answers: what has sold, what homes cost, what each lake is like. Your home sits on those pages. Nobody can promise a ranking, but your home is on pages built to be found.' },
+  { t: 'Heather, at any hour', b: 'Heather is Holly\'s site assistant. Buyers get real answers about your home and the lake any time of day, from Holly\'s actual listings and sales. When they are ready to talk, their details go straight to Holly.' },
+  { t: 'A page for every lake', b: `${PROOF.lakeCount} lake pages, each with real sales and a sign-up for buyers who want first look.`, link: '/market', cta: 'See the lake reports' },
+  { t: 'Things to do, for buyers', b: 'A calendar of what is happening around the lakes, so buyers picture the life, not just the house.', link: '/events', cta: 'See the events' },
+  { t: 'Holly & The Yeti', b: 'A show about life around Devils Lake and the Irish Hills, co-hosted by Holly, so buyers see how she talks about the lakes before they ever call.', link: '/holly-yeti', cta: 'Watch the show' },
+  { t: 'Nothing slips through', b: 'Every buyer request, text and call lands in one place on Holly\'s phone, with one tap to call or text back, so no one is left waiting while she is out showing homes.' },
 ];
 
 function Found({ present }) {
   const reviews = useGoogleReviews();
   return (
-    <Section id="found" tone="dark" eyebrow="Visibility" title="Where buyers find your home" present={present} wide>
+    <Section id="found" tone="dark" eyebrow="Reach" title="Where buyers find your home" present={present} wide>
       <div className="wh-found">
         {FOUND.map((f, i) => (
           <Reveal key={f.t} className="wh-fcard" delay={i * 60}>
@@ -653,12 +702,13 @@ function Found({ present }) {
 const QUESTIONS = [
   'What is your price based on? Can I see the sales it came from?',
   'If a buyer asks about my home at 9pm on a Saturday, when do you hear about it, and when do they hear back?',
-  'Can I see every home you sold this year, with days on market?',
+  'Can I see every home you sold this year, and how long each took to sell?',
   'How often will I hear from you, and what numbers will be in it?',
   'Can I see how many people viewed and saved my listing, on any day?',
   'If the price is wrong, how will we know, and when?',
   'Which buyers are already waiting for a home on my lake?',
   'Who answers buyer questions when you are with another client?',
+  'What exactly will you do to market my home, and when? Can I see it written down?',
 ];
 
 function Questions({ present }) {
@@ -718,12 +768,12 @@ const SLIDES = [
   { key: 'title', label: 'Title', render: (p) => <Hero {...p} /> },
   { key: 'proof', label: 'Sold, not promised', render: (p) => <Proof {...p} /> },
   { key: 'matters', label: 'Your priorities', render: (p) => <Priorities {...p} /> },
-  { key: 'speed', label: 'Speed to lead', render: (p) => <SpeedDemo {...p} /> },
+  { key: 'speed', label: 'Fast answers', render: (p) => <SpeedDemo {...p} /> },
   { key: 'compare', label: 'Side by side', render: (p) => <Compare {...p} /> },
   { key: 'lake', label: 'Your lake', render: (p) => <LakePicker {...p} /> },
-  { key: 'day', label: 'The day we list', render: (p) => <DayWeList {...p} /> },
+  { key: 'day', label: 'How we sell', render: (p) => <DayWeList {...p} /> },
   { key: 'monday', label: 'Every Monday', render: (p) => <MondayUpdate {...p} /> },
-  { key: 'found', label: 'Visibility', render: (p) => <Found {...p} /> },
+  { key: 'found', label: 'Reach', render: (p) => <Found {...p} /> },
   { key: 'questions', label: 'Questions to ask', render: (p) => <Questions {...p} /> },
   { key: 'next', label: 'Next step', render: (p) => <Close {...p} /> },
 ];
@@ -1018,6 +1068,21 @@ body { margin: 0; }
 .wh-mtile-num { font-family: ${SERIF}; font-size: 1.6rem; font-weight: 800; color: #1c2b29; }
 .wh-mail-sec p { margin: 0; line-height: 1.6; color: #1c2b29; font-size: 0.97rem; }
 .wh-approved { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f6e9e5; font-weight: 700; color: #1a554e; font-size: 0.92rem; }
+
+.wh-tabs { display: flex; gap: 0.5rem; margin: 0.25rem 0 1.1rem; flex-wrap: wrap; }
+.wh-tab { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 0.95rem 0.5rem 0.55rem; border-radius: 999px; border: 1.5px solid #eeddd8; background: white; color: #1c2b29; font: 700 0.92rem 'Inter', system-ui, sans-serif; cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.wh-tab:hover { border-color: #ad3557; }
+.wh-tab:focus-visible { outline: 3px solid #237168; outline-offset: 2px; }
+.wh-tab-n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fbeae6; color: #ad3557; font-size: 0.8rem; font-weight: 800; }
+.wh-tab-on { background: #1a554e; border-color: #1a554e; color: white; }
+.wh-tab-on .wh-tab-n { background: #f5b5c7; color: #1a554e; }
+.wh-plan-lede { margin: 0 0 1rem; color: #4a5654; font-size: 1.02rem; line-height: 1.55; }
+.wh-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+.wh-step { display: grid; grid-template-columns: 40px 1fr; gap: 0.9rem; align-items: start; background: white; border: 1px solid #eeddd8; border-radius: 16px; padding: 1rem 1.1rem; }
+.wh-step-num { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #e64774; color: white; font-family: ${SERIF}; font-weight: 800; font-size: 1.05rem; }
+.wh-flink.wh-flink-light { color: #ad3557; }
+.wh-plan-nav { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.1rem; }
+@media (max-width: 520px) { .wh-tabs { flex-wrap: nowrap; gap: 0.35rem; } .wh-tab { flex: 1 1 0; justify-content: center; text-align: center; padding: 0.4rem 0.35rem; font-size: 0.82rem; line-height: 1.2; border-radius: 14px; } .wh-tab-n { display: none; } .wh-plan-nav .wh-btn { flex: 1 1 100%; } }
 
 .wh-found { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
 @media (max-width: 860px) { .wh-found { grid-template-columns: repeat(2, 1fr); } }

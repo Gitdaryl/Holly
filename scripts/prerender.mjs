@@ -445,36 +445,37 @@ for (const p of propertiesData) {
   const lakeCount = Object.keys(lakes).length
   const compare = [
     ['A list price set from homes that actually closed, and you see those sales', 'Ask what the number is based on'],
-    ['Every inquiry texts the agent within seconds', 'Ask how fast they hear about a lead'],
-    ['Buyers get a confirmation text right away (showing, home value and waitlist requests)', 'Ask them'],
-    ['An unanswered lead re-nudges the agent at 1 hour and 24 hours', 'Ask them'],
-    ['A written update every Monday: numbers, a market note and a recommendation', 'Ask how often, and ask for a sample'],
+    ['The agent hears about every buyer request within seconds', 'Ask how fast they hear about a buyer'],
+    ['Buyers hear back right away (showing and home value requests, lake sign-ups)', 'Ask them'],
+    ['Nothing slips through if the agent is busy: a reminder at 1 hour and 24 hours', 'Ask what happens if a request is missed'],
+    ['A written update every Monday: who looked, who asked, what to do next', 'Ask how often, and ask for a sample'],
     ["A private link to your listing's live numbers, any day", 'Ask them'],
     [`Every sale this year public: ${rec.sold} on the sold page`, 'Ask to see the full list'],
-    [`A buyer waitlist for your lake, on all ${lakeCount} lake pages`, 'Ask who is already waiting'],
+    [`Buyers who want first look at your lake, on all ${lakeCount} lake pages`, 'Ask who is already waiting'],
     ['Buyer questions answered at 2am by Heather, the site assistant', 'Ask them'],
-    ['Pages built for search engines and AI assistants to read', 'Ask them'],
+    ['Your home is easy to find on Google and in AI assistants', 'Ask how buyers will find it'],
   ]
   const questions = [
     'What is your price based on? Can I see the sales it came from?',
     'If a buyer asks about my home at 9pm on a Saturday, when do you hear about it, and when do they hear back?',
-    'Can I see every home you sold this year, with days on market?',
+    'Can I see every home you sold this year, and how long each took to sell?',
     'How often will I hear from you, and what numbers will be in it?',
     'Can I see how many people viewed and saved my listing, on any day?',
     'If the price is wrong, how will we know, and when?',
     'Which buyers are already waiting for a home on my lake?',
     'Who answers buyer questions when you are with another client?',
+    'What exactly will you do to market my home, and when? Can I see it written down?',
   ]
   const faq = [
     ['How does Holly Griewahn price a lake home?', `From what has actually closed on the lake and nearby, not from a promised number. Her own closed sales on each lake are public in the lake sales reports at ${SITE}/market.`],
-    ['How fast does Holly hear about a buyer inquiry?', 'Within seconds. Every showing request, home value request, waitlist sign-up, contact form and chat lead texts her phone, and showing, home value and waitlist requests get a confirmation text from her number. A lead nobody has answered re-nudges her at 1 hour and 24 hours.'],
-    ['How will I know how my listing is doing?', "Every Monday you get an update with your listing page's views, saves, showing requests and the buyers registered on your lake, plus a written market note and Holly's recommendation. Holly approves each one before it is sent. A private link shows the live numbers any day."],
-    ['Can I see what Holly has sold?', `Yes. ${rec.sold} homes sold in ${year}, ${money(rec.volume)} in volume, every one on ${SITE}/sold with its days on market.`],
+    ['How fast does Holly hear about a buyer inquiry?', 'Within seconds. Every showing request, home value request, lake sign-up, contact form and chat message texts her phone, and anyone who asks to see a home, requests a value or joins a lake list gets a text back from her number. If a request has not been answered, she gets a reminder after 1 hour and again after 24 hours.'],
+    ['How will I know how my listing is doing?', "Every Monday you get a short note: how many people looked at your home, how many saved it, how many asked to see it, plus what is happening in the market and what Holly recommends next. She reads and approves each one before it is sent. A private link shows the live numbers any day, so you never have to wait to know where you stand."],
+    ['Can I see what Holly has sold?', `Yes. ${rec.sold} homes sold in ${year}, ${money(rec.volume)} in volume, every one on ${SITE}/sold with how long it took to sell.`],
   ]
   const body = WRAP(`
     <p><a href="/">Irish Hills</a> › Why Holly</p>
     <h1>Why sellers choose Holly Griewahn</h1>
-    <p>Price it to what is really closing. Then watch it work, every week. This page does not promise a sale price. It shows what a seller gets instead: proof of what sold, buyers answered in seconds, and a report on the listing every Monday.</p>
+    <p>Price it to what is really closing. Then watch it work, every week. This page does not promise a sale price. Here is what a seller gets instead: proof of what has really sold, a fast answer for every buyer who reaches out, and a clear update on the home every Monday.</p>
     <p>${AWARDS.map((a) => `${a.year} ${esc(a.short)}`).join('. ')}.</p>
     <h2>Sold, not promised (${year})</h2>
     <ul>
@@ -488,21 +489,31 @@ for (const p of propertiesData) {
     <h2>What you get, next to a typical listing</h2>
     <p>We cannot speak for how every agent works, so the second half of each line is a question to ask, not a claim about anyone.</p>
     <ul>${compare.map(([a, b]) => `<li>With Holly: ${esc(a)}. A typical listing: ${esc(b)}.</li>`).join('')}<li>On the MLS and the major portals through Foundation Realty: standard, every listing should have this.</li></ul>
-    <h2>Speed to lead</h2>
-    <p>Every inquiry on the site texts Holly the moment it lands. Her own number, (517) 300-8226, takes two-way texts, screens calls to her cell, and texts her a transcript of every voicemail. Every lead lands in her desk app on her phone.</p>
-    <h2>The day we list</h2>
-    <ul>
-      <li>Night before: a plan page built for your address.</li>
-      <li>Before public: buyers registered for your lake can hear about it first.</li>
-      <li>Day 1: your own property page with a one-tap showing request and a save button.</li>
-      <li>Day 1: on your lake's page and sales report.</li>
-      <li>Day 1: listed through Foundation Realty on the MLS.</li>
-      <li>Every Monday: your seller update, approved by Holly before it is sent.</li>
-      <li>Any day: a private link to your listing's live numbers.</li>
-      <li>Closing: your sale stays on the public sold page with its days on market.</li>
-    </ul>
+    <h2>Fast answers</h2>
+    <p>Any time a buyer reaches out through the site, Holly's phone buzzes right away, so no one is left waiting. One number, (517) 300-8226, handles texts and calls: calls ring her cell, and a voicemail reaches her as a text she can read. Every request lands in one place on her phone, with one tap to call or text back.</p>
+    <h2>How we sell your home, step by step</h2>
+    <h3>Before launch</h3>
+    <ol>
+      <li>Priced from closed sales: your list price is set from what has actually closed on your lake and nearby, and <a href="/market">the sales are public</a>.</li>
+      <li>Photo and video tour: professional photos, a walk-through video and drone footage of your home and the water, shot and edited before launch.</li>
+      <li>Your lake's buyers hear first: buyers who signed up for your lake are one tap away from Holly's phone, and she reaches out to them before your home goes public.</li>
+    </ol>
+    <h3>Launch week</h3>
+    <ol start="4">
+      <li>Your own page, built to share: gallery, video tour, the facts, a map and a one-tap showing request. Pasted into Facebook, a text or an Instagram bio, it shows your photo and price.</li>
+      <li>Social launch: a launch post and a short reel cut from your video, on Holly's Facebook and Instagram, pointing at your page.</li>
+      <li>MLS and the big home sites: listed through Foundation Realty on the MLS, which feeds the big home-search sites.</li>
+      <li>Your lake's page: buyers reading about your lake find your home on its page and in its sales report.</li>
+    </ol>
+    <h3>Every week after</h3>
+    <ol start="8">
+      <li>Heather, Holly's site assistant, answers buyer questions any hour from your listing's real facts, so a question asked at 11pm is not left waiting till morning.</li>
+      <li>Monday update and live numbers: how many people looked, saved it and asked to see it, every Monday, plus a private link to check the live numbers any day.</li>
+      <li>Changes made on evidence: lots of looks but no showings usually points at price or photos, nobody looking points at reach, and Holly gets a flag for both.</li>
+      <li>On the record: when it sells, your sale stays on her public sold page, with how long it took to sell.</li>
+    </ol>
     <h2>Where buyers find your home</h2>
-    <p>Every public page ships as readable HTML with structured data, lake sales reports carry FAQ markup, there is an <a href="/llms.txt">llms.txt</a> summary, and the crawler rules welcome the major AI assistants. Built so the answer is readable; nobody can promise a ranking or a citation. ${lakeCount} <a href="/market">lake sales reports</a>, an <a href="/events">events calendar</a> for buyers, and <a href="/holly-yeti">Holly &amp; The Yeti</a>.</p>
+    <p>When movers compare lakes on Google or ask an AI assistant, Holly's lake pages give them clear, real answers: what has sold, what homes cost, what each lake is like, and your home sits on those pages. Nobody can promise a ranking, but your home is on pages built to be found. There are ${lakeCount} <a href="/market">lake sales reports</a>, an <a href="/events">events calendar</a> for buyers, and <a href="/holly-yeti">Holly &amp; The Yeti</a>, a show about life around the lakes.</p>
     <h2>Questions to ask every agent you interview</h2>
     <ol>${questions.map((q) => `<li>${esc(q)}</li>`).join('')}</ol>
     <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
