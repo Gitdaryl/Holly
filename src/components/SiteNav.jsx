@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { key: 'listings', label: 'Listings', to: '/listings' },
   { key: 'sold', label: 'Sold', to: '/sold' },
   { key: 'sell', label: 'Sell', to: '/sell' },
+  { key: 'why', label: 'Why Holly', to: '/why-holly' },
   { key: 'cma', label: 'Home Value', to: '/cma' },
   { key: 'blog', label: 'Blog', to: '/blog' },
   { key: 'events', label: 'Events', to: '/events' },
@@ -40,7 +41,7 @@ export default function SiteNav({
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
-    const onResize = () => { if (window.innerWidth >= 769) setMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth >= 921) setMenuOpen(false); };
     document.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
     return () => {
@@ -59,7 +60,7 @@ export default function SiteNav({
       <style>{`
         .sitenav-desktop-links, .sitenav-desktop-cta { display: flex; }
         .sitenav-burger { display: none; }
-        @media (max-width: 768px) {
+        @media (max-width: 920px) {
           .sitenav-desktop-links, .sitenav-desktop-cta { display: none !important; }
           .sitenav-burger { display: inline-flex !important; }
         }
@@ -101,7 +102,7 @@ export default function SiteNav({
                 color: linkColor(active === link.key), textDecoration: 'none', fontSize: '0.85rem',
                 fontWeight: active === link.key ? 700 : 600,
                 borderBottom: active === link.key ? '2px solid #e64774' : '2px solid transparent',
-                paddingBottom: '2px',
+                paddingBottom: '2px', whiteSpace: 'nowrap',
               }}>
                 {link.label}
               </a>

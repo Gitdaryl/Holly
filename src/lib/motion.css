@@ -32,6 +32,45 @@
 .hg-land { animation: hg-land 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; border-color: #f5b5c7 !important; }
 .hg-ring { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e64774; margin-right: 6px; vertical-align: 1px; animation: hg-ring 1.6s ease-out 3; }
 
+/* Why Holly page. A row rises into place once as it scrolls in. The final
+   state is the normal state, so with no animation the content just sits there. */
+@keyframes hg-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.hg-rise { animation: hg-rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+
+/* A checkmark draws itself. The path keeps its full stroke when not animating. */
+@keyframes hg-check { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+.hg-check path { stroke-dasharray: 24; animation: hg-check 0.5s ease-out both; }
+
+/* A phone buzzes once when a lead lands. */
+@keyframes hg-buzz { 0%, 100% { transform: none; } 20% { transform: rotate(-2deg); } 40% { transform: rotate(2deg); } 60% { transform: rotate(-1.5deg); } 80% { transform: rotate(1deg); } }
+.hg-buzz { animation: hg-buzz 0.5s ease-in-out; }
+
+/* A text bubble arrives. */
+@keyframes hg-bubble { from { opacity: 0; transform: translateY(8px) scale(0.94); } to { opacity: 1; transform: none; } }
+.hg-bubble { animation: hg-bubble 0.4s cubic-bezier(0.3, 1.3, 0.5, 1) both; transform-origin: 0 100%; }
+
+/* Typing dots. */
+@keyframes hg-typing { 0%, 60%, 100% { opacity: 0.3; transform: none; } 30% { opacity: 1; transform: translateY(-3px); } }
+.hg-typing span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #66706e; margin: 0 2px; animation: hg-typing 1s ease-in-out infinite; }
+.hg-typing span:nth-child(2) { animation-delay: 0.15s; }
+.hg-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+/* The day-we-list line grows down the timeline. */
+@keyframes hg-grow { from { transform: scaleY(0); } to { transform: none; } }
+.hg-grow { transform-origin: 50% 0; animation: hg-grow 1.4s cubic-bezier(0.3, 0.7, 0.3, 1) both; }
+
+/* Presentation slides slide in from the side they came from. */
+@keyframes hg-slide-next { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: none; } }
+@keyframes hg-slide-prev { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: none; } }
+.hg-slide-next { animation: hg-slide-next 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.hg-slide-prev { animation: hg-slide-prev 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+
+/* A highlight underline that draws under a phrase. */
+@keyframes hg-underline { from { background-size: 0% 0.18em; } to { background-size: 100% 0.18em; } }
+.hg-underline { background-image: linear-gradient(#e64774, #e64774); background-repeat: no-repeat; background-position: 0 92%; background-size: 100% 0.18em; animation: hg-underline 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.5s both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .hg-rider, .hg-photo, .hg-pop, .hg-live-dot, .hg-land, .hg-ring { animation: none !important; }
+  .hg-rider, .hg-photo, .hg-pop, .hg-live-dot, .hg-land, .hg-ring,
+  .hg-rise, .hg-check path, .hg-buzz, .hg-bubble, .hg-typing span, .hg-grow,
+  .hg-slide-next, .hg-slide-prev, .hg-underline { animation: none !important; }
 }

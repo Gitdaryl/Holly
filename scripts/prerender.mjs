@@ -108,7 +108,7 @@ function write(route, { title, description, body, jsonld = [], noindex = false, 
 // (React replaces it within a second).
 // Keep in sync with NAV_LINKS in src/components/SiteNav.jsx. This copy is what
 // a non-JS crawler follows, so a page missing here is a page they cannot reach.
-const NAV = [['Listings', '/listings'], ['Sold', '/sold'], ['Sell', '/sell'], ['Home value', '/cma'], ['Events', '/events'], ['Blog', '/blog'], ['About', '/about']]
+const NAV = [['Listings', '/listings'], ['Sold', '/sold'], ['Sell', '/sell'], ['Why Holly', '/why-holly'], ['Home value', '/cma'], ['Events', '/events'], ['Blog', '/blog'], ['About', '/about']]
 const WRAP = (inner) => `<div style="max-width:860px;margin:0 auto;padding:2rem 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1c2b29"><nav><a href="/">Holly Griewahn, Foundation Realty</a> · ${NAV.map(([label, url]) => `<a href="${url}">${label}</a>`).join(' · ')} · <a href="tel:5174033413">(517) 403-3413</a></nav>${inner}</div>`
 
 // ── data helpers ──────────────────────────────────────────────────────────
@@ -426,6 +426,111 @@ for (const p of propertiesData) {
     ],
     body,
   }))
+}
+
+// Why Holly: the seller presentation. Same counting rules as the page
+// (src/pages/WhyHollyPage.jsx): latest sale year, listing-side speed, no
+// promised price, the comparison column written as a question.
+{
+  const soldAll = propertiesData.filter(isSold)
+  const year = soldAll.reduce((max, p) => {
+    const y = parseInt(String(p.soldOn || '').slice(0, 4), 10)
+    return y > max ? y : max
+  }, 0) || new Date().getFullYear()
+  const yearSold = soldAll.filter((p) => String(p.soldOn || '').startsWith(String(year)))
+  const rec = trackRecord(yearSold)
+  const st = yearSold.map(soldStats)
+  const fast = st.filter((s) => s.side !== 'buyer' && s.days !== null && s.days <= 7).length
+  const both = st.filter((s) => s.side === 'both').length
+  const lakeCount = Object.keys(lakes).length
+  const compare = [
+    ['A list price set from homes that actually closed, and you see those sales', 'Ask what the number is based on'],
+    ['Every inquiry texts the agent within seconds', 'Ask how fast they hear about a lead'],
+    ['Buyers get a confirmation text right away (showing, home value and waitlist requests)', 'Ask them'],
+    ['An unanswered lead re-nudges the agent at 1 hour and 24 hours', 'Ask them'],
+    ['A written update every Monday: numbers, a market note and a recommendation', 'Ask how often, and ask for a sample'],
+    ["A private link to your listing's live numbers, any day", 'Ask them'],
+    [`Every sale this year public: ${rec.sold} on the sold page`, 'Ask to see the full list'],
+    [`A buyer waitlist for your lake, on all ${lakeCount} lake pages`, 'Ask who is already waiting'],
+    ['Buyer questions answered at 2am by Heather, the site assistant', 'Ask them'],
+    ['Pages built for search engines and AI assistants to read', 'Ask them'],
+  ]
+  const questions = [
+    'What is your price based on? Can I see the sales it came from?',
+    'If a buyer asks about my home at 9pm on a Saturday, when do you hear about it, and when do they hear back?',
+    'Can I see every home you sold this year, with days on market?',
+    'How often will I hear from you, and what numbers will be in it?',
+    'Can I see how many people viewed and saved my listing, on any day?',
+    'If the price is wrong, how will we know, and when?',
+    'Which buyers are already waiting for a home on my lake?',
+    'Who answers buyer questions when you are with another client?',
+  ]
+  const faq = [
+    ['How does Holly Griewahn price a lake home?', `From what has actually closed on the lake and nearby, not from a promised number. Her own closed sales on each lake are public in the lake sales reports at ${SITE}/market.`],
+    ['How fast does Holly hear about a buyer inquiry?', 'Within seconds. Every showing request, home value request, waitlist sign-up, contact form and chat lead texts her phone, and showing, home value and waitlist requests get a confirmation text from her number. A lead nobody has answered re-nudges her at 1 hour and 24 hours.'],
+    ['How will I know how my listing is doing?', "Every Monday you get an update with your listing page's views, saves, showing requests and the buyers registered on your lake, plus a written market note and Holly's recommendation. Holly approves each one before it is sent. A private link shows the live numbers any day."],
+    ['Can I see what Holly has sold?', `Yes. ${rec.sold} homes sold in ${year}, ${money(rec.volume)} in volume, every one on ${SITE}/sold with its days on market.`],
+  ]
+  const body = WRAP(`
+    <p><a href="/">Irish Hills</a> › Why Holly</p>
+    <h1>Why sellers choose Holly Griewahn</h1>
+    <p>Price it to what is really closing. Then watch it work, every week. This page does not promise a sale price. It shows what a seller gets instead: proof of what sold, buyers answered in seconds, and a report on the listing every Monday.</p>
+    <p>${AWARDS.map((a) => `${a.year} ${esc(a.short)}`).join('. ')}.</p>
+    <h2>Sold, not promised (${year})</h2>
+    <ul>
+      <li>${rec.sold} homes sold</li>
+      <li>${money(rec.volume)} sold volume</li>
+      <li>${fast} listings sold in 7 days or less</li>
+      <li>${both} sales where Holly also brought the buyer</li>
+      ${rec.avgDays !== null ? `<li>${rec.avgDays} average days to sell across ${rec.listSides} listing-side sales</li>` : ''}
+    </ul>
+    <p><a href="/sold">See every sale and the sold map</a>.${reviews?.count ? ` ${reviews.rating.toFixed(1)} stars from ${reviews.count} Google reviews.` : ''}</p>
+    <h2>What you get, next to a typical listing</h2>
+    <p>We cannot speak for how every agent works, so the second half of each line is a question to ask, not a claim about anyone.</p>
+    <ul>${compare.map(([a, b]) => `<li>With Holly: ${esc(a)}. A typical listing: ${esc(b)}.</li>`).join('')}<li>On the MLS and the major portals through Foundation Realty: standard, every listing should have this.</li></ul>
+    <h2>Speed to lead</h2>
+    <p>Every inquiry on the site texts Holly the moment it lands. Her own number, (517) 300-8226, takes two-way texts, screens calls to her cell, and texts her a transcript of every voicemail. Every lead lands in her desk app on her phone.</p>
+    <h2>The day we list</h2>
+    <ul>
+      <li>Night before: a plan page built for your address.</li>
+      <li>Before public: buyers registered for your lake can hear about it first.</li>
+      <li>Day 1: your own property page with a one-tap showing request and a save button.</li>
+      <li>Day 1: on your lake's page and sales report.</li>
+      <li>Day 1: listed through Foundation Realty on the MLS.</li>
+      <li>Every Monday: your seller update, approved by Holly before it is sent.</li>
+      <li>Any day: a private link to your listing's live numbers.</li>
+      <li>Closing: your sale stays on the public sold page with its days on market.</li>
+    </ul>
+    <h2>Where buyers find your home</h2>
+    <p>Every public page ships as readable HTML with structured data, lake sales reports carry FAQ markup, there is an <a href="/llms.txt">llms.txt</a> summary, and the crawler rules welcome the major AI assistants. Built so the answer is readable; nobody can promise a ranking or a citation. ${lakeCount} <a href="/market">lake sales reports</a>, an <a href="/events">events calendar</a> for buyers, and <a href="/holly-yeti">Holly &amp; The Yeti</a>.</p>
+    <h2>Questions to ask every agent you interview</h2>
+    <ol>${questions.map((q) => `<li>${esc(q)}</li>`).join('')}</ol>
+    <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
+    <p><a href="/cma">What is my home worth?</a> Call or text (517) 403-3413.</p>
+  `)
+  routes.push(write('/why-holly', {
+    title: 'Why Holly | Selling Your Irish Hills Lake Home with Holly Griewahn',
+    description: `What a seller gets when Holly Griewahn lists their lake home: a price set from real closed sales, buyers answered in seconds, a seller update every Monday, and ${rec.sold} sales in ${year} on the record.`,
+    image: '/images/holly-headshot.webp',
+    jsonld: [
+      {
+        '@type': 'WebPage',
+        name: 'Why sellers choose Holly Griewahn',
+        url: `${SITE}/why-holly`,
+        about: { '@id': `${SITE}/#agent` },
+        mainEntity: {
+          '@type': 'Service',
+          name: 'Listing a lake home with Holly Griewahn',
+          provider: { '@id': `${SITE}/#agent` },
+          areaServed: { '@type': 'Place', name: 'Irish Hills, Michigan' },
+        },
+      },
+      { '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+      breadcrumbs([['Irish Hills', '/'], ['Why Holly', '/why-holly']]),
+    ],
+    body,
+  }))
+  llms.push(`\n## For sellers\n\n- [Why Holly](${SITE}/why-holly): what a seller gets when Holly lists: a price set from real closed sales, every inquiry texted to her within seconds, a Monday seller update she approves, and ${rec.sold} sales in ${year} on the record.`)
 }
 
 // Market reports
