@@ -1,5 +1,8 @@
 {
   "rewrites": [
+    { "source": "/review/tap", "destination": "/api/review-tap?v=tap" },
+    { "source": "/review/qr", "destination": "/api/review-tap?v=qr" },
+    { "source": "/review", "destination": "/api/review-tap?v=link" },
     {
       "source": "/(.*)",
       "destination": "/index.html"
