@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { WHO } from '../data/deal-templates';
+import HelpVideo from './HelpVideo';
 
 // The Deals tab on Holly's desk: every transaction roadmap she is running,
 // a two-minute form to start one (or read the purchase agreement for the
@@ -65,7 +66,10 @@ function List({ session, onOpen, onNew }) {
           <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>{active.length ? `${active.length} under contract` : 'Roadmaps'}</div>
           <p style={{ fontSize: '0.82rem', color: MUTED, margin: 0 }}>One page per client, every date from offer to keys. They get it by text; no app, no login.</p>
         </div>
-        <button className="adm-btn pink" onClick={onNew}>New roadmap</button>
+        <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>
+          <HelpVideo id="roadmaps" minutes={3} />
+          <button className="adm-btn pink" onClick={onNew}>New roadmap</button>
+        </div>
       </div>
       {!data.deals.length && (
         <div className="adm-card" style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
@@ -175,14 +179,14 @@ function NewDeal({ session, onCreated, onCancel }) {
           <Seg value={f.financing} onChange={set('financing')} options={[['financed', 'Mortgage'], ['cash', 'Cash']]} />
           <label style={{ fontSize: '0.82rem', fontWeight: 700, display: 'inline-flex', gap: '0.4rem', alignItems: 'center' }}><input type="checkbox" checked={f.lakeHome} onChange={set('lakeHome')} /> Lake home (adds well, septic and dock steps)</label>
         </div>
-        <Field label="Property address"><input style={inputStyle} value={f.address} onChange={set('address')} placeholder="1234 Round Lake Hwy" required /></Field>
+        <Field label="Property address"><input style={inputStyle} value={f.address} onChange={set('address')} placeholder="Street address" required /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <Field label="City"><input style={inputStyle} value={f.city} onChange={set('city')} placeholder="Manitou Beach" /></Field>
-          <Field label="Price"><input style={inputStyle} inputMode="numeric" value={f.price} onChange={set('price')} placeholder="425000" /></Field>
+          <Field label="City"><input style={inputStyle} value={f.city} onChange={set('city')} placeholder="Town" /></Field>
+          <Field label="Price"><input style={inputStyle} inputMode="numeric" value={f.price} onChange={set('price')} placeholder="Dollar amount" /></Field>
         </div>
-        <Field label="Client's name"><input style={inputStyle} value={f.clientName} onChange={set('clientName')} placeholder="Jane and Tom Miller" required /></Field>
+        <Field label="Client's name"><input style={inputStyle} value={f.clientName} onChange={set('clientName')} placeholder="Client's full name, or both names" required /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <Field label="Client's cell" hint="The roadmap link and reminders go here."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="517 555 0100" /></Field>
+          <Field label="Client's cell" hint="The roadmap link and reminders go here."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="Their cell number" /></Field>
           <Field label="Client's email"><input style={inputStyle} inputMode="email" value={f.clientEmail} onChange={set('clientEmail')} /></Field>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
@@ -229,10 +233,10 @@ function StepEditor({ s, i, n, onChange, onRemove, onMove }) {
           </div>
           <Field label="What it is (client sees this)"><textarea style={{ ...inputStyle, minHeight: 60 }} value={s.detail} onChange={(e) => onChange({ ...s, detail: e.target.value })} /></Field>
           <Field label="What to do"><textarea style={{ ...inputStyle, minHeight: 60 }} value={s.action} onChange={(e) => onChange({ ...s, action: e.target.value })} /></Field>
-          <Field label="Your note on this step (optional, client sees it)"><input style={inputStyle} value={s.note || ''} onChange={(e) => onChange({ ...s, note: e.target.value })} placeholder="Inspector is Mike at 9am, I'll meet you there." /></Field>
+          <Field label="Your note on this step (optional, client sees it)"><input style={inputStyle} value={s.note || ''} onChange={(e) => onChange({ ...s, note: e.target.value })} placeholder="A note your client will see on this step" /></Field>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.6rem' }}>
-            <Field label="Link label"><input style={inputStyle} value={s.link?.label || ''} onChange={(e) => onChange({ ...s, link: { label: e.target.value, url: s.link?.url || '' } })} placeholder="Inspection report" /></Field>
-            <Field label="Link (https)"><input style={inputStyle} value={s.link?.url || ''} onChange={(e) => onChange({ ...s, link: { label: s.link?.label || '', url: e.target.value } })} placeholder="https://…" /></Field>
+            <Field label="Link label"><input style={inputStyle} value={s.link?.label || ''} onChange={(e) => onChange({ ...s, link: { label: e.target.value, url: s.link?.url || '' } })} placeholder="What the link is" /></Field>
+            <Field label="Link (https)"><input style={inputStyle} value={s.link?.url || ''} onChange={(e) => onChange({ ...s, link: { label: s.link?.label || '', url: e.target.value } })} placeholder="Web address starting https://" /></Field>
           </div>
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             <button type="button" className="adm-btn" onClick={() => onMove(-1)} disabled={i === 0}>Move up</button>

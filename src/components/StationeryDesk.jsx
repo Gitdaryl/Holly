@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TEMPLATES, TERMS, byId, compose, fromDeal, subjectFor, smsFor } from '../data/stationery';
 import { renderLetter, renderText, printWrap } from '../lib/letter-html';
 import { BROKERAGE, PHONE, AWARDS, awardText } from '../data/profiles';
+import HelpVideo from './HelpVideo';
 
 // The Stationery tab: pick a letter, fill in a few fields (or pull them from
 // a roadmap), read it, fix a word, then print it to PDF, text the short
@@ -32,7 +33,10 @@ function Pick({ onPick, recent }) {
   const groups = [...new Set(TEMPLATES.map((t) => t.group))];
   return (
     <>
-      <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>Stationery</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>Stationery</div>
+        <HelpVideo id="stationery" minutes={2} />
+      </div>
       <p style={{ fontSize: '0.82rem', color: MUTED, margin: '0.2rem 0 1rem', lineHeight: 1.5 }}>Letters on your paper, in your voice, written so a first-time or older client follows every line. Pick one, fill in a few blanks, read it, send it.</p>
       {groups.map((g) => (
         <div key={g} style={{ marginBottom: '1.1rem' }}>
