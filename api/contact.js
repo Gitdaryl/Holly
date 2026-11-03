@@ -3,14 +3,14 @@
 // Sends email to Holly via Resend
 
 import { saveLeadToNotion, persistLead } from './lib/leads.js';
-import { notifyHolly, prettyPhone } from './lib/sms.js';
+import { notifyHolly, prettyPhone, consentRecord } from './lib/sms.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { firstName, lastName, email, phone, message, region } = req.body || {};
+  const { firstName, lastName, email, phone, message, region, smsConsent } = req.body || {};
 
   if (!firstName || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
   // Persist before notify: Blob first (always available), then Notion.
-  const blobPath = await persistLead('contact', { name: fullName, email, phone, message, region });
+  const blobPath = await persistLead('contact', { name: fullName, email, phone, message, region, ...consentRecord(smsConsent, '/contact') });
   let savedToNotion = false;
   try {
     await saveLeadToNotion({ name: fullName, email, phone, interest: message, region, source: 'Contact Form' });

@@ -9,6 +9,7 @@ import { coverFor, isAerial } from '../lib/cover';
 import { TrustStrip } from '../components/GoogleReviews';
 import { track } from '../lib/track';
 import SiteNav from '../components/SiteNav';
+import SmsConsent from '../components/SmsConsent';
 import ShareButton from '../components/ShareButton';
 
 // Fixed-overlay photo lightbox: no library, Left/Right/Escape, swipe, and a
@@ -89,7 +90,7 @@ function Lightbox({ photos, index, title, onClose, onPrev, onNext }) {
 export default function PropertyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '', preferredTime: '' });
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '', preferredTime: '', smsConsent: false });
   const [formStatus, setFormStatus] = useState('idle');
   const [formError, setFormError] = useState('');
   const [lightboxIndex, setLightboxIndex] = useState(null);
@@ -133,6 +134,7 @@ export default function PropertyPage() {
           preferred: formData.preferredTime,
           message: formData.message,
           title: `${property.title} (${property.price})`,
+          smsConsent: formData.smsConsent,
         }),
       });
       const data = await res.json();
@@ -441,7 +443,7 @@ export default function PropertyPage() {
                     <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
                     <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                  <SmsConsent checked={formData.smsConsent} onChange={(v) => setFormData((d) => ({ ...d, smsConsent: v }))} />
                   {formError && <p style={{ color: '#ef4444', fontSize: '0.82rem' }}>{formError}</p>}
                   <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e64774', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
                     {formStatus === 'sending' ? 'Sending...' : 'Request Showing'}

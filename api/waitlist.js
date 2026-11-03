@@ -2,7 +2,7 @@ import { put, list } from '@vercel/blob'
 import { lakes } from '../src/data/lakes.js'
 import { sanitizeSlug, todayISO, listAll } from './lib/engage-store.js'
 import { saveLeadToNotion } from './lib/leads.js'
-import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone, SMS_TAIL, consentRecord } from './lib/sms.js'
 import { audienceFor } from './lib/report.js'
 
 // Buyer waitlist per lake. "Tell me when something comes up on Clark Lake."
@@ -73,7 +73,7 @@ async function post(req, res) {
   const lake = sanitizeSlug(req.query.lake)
   if (!lake || !lakes[lake]) return res.status(400).json({ error: 'unknown lake' })
 
-  const { name, phone, email, budget, timing, notes, role } = req.body || {}
+  const { name, phone, email, budget, timing, notes, role, smsConsent } = req.body || {}
   const owner = role === 'owner'
   if (!name || (!phone && !email)) return res.status(400).json({ error: 'Name and a phone or email are required.' })
 
@@ -89,6 +89,7 @@ async function post(req, res) {
     role: owner ? 'owner' : 'buyer',
     receivedAt: new Date().toISOString(),
     userAgent: req.headers['user-agent'] || null,
+    ...consentRecord(smsConsent, `/lakes/${lake}`),
   }
 
   // 1. Persist.
@@ -116,10 +117,10 @@ async function post(req, res) {
     notifyHolly(owner
       ? `Owner on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `. Selling: ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\n"${entry.notes.slice(0, 160)}"` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`
       : `New buyer on ${entry.lakeName}: ${entry.name}${entry.budget ? `, ${entry.budget}` : ''}${entry.timing ? `, ${entry.timing.toLowerCase()}` : ''}.${entry.notes ? `\nWants: ${entry.notes.slice(0, 160)}` : ''}\n${entry.phone ? `Call: ${prettyPhone(entry.phone)}` : `Email: ${entry.email}`}`),
-    entry.phone
+    entry.phone && entry.smsConsent
       ? textLead(entry.phone, owner
-          ? `Hi ${first}, Holly Griewahn here (Foundation Realty). I'll text you when a ${entry.lakeName} home sells or lists, with the number. If you ever want to know what yours would bring, just reply here or call ${HOLLY_PRETTY}.`
-          : `Hi ${first}, Holly Griewahn here (Foundation Realty). You're on my ${entry.lakeName} list. When something comes up you'll hear from me before it hits the market. Anything specific you're after? Text me here or call ${HOLLY_PRETTY}.`)
+          ? `Hi ${first}, Holly Griewahn here (Foundation Realty). I'll text you when a ${entry.lakeName} home sells or lists, with the number. If you ever want to know what yours would bring, just reply here or call ${HOLLY_PRETTY}.${SMS_TAIL}`
+          : `Hi ${first}, Holly Griewahn here (Foundation Realty). You're on my ${entry.lakeName} list. When something comes up you'll hear from me before it hits the market. Anything specific you're after? Text me here or call ${HOLLY_PRETTY}.${SMS_TAIL}`)
       : Promise.resolve({ ok: false }),
     listAll(`waitlist/${lake}/`).then((r) => r.paths.filter((p) => !p.endsWith('.owner.json')).length).catch(() => null),
   ])

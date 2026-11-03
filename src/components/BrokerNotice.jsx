@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BROKERAGE } from '../data/profiles';
 
 // The line Michigan requires on every page that advertises: the employing
@@ -12,7 +12,8 @@ export default function BrokerNotice() {
   const a = BROKERAGE.address;
   return (
     <div style={{ background: '#0b2622', color: 'rgba(255,255,255,0.72)', fontSize: '0.78rem', lineHeight: 1.6, textAlign: 'center', padding: '0.85rem 1rem' }}>
-      Holly Griewahn is a REALTOR&reg; with <strong style={{ color: 'white', fontWeight: 600 }}>{BROKERAGE.name}</strong>, {a.street}, {a.city}, {a.region} {a.postal}.
+      Holly Griewahn is a REALTOR&reg; with <strong style={{ color: 'white', fontWeight: 600 }}>{BROKERAGE.name}</strong>, {a.street}, {a.city}, {a.region} {a.postal}.{' '}
+      <Link to="/privacy" style={{ color: 'inherit' }}>Privacy</Link> &middot; <Link to="/terms" style={{ color: 'inherit' }}>Terms</Link>
     </div>
   );
 }

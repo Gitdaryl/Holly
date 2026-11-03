@@ -2,6 +2,7 @@ import { track } from '../lib/track';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SiteNav from '../components/SiteNav';
+import SmsConsent from '../components/SmsConsent';
 
 const PROPERTY_TYPES = [
   { value: 'lakefront', label: 'Lakefront' },
@@ -41,6 +42,7 @@ const REGIONS = [
 ];
 
 const EMPTY = {
+  smsConsent: false,
   address: '',
   region: '',
   type: '',
@@ -379,7 +381,7 @@ export default function CMAPage() {
                   Holly will review your details and provide a personalized CMA within 24 hours. No obligation, no pressure - just honest market insight from a local expert.
                 </div>
 
-                <p style={{ fontSize: '0.9rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                <SmsConsent checked={form.smsConsent} onChange={(v) => setForm((p) => ({ ...p, smsConsent: v }))} />
                 <button
                   onClick={submit}
                   disabled={!step2Valid || status === 'sending'}

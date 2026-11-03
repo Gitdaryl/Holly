@@ -26,6 +26,7 @@ Purpose: find every place a first-time or older client would get stuck, before a
 - Letters email from the desk only once Holly's sending address is set up; until then it is Print / Save as PDF, or "Open in your email app".
 - Documents are links on a step, not uploads.
 - The lender and title company do not have their own login.
+- Her texting number still needs its own registration before real clients are put on a roadmap.
 
 ## After the run
 - Every row in the table becomes a task on the board (Holly, Backlog) or a copy fix the same day.

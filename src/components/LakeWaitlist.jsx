@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SmsConsent from './SmsConsent';
 import { track } from '../lib/track';
 
 // "Get first look" card for a lake page. Shows the live count once there are
@@ -27,7 +28,7 @@ const label = { fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTran
 export default function LakeWaitlist({ lake, lakeName, compact = false, role = 'buyer' }) {
   const owner = role === 'owner';
   const [count, setCount] = useWaitlistCount(lake);
-  const [form, setForm] = useState({ name: '', phone: '', email: '', budget: '', timing: '', notes: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', budget: '', timing: '', notes: '', smsConsent: false });
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -63,7 +64,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
       <h2 style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: compact ? '1.3rem' : '1.5rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.25 }}>{headline}</h2>
       <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6, marginBottom: '1.25rem', maxWidth: '520px' }}>
         {owner
-          ? `Holly texts you when a ${lakeName} home sells or lists, with the number. No newsletter, no pressure, just what your lake is doing. Useful whether you sell next spring or never.`
+          ? `Holly lets you know when a ${lakeName} home sells or lists, with the number. No newsletter, no pressure, just what your lake is doing. Useful whether you sell next spring or never.`
           : `Lake homes here often sell before they are listed. Tell Holly what you're after and you'll hear about the next ${lakeName} property before the public does.`}
       </p>
 
@@ -139,11 +140,13 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
             </>
           )}
           {error && <p style={{ gridColumn: '1 / -1', color: '#fca5a5', fontSize: '0.9rem' }}>{error}</p>}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <SmsConsent dark checked={form.smsConsent} onChange={(v) => setForm((f) => ({ ...f, smsConsent: v }))} />
+          </div>
           <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button type="submit" disabled={status === 'sending'} style={{ background: '#e64774', color: 'white', border: 'none', padding: '0.85rem 1.5rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Adding you...' : owner ? `Keep me posted on ${lakeName}` : `Put me on the ${lakeName} list`}
             </button>
-            <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</span>
           </div>
         </form>
       )}

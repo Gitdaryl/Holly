@@ -20,6 +20,7 @@ import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
 import { marketFor, marketIndex } from '../src/lib/market.js'
 import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs, AWARDS } from '../src/data/profiles.js'
+import { PRIVACY, TERMS, LEGAL_UPDATED } from '../src/data/legal.js'
 import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
 import { fetchVideos } from '../api/lib/youtube-feed.js'
 
@@ -523,6 +524,14 @@ for (const p of propertiesData) {
     <h2>Questions</h2>${faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}
     <p><a href="/cma">What is my home worth?</a> Call or text (517) 403-3413.</p>
   `)
+  for (const [route, doc] of [['/privacy', PRIVACY], ['/terms', TERMS]]) {
+    routes.push(write(route, {
+      title: `${doc.title} | Holly Griewahn, Foundation Realty`,
+      description: doc.intro,
+      body: WRAP(`<h1>${esc(doc.title)}</h1><p>Last updated ${esc(LEGAL_UPDATED)}</p><p>${esc(doc.intro)}</p>${doc.sections.map((x) => `<h2>${esc(x.h)}</h2>${x.p ? `<p>${esc(x.p)}</p>` : ''}${x.items ? `<ul>${x.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}`).join('')}`),
+    }))
+  }
+
   routes.push(write('/why-holly', {
     title: 'Why Holly | Selling Your Irish Hills Lake Home with Holly Griewahn',
     description: `What a seller gets when Holly Griewahn lists their lake home: a price set from real closed sales, buyers answered in seconds, a seller update every Monday, and ${rec.sold} sales in ${year} on the record.`,

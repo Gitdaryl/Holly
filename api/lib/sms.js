@@ -83,3 +83,13 @@ export async function textLead(phone, text, { author = 'auto' } = {}) {
 }
 
 export const HOLLY_PRETTY = '(517) 403-3413'
+
+// Carrier rules: first text after opt-in names the terms. Bump the version when
+// the wording on the form changes, so each lead's record shows what they saw.
+export const SMS_TAIL = ' Msg & data rates may apply. Reply STOP to end, HELP for help.'
+const SMS_CONSENT_VERSION = 'v1-2026-11'
+
+export function consentRecord(ticked, page) {
+  const yes = ticked === true
+  return { smsConsent: yes, smsConsentAt: yes ? new Date().toISOString() : null, smsConsentVersion: yes ? SMS_CONSENT_VERSION : null, smsConsentPage: yes ? String(page || '').slice(0, 200) : null }
+}

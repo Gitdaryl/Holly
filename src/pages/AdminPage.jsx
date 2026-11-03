@@ -234,6 +234,7 @@ function LeadCard({ lead, session, onStatus, fresh }) {
           </button>
         )}
         {!lead.phone && !lead.email && <span style={{ fontSize: '0.78rem', color: '#98a3a1' }}>No contact details</span>}
+        {lead.phone && lead.smsConsent === false && <span style={{ fontSize: '0.78rem', color: '#66706e', alignSelf: 'center' }}>Did not agree to texts, please call</span>}
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ export const STEPS = [
   { path: '/lakes/devils-lake', target: '[data-tour="track-record"]', title: 'Every lake page carries your record', site: true,
     text: 'Sold here, days to sell, what is for sale now. When a seller on Devils Lake Googles the lake, this is what they find. It fills in automatically as sales are added.' },
   { path: '/lakes/devils-lake', target: '#waitlist', title: 'Get first look', site: true,
-    text: 'Buyers register here. They get a text from your number within seconds, you get a text with their budget and timing, and they hear from you again on day 3 and day 14 unless you have already talked. Sellers love hearing that buyers are waiting; this is where those buyers come from.' },
+    text: 'Buyers register here. If they tick the texting box they get a text from your number within seconds. You get a text with their budget and timing, and they hear from you again on day 3 and day 14 unless you have already talked. Sellers love hearing that buyers are waiting; this is where those buyers come from.' },
   { path: '/market/devils-lake', target: '[data-tour="sold-map"]', title: 'Lake sales reports', site: true,
     text: 'One page per lake with your sales on it: median, range, days to sell, closings by month, and a map. Pink pins are this lake, grey pins are the rest of your year. Hover a pin for the sale. Satellite button top right if you want the shoreline.' },
   { path: '/market/devils-lake', target: '#waitlist', title: 'Owners sign up here', site: true,

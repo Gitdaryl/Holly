@@ -351,6 +351,7 @@ function normalize({ pathname, data }) {
     name: data.name || 'Unknown',
     phone: data.phone || null,
     email: data.email || null,
+    smsConsent: data.smsConsent,
   }
   if (root === 'waitlist') {
     return { ...base, source: data.role === 'owner' ? 'Lake owner' : 'Waitlist', about: data.lakeName || bucket,

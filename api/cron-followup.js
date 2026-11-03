@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   }
 
   // 2. Waitlist check-ins (day 3, day 14)
-  for (const l of items.filter((l) => l.source === 'Waitlist' && l.phone && open(l))) {
+  for (const l of items.filter((l) => l.source === 'Waitlist' && l.phone && l.smsConsent !== false && open(l))) {
     if (replied.has(normalizePhone(l.phone))) continue
     const days = age(l) / DAY
     const step = days >= 14 ? 2 : days >= 3 ? 1 : 0
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
   }
 
   // 3. Seller nurture (30/60/90)
-  for (const l of items.filter((l) => l.source === 'Home value' && l.phone && open(l))) {
+  for (const l of items.filter((l) => l.source === 'Home value' && l.phone && l.smsConsent !== false && open(l))) {
     if (replied.has(normalizePhone(l.phone))) continue
     const days = age(l) / DAY
     const step = days >= 90 ? 3 : days >= 60 ? 2 : days >= 30 ? 1 : 0
