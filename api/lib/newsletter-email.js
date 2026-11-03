@@ -49,8 +49,9 @@ ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;"
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${BRAND.line};border-radius:14px;overflow:hidden;">
 
 <tr><td style="background:#1a554e;padding:22px 28px;">
-  <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#f5b5c7;margin-bottom:7px;">Foundation Realty &middot; Irish Hills</div>
-  <div style="font:400 23px/1.2 ${SERIF};color:#ffffff;">Holly Griewahn</div>
+  <div style="font:700 11px/1 ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#f5b5c7;margin-bottom:7px;">Irish Hills</div>
+  <div style="font:400 23px/1.25 ${SERIF};color:#ffffff;">Holly Griewahn</div>
+  <div style="font:400 23px/1.25 ${SERIF};color:#ffffff;">Foundation Realty</div>
 </td></tr>
 
 ${inner}
