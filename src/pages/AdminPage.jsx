@@ -453,7 +453,7 @@ function Listings({ session }) {
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.85rem' }}>
               <a className="adm-btn pink" href={`/api/seller-report?slug=${p.slug}&key=${encodeURIComponent(session)}`} target="_blank" rel="noopener">Your report</a>
               {p.sellerLink && <button className="adm-btn" onClick={() => copy(p.slug, p.sellerLink)}>{copied === p.slug ? 'Copied' : 'Copy seller link'}</button>}
-              {!p.sellerEmail && <span style={{ fontSize: '0.72rem', color: '#98a3a1', alignSelf: 'center' }}>No seller email set, Friday report is off</span>}
+              {!p.sellerEmail && <span style={{ fontSize: '0.72rem', color: '#98a3a1', alignSelf: 'center' }}>No seller email set, Monday report is off</span>}
             </div>
           </div>
         ))}

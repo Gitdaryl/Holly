@@ -133,6 +133,7 @@ async function dealReminders(actions, dry) {
         if (!dry) {
           const r = await textLead(deal.clientPhone, text, { author: 'auto' })
           if (r.ok) await deals.markReminded(deal.id, s.id, 'client-pre')
+          else if (!done.has(`${s.id}/client-fail`)) forHolly.push({ deal, s, kind: 'client-fail', line: `Text did not go through to ${first} about ${s.title}. Please call.` })
         }
       }
       if (deal.clientPhone && until === 0 && s.who === 'you' && !done.has(`${s.id}/client-day`)) {
@@ -141,6 +142,7 @@ async function dealReminders(actions, dry) {
         if (!dry) {
           const r = await textLead(deal.clientPhone, text, { author: 'auto' })
           if (r.ok) await deals.markReminded(deal.id, s.id, 'client-day')
+          else if (!done.has(`${s.id}/client-fail`)) forHolly.push({ deal, s, kind: 'client-fail', line: `Text did not go through to ${first} about ${s.title}. Please call.` })
         }
       }
       // Holly: today's steps once, overdue steps once.

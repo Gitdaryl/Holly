@@ -17,10 +17,14 @@ export const STEPS = [
     text: 'Flip a lead to Called, Showing set, Client or Dead. New leads you have not touched nudge you by text after an hour and again after a day; changing the status is what stops the nudges. Flip someone to Client and an "Ask for a review" button appears.', optional: true },
   { path: '/admin?tab=texts', target: '[data-tour="tab-texts"]', title: 'Texts, both directions',
     text: 'Your site number is 517-300-8226. Anyone who texts it shows up here as a conversation, and you can answer from this page as Holly. The auto-replies the site sends are here too, so you always see what the lead has already been told. Missed calls and voicemails land in the same thread.' },
+  { path: '/admin?tab=deals', target: '[data-tour="tab-deals"]', title: 'A roadmap for every client',
+    text: 'Once a contract is signed, start a roadmap here. Your client gets a private link showing every step and date, and a text before each deadline. You get one morning text with what is due. Tap Watch how on this tab for the two-minute video.' },
+  { path: '/admin?tab=stationery', target: '[data-tour="tab-stationery"]', title: 'Your letters',
+    text: 'Branded letters for offers, counters, inspection and closing, written in plain English with the hard words explained. Pick one, fill the blanks, then print it, save a PDF or text the short version. Tap Watch how on this tab to see it done.' },
   { path: '/admin?tab=waitlist', target: '[data-tour="tab-waitlist"]', title: 'Buyers waiting, by lake',
     text: 'People who signed up for first look on a lake. This is the number you say out loud at a listing appointment: "I have nine buyers registered for Round Lake." Tap a lake to see who, tap a name to call.' },
   { path: '/admin?tab=listings', target: '[data-tour="tab-listings"]', title: 'Your listings this week',
-    text: 'Views, saves, showing requests and buyers-on-the-lake for each active listing. "Your report" is the full picture with buyer names; "Copy seller link" is the counts-only version you can send. Every Friday a finished seller report is emailed to you with a one-click send button, so sellers hear from you weekly without you writing anything.' },
+    text: 'Views, saves, showing requests and buyers-on-the-lake for each active listing. "Your report" is the full picture with buyer names; "Copy seller link" is the counts-only version you can send. Every Monday morning a finished seller report is emailed to you with a send button, so sellers hear from you weekly without you writing anything.' },
   { path: '/admin?tab=stats', target: '[data-tour="tab-stats"]', title: 'Where to look',
     text: 'Visitors, what they read, where they came from, and what they did. The top of this tab is a short list of things worth your attention: a lead waiting too long, a lake page people read but nobody signs up on, a listing with lookers and no showings. Read the list, ignore the rest.' },
   // Everything from here on leaves the desk and walks the public site, so the
@@ -39,13 +43,15 @@ export const STEPS = [
   { path: '/sold', target: '[data-tour="sold-tiles"]', title: 'Sold never disappears', site: true,
     text: 'Every closed sale stays on the site with the two numbers a seller cares about: how fast and for how much. This is the page to text a seller the night before an appointment. Mark a listing sold and it moves here on its own.' },
   { path: '/plan', target: '[data-tour="plan-builder"]', title: 'The night-before link', site: true,
-    text: 'Type the address and the lake, copy the link, text it to the seller before you meet. They open a page built for their house: how many buyers are waiting on their lake, what you sold there, what happens the day you list, and a sample of the Friday report. Nothing to save; the link builds the page.' },
+    text: 'Type the address and the lake, copy the link, text it to the seller before you meet. They open a page built for their house: how many buyers are waiting on their lake, what you sold there, what happens the day you list, and a sample of the Monday report. Nothing to save; the link builds the page.' },
+  { path: '/why-holly', target: '[data-tour="why-holly"]', title: 'Your listing presentation', site: true,
+    text: 'Bring this to the kitchen table. Tap Present and it runs one idea per screen on your phone or tablet, so you can walk a seller through your plan, swipe by swipe.' },
   { path: '/', target: '[data-tour="reviews"]', title: 'Your Google reviews, live', site: true,
     text: 'Your 5.0 rating and newest reviews pull straight from Google, so the site never shows a stale quote. The rating also sits on every listing page next to your name. Keep asking at closing; the desk has a one-tap review text for that.' },
   { path: '/', target: '[aria-label^="Chat with Heather"]', title: 'Heather knows what you know', site: true,
     text: 'Heather is your assistant on the site, named by you. Heather answers from the same data the site shows: every lake, your listings, your sales, and will not invent a price or a listing. When someone wants you, Heather takes their name and number and they land in your desk. Ask Heather something on your own phone; you will see.' },
   { path: '/admin?tab=inbox', target: '[data-tour="desk"]', title: 'What runs by itself',
-    text: 'Leads text you and get an auto-reply. Untouched leads nudge you. Waitlist buyers and home-value askers get follow-ups on a schedule. Sellers get a Friday report. Calls to the site number ring your cell and take a voicemail with a transcript. Reviews, sold pages, lake reports and the chat update from the data. You answer the phone and go to appointments. That is the whole job.' },
+    text: 'Leads text you and get an auto-reply. Untouched leads nudge you. Waitlist buyers and home-value askers get follow-ups on a schedule. Every Monday you get each seller report by email to look over and send. Calls to the site number ring your cell and take a voicemail with a transcript. Reviews, sold pages, lake reports and the chat update from the data. You answer the phone and go to appointments. That is the whole job.' },
 ];
 
 const KEY = 'hg-tour-step';

@@ -85,10 +85,10 @@ function blocksToNotion(blocks) {
 }
 
 export default async function handler(req, res) {
-  // Verify this is a legitimate cron call from Vercel
-  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}` &&
-      req.method !== 'GET') {
-    // Allow GET for manual testing without cron secret
+  const secret = process.env.ADMIN_SECRET;
+  const isVercelCron = req.headers['user-agent']?.includes('vercel-cron');
+  if (!isVercelCron && (!secret || req.headers.authorization !== `Bearer ${secret}`)) {
+    return res.status(401).json({ error: 'unauthorized' });
   }
 
   console.log('[cron-publish-article] Starting...');

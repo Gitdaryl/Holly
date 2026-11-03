@@ -177,6 +177,12 @@ Write the ${monthName} ${year} article.`;
 }
 
 export default async function handler(req, res) {
+  const secret = process.env.ADMIN_SECRET;
+  const isVercelCron = req.headers['user-agent']?.includes('vercel-cron');
+  if (!isVercelCron && (!secret || req.headers.authorization !== `Bearer ${secret}`)) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+
   const dry = req.query?.dry === '1';
   const now = new Date();
 

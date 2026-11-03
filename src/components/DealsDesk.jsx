@@ -186,7 +186,7 @@ function NewDeal({ session, onCreated, onCancel }) {
         </div>
         <Field label="Client's name"><input style={inputStyle} value={f.clientName} onChange={set('clientName')} placeholder="Client's full name, or both names" required /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <Field label="Client's cell" hint="The roadmap link and reminders go here."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="Their cell number" /></Field>
+          <Field label="Client's cell" hint="Ask them first. The roadmap link and reminders go here."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="Their cell number" /></Field>
           <Field label="Client's email"><input style={inputStyle} inputMode="email" value={f.clientEmail} onChange={set('clientEmail')} /></Field>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>

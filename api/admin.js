@@ -190,7 +190,7 @@ async function dealAction(req, res, action) {
       const first = deal.clientName.split(' ')[0]
       const what = deal.side === 'seller' ? 'sale' : 'purchase'
       const text = String(b.body || '').trim().slice(0, 600)
-        || `Hi ${first}, Holly Griewahn here. Here is the roadmap for your ${what} of ${deal.address}: every step, every date, and what to do next. Save the link, I'll text you before each deadline.\n${deals.dealLink(deal.id)}`
+        || `Hi ${first}, Holly Griewahn here. Here is the roadmap for your ${what} of ${deal.address}: every step, every date, and what to do next. Save the link, I'll text you before each deadline.\n${deals.dealLink(deal.id)}\nReply STOP to end these texts.`
       const r = await textLead(deal.clientPhone, text, { author: 'holly' })
       if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
       await deals.markSent(deal.id)

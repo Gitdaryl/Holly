@@ -248,7 +248,7 @@ function Plan({ lakeSlug, addressSlug }) {
             <Step when="Day 1" title={`Placed on the ${lake.name} page`}>
               Buyers searching for {lake.name} land on <Link to={`/lakes/${lake.slug}`} style={{ color: '#e64774', fontWeight: 600, textDecoration: 'none' }}>a page about the lake itself</Link>, with your home on it. That page keeps working through the winter.
             </Step>
-            <Step when="Every Friday" title="Your seller report">
+            <Step when="Every Monday" title="Your seller report">
               Views, saves, showing requests and the {lake.name} buyer count, in your inbox every week. You never have to wonder what is happening.
             </Step>
             <Step when="Every showing" title="You hear what buyers said">
@@ -262,7 +262,7 @@ function Plan({ lakeSlug, addressSlug }) {
           {/* Sample report + CTA */}
           <div style={{ display: 'grid', gap: '1.25rem' }}>
             <div>
-              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>What Friday looks like</div>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#98a3a1', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.6rem' }}>What Monday looks like</div>
               <SampleReport lakeName={lake.name} />
             </div>
 

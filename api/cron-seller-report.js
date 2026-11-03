@@ -1,5 +1,5 @@
 import { propertiesData } from '../src/data/amenities.js'
-import { buildReport, renderReportHtml, sellerKeyFor, SITE } from './lib/report.js'
+import { buildReport, renderReportHtml, sendKeyFor, SITE } from './lib/report.js'
 import { narrativeFor } from './lib/narrative.js'
 
 // Monday morning: build every active listing's seller report and email the
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       const report = await buildReport(property, 7)
       report.narrative = await narrativeFor(property, report)
       const html = renderReportHtml(report, { audience: 'seller' })
-      const sendUrl = `${SITE}/api/seller-report-send?slug=${property.slug}&key=${encodeURIComponent(secret || '')}`
+      const sendUrl = `${SITE}/api/seller-report-send?slug=${property.slug}&key=${sendKeyFor(property.slug)}`
       await emailHolly(property, report, html, sendUrl)
       results.push({ slug: property.slug, ok: true, views: report.metrics.views.period })
     } catch (err) {

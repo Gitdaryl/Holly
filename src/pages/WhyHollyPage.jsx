@@ -165,7 +165,7 @@ function Awards({ center }) {
 
 function Hero({ onPresent, onWatch, present }) {
   return (
-    <section className="wh-sec wh-dark wh-hero" aria-labelledby={present ? 'wh-title-p' : 'wh-title'}>
+    <section className="wh-sec wh-dark wh-hero" data-tour={present ? undefined : 'why-holly'} aria-labelledby={present ? 'wh-title-p' : 'wh-title'}>
       <div className="wh-wrap">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.5rem' }}>
           <img src="/images/holly-headshot.webp" alt="Holly Griewahn" width="64" height="64" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f5b5c7' }} />

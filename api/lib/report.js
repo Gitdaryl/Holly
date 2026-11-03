@@ -30,6 +30,14 @@ export function sellerKeyFor(slug) {
   return crypto.createHmac('sha256', secret).update(`seller-report:${slug}`).digest('hex').slice(0, 24)
 }
 
+// Holly's send button. Separate from the seller's view key so a seller cannot
+// trigger a send, and from ADMIN_SECRET so the master key never sits in an email.
+export function sendKeyFor(slug) {
+  const secret = process.env.ADMIN_SECRET
+  if (!secret) return null
+  return crypto.createHmac('sha256', secret).update(`seller-send:${slug}`).digest('hex').slice(0, 24)
+}
+
 // 'agent' sees buyer contact details, 'seller' sees counts only. Buyer PII must
 // never land in a seller's inbox.
 export function audienceFor(slug, key) {

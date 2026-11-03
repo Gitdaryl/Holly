@@ -72,8 +72,8 @@ export function windowDays(endISO, length) {
 }
 
 export function todayISO() {
-  // Eastern Time is Holly's market; a report generated Friday night must not
-  // roll to Saturday because the server runs UTC.
+  // Eastern Time is Holly's market; a report generated late at night must not
+  // roll to the next day because the server runs UTC.
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Detroit' })
 }
 
