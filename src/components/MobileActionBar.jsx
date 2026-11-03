@@ -17,7 +17,7 @@ function lakeNameFromPath(pathname) {
 
 export default function MobileActionBar({ textBody }) {
   const { pathname } = useLocation();
-  const hidden = pathname.startsWith('/admin') || pathname.startsWith('/plan') || pathname.startsWith('/property');
+  const hidden = pathname.startsWith('/admin') || pathname.startsWith('/plan') || pathname.startsWith('/deal') || pathname.startsWith('/property');
 
   useEffect(() => {
     if (hidden) return undefined;

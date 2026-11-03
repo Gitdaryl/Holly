@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { startTour } from '../components/Tour';
+import DealsDesk from '../components/DealsDesk';
 
 // /admin: Holly's one screen. Phone-first. Inbox (every lead, every source),
 // Waitlist (buyers per lake), Listings (this week's numbers + report links).
@@ -60,14 +61,14 @@ const when = (iso) => {
 // ── shells ─────────────────────────────────────────────────────────────
 
 function Shell({ children, tab, setTab, onLogout, session }) {
-  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats'], ['ideas', 'Ideas']];
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['deals', 'Deals'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats'], ['ideas', 'Ideas']];
   const wide = tab === 'ideas';
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..800;1,8..60,400..600&family=Inter:wght@300..700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .adm-tab { flex: 1; padding: 0.85rem 0.25rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
+        .adm-tab { flex: 1 0 auto; white-space: nowrap; padding: 0.85rem 0.6rem; border: none; background: none; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: ${MUTED}; cursor: pointer; border-bottom: 3px solid transparent; }
         .adm-tab.on { color: ${NAVY}; border-bottom-color: ${PINK}; }
         .adm-tab-ideas, .adm-ideas-link { display: none; }
         @media (min-width: 900px) { .adm-tab-ideas { display: block; } }
@@ -89,7 +90,7 @@ function Shell({ children, tab, setTab, onLogout, session }) {
             <button onClick={onLogout} style={{ background: 'none', border: 'none', color: MUTED, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
           </div>
         </div>
-        <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex' }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex', overflowX: 'auto', scrollbarWidth: 'none' }}>
           {tabs.map(([k, l]) => <button key={k} data-tour={`tab-${k}`} className={`adm-tab${tab === k ? ' on' : ''}${k === 'ideas' ? ' adm-tab-ideas' : ''}`} onClick={() => setTab(k)}>{l}</button>)}
         </div>
       </header>
@@ -896,6 +897,7 @@ export default function AdminPage() {
         <AddToHomeScreen />
         {tab === 'inbox' && <Inbox session={session} />}
         {tab === 'texts' && <Texts session={session} />}
+        {tab === 'deals' && <DealsDesk session={session} initialId={params.get('id')} />}
         {tab === 'waitlist' && <Waitlist session={session} />}
         {tab === 'listings' && <Listings session={session} />}
         {tab === 'letter' && <Letter session={session} />}

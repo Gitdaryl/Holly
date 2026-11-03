@@ -11,6 +11,8 @@ import { transcribeWithDeepgram } from './voice-inbound.js'
 import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
 import * as letter from './lib/newsletter-send.js'
 import { issue as readIssue } from './lib/newsletter-store.js'
+import * as deals from './lib/deals.js'
+import { buildSteps, redate } from '../src/data/deal-templates.js'
 
 // Holly's admin. One function, four jobs:
 //   POST ?action=login                text Holly a 15-minute login link
@@ -22,6 +24,8 @@ import { issue as readIssue } from './lib/newsletter-store.js'
 //   POST ?action=reply   {to, body}     (bearer) send a text from the site number
 //   GET  ?view=letter | letter-new | letter-get&id= | letter-preview&id=   the newsletter
 //   POST ?action=letter-save {issue} | letter-test {id, to} | letter-send {id}   (see lib/newsletter-send.js)
+//   GET  ?view=deals | deal&id=        transaction roadmaps (see lib/deals.js)
+//   POST ?action=deal-save {deal} | deal-send {id} | deal-reply {id, text} | deal-extract {text|pdf}
 //
 // Reads are assembled from the same append-only blobs the intakes write, so
 // the admin never has a second copy of the truth. Lead status is append-only
@@ -45,6 +49,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST' && action === 'reply') return reply(req, res)
     if (req.method === 'POST' && action === 'purge-tests') return purgeTests(req, res)
     if (req.method === 'POST' && action?.startsWith('letter-')) return letterAction(req, res, action)
+    if (req.method === 'POST' && action?.startsWith('deal-')) return dealAction(req, res, action)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
@@ -58,6 +63,17 @@ export default async function handler(req, res) {
       return res.status(200).json({ issues, subscribers, ready: letter.readiness(), testTo: process.env.HOLLY_CONTACT_EMAIL || null })
     }
     if (view === 'letter-new') return res.status(200).json(await letter.starter())
+    if (view === 'deals') {
+      const all = await deals.listDeals()
+      const notes = await Promise.all(all.map((d) => (d.status === 'active' ? deals.loadNotes(d.id) : [])))
+      return res.status(200).json({ deals: all.map((d, i) => deals.summary(d, notes[i])) })
+    }
+    if (view === 'deal') {
+      const deal = await deals.loadDeal(String(req.query.id || ''))
+      if (!deal) return res.status(404).json({ error: 'No such deal.' })
+      const [notes, sent] = await Promise.all([deals.loadNotes(deal.id), deals.sentCount(deal.id)])
+      return res.status(200).json({ deal, notes, sent, link: deals.dealLink(deal.id) })
+    }
     // The Idea Greenhouse (Yeti's shared idea board) inside the desk. The code
     // only ever leaves the server to a signed-in desk; the page then hands it
     // to the Greenhouse frame by postMessage. Set GREENHOUSE_CODE to the
@@ -103,6 +119,106 @@ async function letterAction(req, res, action) {
   } catch (err) {
     return res.status(err.status || 500).json({ error: err.message })
   }
+}
+
+// ── deals (transaction roadmaps) ────────────────────────────────────────
+
+async function dealAction(req, res, action) {
+  const b = req.body || {}
+  try {
+    if (action === 'deal-new') {
+      // Template steps for the form, dated from the anchors. Nothing is stored.
+      return res.status(200).json({ steps: buildSteps({ side: b.side, financing: b.financing, lakeHome: Boolean(b.lakeHome), acceptedOn: b.acceptedOn, closingOn: b.closingOn || null }) })
+    }
+    if (action === 'deal-save') {
+      const existing = b.deal?.id ? await deals.loadDeal(b.deal.id) : null
+      let deal = deals.normalizeDeal(b.deal, existing)
+      if (!deal.steps.length) deal.steps = buildSteps(deal)
+      // Moving the closing date re-dates every step still on its template offset.
+      if (existing && (existing.closingOn !== deal.closingOn || existing.acceptedOn !== deal.acceptedOn) && b.redate !== false) deal.steps = redate(deal.steps, deal)
+      await deals.saveDeal(deal)
+      return res.status(200).json({ deal, link: deals.dealLink(deal.id) })
+    }
+    const deal = await deals.loadDeal(String(b.id || ''))
+    if (!deal && action !== 'deal-extract') return res.status(404).json({ error: 'No such deal.' })
+    if (action === 'deal-send') {
+      if (!deal.clientPhone) return res.status(400).json({ error: 'Add the client\'s cell number first.' })
+      const first = deal.clientName.split(' ')[0]
+      const what = deal.side === 'seller' ? 'sale' : 'purchase'
+      const text = String(b.body || '').trim().slice(0, 600)
+        || `Hi ${first}, Holly Griewahn here. Here is the roadmap for your ${what} of ${deal.address}: every step, every date, and what to do next. Save the link, I'll text you before each deadline.\n${deals.dealLink(deal.id)}`
+      const r = await textLead(deal.clientPhone, text, { author: 'holly' })
+      if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
+      await deals.markSent(deal.id)
+      return res.status(200).json({ ok: true })
+    }
+    if (action === 'deal-reply') {
+      const text = String(b.text || '').trim().slice(0, 1000)
+      if (text.length < 2) return res.status(400).json({ error: 'Type a reply first.' })
+      const note = await deals.addNote(deal.id, { from: 'holly', kind: 'reply', text, name: 'Holly' })
+      // The reply also lands in their texts, from the number they already know.
+      let texted = false
+      if (deal.clientPhone && b.alsoText !== false) {
+        const r = await textLead(deal.clientPhone, `Holly: ${text}\nYour roadmap: ${deals.dealLink(deal.id)}`, { author: 'holly' })
+        texted = r.ok
+      }
+      return res.status(200).json({ ok: true, note, texted })
+    }
+    if (action === 'deal-extract') return res.status(200).json(await extractDates(b))
+    return res.status(400).json({ error: 'unknown action' })
+  } catch (err) {
+    return res.status(err.status || 500).json({ error: err.message })
+  }
+}
+
+// Reads a signed purchase agreement (PDF or pasted text) and returns the
+// facts the deal form needs. Returns suggestions, never writes: Holly checks
+// every date against the contract before anything is saved.
+async function extractDates({ pdf, text, name }) {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) throw Object.assign(new Error('ANTHROPIC_API_KEY is not set.'), { status: 503 })
+  const content = []
+  if (pdf) {
+    const data = String(pdf).replace(/^data:[^,]*,/, '').replace(/\s/g, '')
+    if (data.length > 6_000_000) throw Object.assign(new Error('That PDF is too large. Keep it under 4 MB, or paste the key pages as text.'), { status: 413 })
+    content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data } })
+  }
+  const pasted = String(text || '').trim().slice(0, 60000)
+  if (!pdf && pasted.length < 40) throw Object.assign(new Error('Upload the purchase agreement PDF or paste its text.'), { status: 400 })
+  content.push({ type: 'text', text: `${pasted ? `Contract text:\n${pasted}\n\n` : ''}Read this Michigan residential purchase agreement${name ? ` (${name})` : ''} and return ONLY a JSON object, no prose, with these keys (null when the contract does not say):
+{
+  "address": "street address, city",
+  "price": number,
+  "buyerNames": "names",
+  "sellerNames": "names",
+  "acceptedOn": "YYYY-MM-DD (the date the last party signed / acceptance date)",
+  "closingOn": "YYYY-MM-DD (closing date, or the on-or-before date)",
+  "financing": "financed" | "cash",
+  "lender": "name or null",
+  "titleCompany": "name or null",
+  "earnestMoney": number or null,
+  "earnestDueOn": "YYYY-MM-DD or null",
+  "inspectionEndsOn": "YYYY-MM-DD (end of the inspection contingency) or null",
+  "financingCommitmentOn": "YYYY-MM-DD or null",
+  "possession": "short plain-English note on possession/occupancy terms or null",
+  "otherDates": [{"title": "what", "date": "YYYY-MM-DD"}],
+  "warnings": ["anything unusual, blank, or inconsistent worth a second look"]
+}
+When a deadline is written as a number of days (for example "within 10 days of acceptance"), compute the date from the acceptance date and say so in warnings. If a value is unreadable, use null rather than guessing.` })
+  const { default: Anthropic } = await import('@anthropic-ai/sdk')
+  const client = new Anthropic({ apiKey })
+  const response = await client.messages.create({
+    model: 'claude-opus-5-5',
+    max_tokens: 4000,
+    messages: [{ role: 'user', content }],
+  })
+  if (response.stop_reason === 'refusal') throw Object.assign(new Error('The contract could not be read automatically. Enter the dates by hand.'), { status: 422 })
+  const raw = response.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n')
+  const m = raw.match(/\{[\s\S]*\}/)
+  if (!m) throw Object.assign(new Error('No dates were found in that file. Enter them by hand.'), { status: 422 })
+  let found
+  try { found = JSON.parse(m[0]) } catch { throw Object.assign(new Error('The dates came back unreadable. Try again or enter them by hand.'), { status: 422 }) }
+  return { found }
 }
 
 // ── auth ────────────────────────────────────────────────────────────────

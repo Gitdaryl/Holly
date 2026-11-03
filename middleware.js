@@ -16,7 +16,7 @@ export const config = {
 }
 
 const SKIP = /\.(js|css|map|webp|png|jpe?g|gif|svg|ico|mp4|mov|webm|woff2?|json|webmanifest)$/i
-const PRIVATE = /^\/(admin|plan)(\/|$)/
+const PRIVATE = /^\/(admin|plan|deal)(\/|$)/
 // Crawlers re-fetch the same page many times a day; count each page once per
 // agent per day (per server instance, best effort). Live fetches are each a
 // separate question, so every one counts.

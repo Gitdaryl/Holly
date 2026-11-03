@@ -49,7 +49,7 @@ export default function ChatWidget() {
     }
   }, [userMessageCount, leadCaptured, showLeadForm]);
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/plan')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/plan') || pathname.startsWith('/deal')) return null;
 
   const sendMessage = async () => {
     const text = input.trim();

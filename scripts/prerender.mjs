@@ -804,7 +804,7 @@ if (articles.length) {
 }
 
 // Private surfaces: explicit noindex so a bot that ignores robots.txt still gets the hint.
-for (const r of ['/admin', '/plan']) {
+for (const r of ['/admin', '/plan', '/deal']) {
   write(r, { title: 'Holly Griewahn', description: '', noindex: true, body: '' })
 }
 
@@ -829,7 +829,7 @@ const AI_AGENTS = [
   'Google-Extended', 'Applebot-Extended',
   'CCBot', 'Amazonbot', 'meta-externalagent', 'Bytespider',
 ]
-const DISALLOW = ['/admin', '/plan', '/api/']
+const DISALLOW = ['/admin', '/plan', '/deal', '/api/']
 // Disallow lines come FIRST. RFC 9309 parsers pick the longest match, so
 // order would not matter to them, but older first-match-wins parsers would
 // let `Allow: /` swallow the rest. This ordering is correct under both.

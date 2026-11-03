@@ -1,6 +1,8 @@
 import { put } from '@vercel/blob'
 import { inbox, allBlobs } from './admin.js'
 import { notifyHolly, textLead, prettyPhone, normalizePhone, HOLLY_PRETTY } from './lib/sms.js'
+import * as deals from './lib/deals.js'
+import { daysBetween } from '../src/data/deal-templates.js'
 
 // Hourly follow-up. Three jobs, all idempotent through append-only markers:
 //
@@ -12,6 +14,13 @@ import { notifyHolly, textLead, prettyPhone, normalizePhone, HOLLY_PRETTY } from
 //                     lead is marked Client or Dead.
 //   3. Seller nurture home-value requesters get a 30/60/90-day check-in
 //                     under the same rules.
+//   3. Seller nurture   home-value requesters get a 30/60/90-day check-in
+//                     under the same rules.
+//   4. Deal reminders  on an active transaction roadmap (lib/deals.js), the
+//                     client is texted two days before each dated step and
+//                     again the morning of a step that is theirs to do;
+//                     Holly gets one morning text listing today's steps and
+//                     anything overdue. Markers: deals/<id>/reminded/<step>/<kind>
 //
 // Quiet hours 9pm-8am Eastern: nothing goes out, the next hourly run picks
 // it up. ?dry=1 previews without sending or writing markers.
@@ -93,7 +102,58 @@ export default async function handler(req, res) {
     }
   }
 
+  // 4. Deal reminders
+  try {
+    await dealReminders(actions, dry)
+  } catch (err) {
+    console.error('deal reminders failed:', err.message)
+    actions.push({ job: 'deal', error: err.message })
+  }
+
   return res.status(200).json({ ok: true, dry, hourET, considered: items.length, actions })
+}
+
+const fmtDay = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })
+
+async function dealReminders(actions, dry) {
+  const today = deals.todayET()
+  const active = (await deals.listDeals()).filter((d) => d.status === 'active')
+  const forHolly = []
+  for (const deal of active) {
+    const done = await deals.reminded(deal.id)
+    const first = deal.clientName.split(' ')[0]
+    const link = deals.dealLink(deal.id)
+    for (const s of deal.steps) {
+      if (s.done || !s.date || s.remind === false) continue
+      const until = daysBetween(today, s.date)
+      // Client: heads-up 2 days out (1 day if the hourly run missed it), and the morning of their own steps.
+      if (deal.clientPhone && until >= 1 && until <= 2 && !done.has(`${s.id}/client-pre`)) {
+        const text = `Hi ${first}, Holly here. Coming up ${until === 1 ? 'tomorrow' : fmtDay(s.date)}: ${s.title}${s.who === 'you' && s.action ? `. ${s.action}` : ''}\nYour roadmap: ${link}`
+        actions.push({ job: 'deal-client', to: deal.clientPhone, step: s.id, text })
+        if (!dry) {
+          const r = await textLead(deal.clientPhone, text, { author: 'auto' })
+          if (r.ok) await deals.markReminded(deal.id, s.id, 'client-pre')
+        }
+      }
+      if (deal.clientPhone && until === 0 && s.who === 'you' && !done.has(`${s.id}/client-day`)) {
+        const text = `Hi ${first}, today on your roadmap: ${s.title}.${s.action ? ` ${s.action}` : ''} Questions? Text me here. ${link}`
+        actions.push({ job: 'deal-client', to: deal.clientPhone, step: s.id, text })
+        if (!dry) {
+          const r = await textLead(deal.clientPhone, text, { author: 'auto' })
+          if (r.ok) await deals.markReminded(deal.id, s.id, 'client-day')
+        }
+      }
+      // Holly: today's steps once, overdue steps once.
+      if (until === 0 && !done.has(`${s.id}/holly-day`)) forHolly.push({ deal, s, kind: 'holly-day', line: `Today: ${s.title} · ${deal.address} (${first})` })
+      if (until < 0 && !done.has(`${s.id}/holly-late`)) forHolly.push({ deal, s, kind: 'holly-late', line: `Overdue ${-until}d: ${s.title} · ${deal.address} (${first})` })
+    }
+  }
+  if (!forHolly.length) return
+  const text = `Roadmaps today:\n${forHolly.slice(0, 8).map((x) => x.line).join('\n')}${forHolly.length > 8 ? `\n+${forHolly.length - 8} more` : ''}\nMark them done on your desk when they happen.`
+  actions.push({ job: 'deal-holly', to: 'holly', text, count: forHolly.length })
+  if (dry) return
+  const r = await notifyHolly(text)
+  if (r.ok) for (const x of forHolly) await deals.markReminded(x.deal.id, x.s.id, x.kind)
 }
 
 // Highest marker level per lead id under a prefix: prefix/<id>/<n>
