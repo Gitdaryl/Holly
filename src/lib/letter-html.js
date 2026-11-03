@@ -89,8 +89,8 @@ ${terms.map(([t, m]) => `<p style="font:400 15px/1.55 ${SANS};color:${C.ink};mar
 
 <tr><td style="padding:6px 36px 10px;">
   <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-    <td valign="middle" style="padding-right:18px;"><img src="${siteUrl}/images/signature.webp" alt="Holly Griewahn" width="220" height="58" style="display:block;width:220px;height:auto;"></td>
-    <td valign="middle"><table role="presentation" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${C.line};border-radius:8px;"><tr><td style="height:58px;padding:0 12px;" valign="middle"><img src="${siteUrl}/images/foundation-logo.png" alt="${esc(brokerage?.name || 'Foundation Realty')}" width="120" height="52" style="display:block;height:52px;width:auto;"></td></tr></table></td>
+    <td valign="middle" style="padding-right:14px;"><img src="${siteUrl}/images/signature.webp" alt="Holly Griewahn" width="170" height="45" style="display:block;width:170px;max-width:100%;height:auto;"></td>
+    <td valign="middle"><table role="presentation" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${C.line};border-radius:8px;"><tr><td style="height:46px;padding:0 10px;" valign="middle"><img src="${siteUrl}/images/foundation-logo.png" alt="${esc(brokerage?.name || 'Foundation Realty')}" width="96" height="42" style="display:block;height:42px;width:auto;"></td></tr></table></td>
   </tr></table>
   <div style="font:400 15px/1.6 ${SANS};color:${C.muted};margin-top:12px;">Holly Griewahn, REALTOR&reg;${awards ? ` &middot; ${esc(awards)}` : ''}<br>Call or text <a href="tel:${esc(phone || '')}" style="color:${C.teal};font-weight:700;text-decoration:none;">${esc(prettyPhone || '')}</a></div>
 </td></tr>
