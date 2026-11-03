@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { startTour } from '../components/Tour';
 import DealsDesk from '../components/DealsDesk';
+import StationeryDesk from '../components/StationeryDesk';
 
 // /admin: Holly's one screen. Phone-first. Inbox (every lead, every source),
 // Waitlist (buyers per lake), Listings (this week's numbers + report links).
@@ -61,7 +62,7 @@ const when = (iso) => {
 // ── shells ─────────────────────────────────────────────────────────────
 
 function Shell({ children, tab, setTab, onLogout, session }) {
-  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['deals', 'Deals'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats'], ['ideas', 'Ideas']];
+  const tabs = [['inbox', 'Inbox'], ['texts', 'Texts'], ['deals', 'Deals'], ['stationery', 'Stationery'], ['waitlist', 'Waitlist'], ['listings', 'Listings'], ['letter', 'Letter'], ['stats', 'Stats'], ['ideas', 'Ideas']];
   const wide = tab === 'ideas';
   return (
     <div style={{ minHeight: '100vh', background: CREAM, fontFamily: FONT, color: NAVY }}>
@@ -898,6 +899,7 @@ export default function AdminPage() {
         {tab === 'inbox' && <Inbox session={session} />}
         {tab === 'texts' && <Texts session={session} />}
         {tab === 'deals' && <DealsDesk session={session} initialId={params.get('id')} />}
+        {tab === 'stationery' && <StationeryDesk session={session} initialDeal={params.get('deal')} />}
         {tab === 'waitlist' && <Waitlist session={session} />}
         {tab === 'listings' && <Listings session={session} />}
         {tab === 'letter' && <Letter session={session} />}

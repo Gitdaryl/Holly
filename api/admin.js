@@ -12,6 +12,8 @@ import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
 import * as letter from './lib/newsletter-send.js'
 import { issue as readIssue } from './lib/newsletter-store.js'
 import * as deals from './lib/deals.js'
+import * as letters from './lib/letters.js'
+import { sendMail, newsletterFrom } from './lib/mail.js'
 import { buildSteps, redate } from '../src/data/deal-templates.js'
 
 // Holly's admin. One function, four jobs:
@@ -26,6 +28,8 @@ import { buildSteps, redate } from '../src/data/deal-templates.js'
 //   POST ?action=letter-save {issue} | letter-test {id, to} | letter-send {id}   (see lib/newsletter-send.js)
 //   GET  ?view=deals | deal&id=        transaction roadmaps (see lib/deals.js)
 //   POST ?action=deal-save {deal} | deal-send {id} | deal-reply {id, text} | deal-extract {text|pdf}
+//   GET  ?view=stationery              email readiness, review link, recent letters (see lib/letters.js)
+//   POST ?action=stationery-email {templateId, fields, text, subject, to} | stationery-text {phone, body} | stationery-log {how}
 //
 // Reads are assembled from the same append-only blobs the intakes write, so
 // the admin never has a second copy of the truth. Lead status is append-only
@@ -50,6 +54,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST' && action === 'purge-tests') return purgeTests(req, res)
     if (req.method === 'POST' && action?.startsWith('letter-')) return letterAction(req, res, action)
     if (req.method === 'POST' && action?.startsWith('deal-')) return dealAction(req, res, action)
+    if (req.method === 'POST' && action?.startsWith('stationery-')) return stationeryAction(req, res, action)
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
@@ -63,6 +68,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ issues, subscribers, ready: letter.readiness(), testTo: process.env.HOLLY_CONTACT_EMAIL || null })
     }
     if (view === 'letter-new') return res.status(200).json(await letter.starter())
+    if (view === 'stationery') {
+      const from = newsletterFrom()
+      return res.status(200).json({ ready: Boolean(process.env.RESEND_API_KEY && from), from, reviewUrl: WRITE_REVIEW_URL, recent: await letters.recent(30) })
+    }
     if (view === 'deals') {
       const all = await deals.listDeals()
       const notes = await Promise.all(all.map((d) => (d.status === 'active' ? deals.loadNotes(d.id) : [])))
@@ -115,6 +124,41 @@ async function letterAction(req, res, action) {
       return res.status(200).json(await letter.sendTest(b.id, to))
     }
     if (action === 'letter-send') return res.status(200).json(await letter.send(b.id))
+    return res.status(400).json({ error: 'unknown action' })
+  } catch (err) {
+    return res.status(err.status || 500).json({ error: err.message })
+  }
+}
+
+// ── stationery ──────────────────────────────────────────────────────────
+
+async function stationeryAction(req, res, action) {
+  const b = req.body || {}
+  const base = { templateId: String(b.templateId || ''), dealId: /^[0-9a-f-]{36}$/.test(String(b.dealId || '')) ? b.dealId : null, clientName: String(b.clientName || '').slice(0, 80) }
+  try {
+    if (action === 'stationery-email') {
+      const to = String(b.to || '').trim()
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) return res.status(400).json({ error: 'Enter the email address to send it to.' })
+      if (!process.env.RESEND_API_KEY || !newsletterFrom()) return res.status(503).json({ error: 'Email sending is not switched on yet (no sending address). Print it to PDF and attach it, or use Copy.' })
+      const built = letters.build(b)
+      const r = await sendMail({ to, subject: built.subject, html: built.html, text: built.text, replyTo: process.env.HOLLY_CONTACT_EMAIL || undefined })
+      if (!r.ok) return res.status(502).json({ error: `Email failed: ${r.error}` })
+      const rec = await letters.log({ ...base, how: 'email', to, subject: built.subject })
+      return res.status(200).json({ ok: true, rec })
+    }
+    if (action === 'stationery-text') {
+      const body = String(b.body || '').trim().slice(0, 1000)
+      if (body.length < 5) return res.status(400).json({ error: 'The text is empty.' })
+      const r = await textLead(b.phone, body, { author: 'holly' })
+      if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
+      const rec = await letters.log({ ...base, how: 'text', to: normalizePhone(b.phone), subject: body.slice(0, 80) })
+      return res.status(200).json({ ok: true, rec })
+    }
+    if (action === 'stationery-log') {
+      const how = ['print', 'copy', 'mailto'].includes(b.how) ? b.how : 'other'
+      const rec = await letters.log({ ...base, how, to: String(b.to || '').slice(0, 120), subject: String(b.subject || '').slice(0, 160) })
+      return res.status(200).json({ ok: true, rec })
+    }
     return res.status(400).json({ error: 'unknown action' })
   } catch (err) {
     return res.status(err.status || 500).json({ error: err.message })

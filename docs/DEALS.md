@@ -12,3 +12,9 @@ What it is: one page per client under contract, every step from offer to keys, d
 Testing: `vercel env pull` for the Blob token, then `node api/...` handlers are plain functions. A dry run of reminders: `curl -H "Authorization: Bearer $ADMIN_SECRET" "https://<site>/api/cron-followup?dry=1"`.
 
 Not built yet: document uploads (contracts stay in the Dotloop/MLS link on a step), lender/title partner logins, per-step comments by the client beyond the shared question box.
+
+## Stationery (added Nov 3 2026)
+- Desk Stationery tab (src/components/StationeryDesk.jsx): 11 letters in src/data/stationery.js (offer cover, your offer explained, an offer came in, counter-offer, offer accepted, inspection results and ask, buyer's repair request, closing day details, welcome home, thinking of selling, blank letterhead). Fields prefill from a roadmap ("Pull from a roadmap", or "Write a letter" on the deal).
+- One renderer, src/lib/letter-html.js, makes the preview, the print window (Print / Save as PDF) and the email. Letterhead carries Foundation Realty at the same size as Holly's name, and the signature pairs with a logo panel of equal height (MCL 339.2512e).
+- Email from the desk needs RESEND_API_KEY plus NEWSLETTER_FROM or MAIL_FROM; until then the button becomes "Open in your email app" (plain text via mailto). Text the short version goes from the desk number. Every send/print/copy is logged under letters/<date>/.
+- Role-play test script: docs/ROLEPLAY-TEST.md.

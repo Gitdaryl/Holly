@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { WHO } from '../data/deal-templates';
 
 // The Deals tab on Holly's desk: every transaction roadmap she is running,
@@ -296,6 +297,7 @@ function Detail({ session, id, onBack }) {
           <button type="button" className="adm-btn pink" onClick={send} disabled={!deal.clientPhone}>Text {first} the link</button>
           <button type="button" className="adm-btn" onClick={copy}>Copy link</button>
           <a className="adm-btn" href={data.link} target="_blank" rel="noreferrer">See it as {first}</a>
+          <Link className="adm-btn" to={`/admin?tab=stationery&deal=${id}`}>Write a letter</Link>
           {deal.clientPhone && <a className="adm-btn" href={`tel:${digits(deal.clientPhone)}`}>Call</a>}
         </div>
         <div style={{ fontSize: '0.78rem', color: MUTED }}>{data.sent ? `Link texted ${data.sent} time${data.sent === 1 ? '' : 's'}.` : 'The client has not been sent the link yet.'} {p.done}/{p.total} steps done.</div>
