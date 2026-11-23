@@ -20,7 +20,7 @@ export const PRIVACY = {
     { h: 'Who helps us', p: 'We do not sell your information. A few service companies handle it for us, only to run these features: Vercel (website hosting and storage), Twilio (texts and calls), Resend (email), Notion (lead records), Deepgram (voicemail transcripts), Anthropic (the Heather chat assistant), and Google (maps and reviews). Foundation Realty may also receive records as Holly\'s broker, and information may be disclosed if the law requires it.' },
     { h: 'Text messaging privacy', p: 'Your mobile number and your consent to receive texts are never sold, and are not shared with third parties or affiliates for their marketing. They are shared only with the service companies that deliver our messages.' },
     { h: 'Your choices', p: 'Reply STOP to any text to end texts. To see, correct or delete what we hold about you, contact us below. We may need to keep some records that real estate rules require.' },
-    { h: 'Contact', p: 'Holly Griewahn, (517) 403-3413. Foundation Realty office, (517) 252-5523, foundationmb@foundationlenawee.com.' },
+    { h: 'Contact', p: 'Holly Griewahn, (517) 403-3413, hollygriewahn@gmail.com. Foundation Realty office, (517) 252-5523.' },
   ],
 };
 
