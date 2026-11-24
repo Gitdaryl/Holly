@@ -352,6 +352,7 @@ function normalize({ pathname, data }) {
     phone: data.phone || null,
     email: data.email || null,
     smsConsent: data.smsConsent === true,
+    smsDeclined: data.smsConsent === false && Boolean(data.smsConsentVersion),
   }
   if (root === 'waitlist') {
     return { ...base, source: data.role === 'owner' ? 'Lake owner' : 'Waitlist', about: data.lakeName || bucket,

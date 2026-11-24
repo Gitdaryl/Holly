@@ -22,6 +22,9 @@ export const SMS_FOOTER = 'Msg & data rates may apply. Reply STOP to end, HELP f
 // Returns the record stored with the lead: time, page and wording version.
 export function consentRecord(body, req) {
   const b = body || {}
+  // A form that showed the box and left it unticked sends an explicit false; record
+  // the wording version so the desk can tell "saw it, said no" from an older lead.
+  if (b.smsConsent === false) return { smsConsent: false, smsConsentVersion: String(b.consentVersion || '').slice(0, 20) || SMS_CONSENT_VERSION }
   if (b.smsConsent !== true) return { smsConsent: false }
   const page = String(b.consentPage || '').slice(0, 200) || String(req?.headers?.referer || '').slice(0, 200) || null
   return {
