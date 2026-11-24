@@ -1,6 +1,6 @@
 import { put } from '@vercel/blob'
 import { sanitizeSlug, todayISO } from './lib/engage-store.js'
-import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js'
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone, consentRecord, SMS_FOOTER } from './lib/sms.js'
 
 // Showing requests, attributed to a listing.
 // PERSIST FIRST, notify second: the lead is written to Blob before any email
@@ -27,6 +27,7 @@ export default async function handler(req, res) {
     message: message ? String(message).slice(0, 2000) : null,
     receivedAt: new Date().toISOString(),
     userAgent: req.headers['user-agent'] || null,
+    ...consentRecord(req.body, req),
   }
 
   // 1. Persist. If this fails the request fails loudly and the visitor is told
@@ -48,7 +49,7 @@ export default async function handler(req, res) {
   const first = lead.name.split(' ')[0]
   const [sms, reply, emailed] = await Promise.all([
     notifyHolly(`${lead.name} wants to see ${lead.listing || lead.slug}${lead.preferred ? `, ${lead.preferred.toLowerCase()}` : ''}.${lead.message ? `\n"${lead.message.slice(0, 180)}"` : ''}\nCall: ${prettyPhone(lead.phone)}`),
-    textLead(lead.phone, `Hi ${first}, this is Holly Griewahn with Foundation Realty. Got your request to see ${lead.listing || 'the listing'}. I'll call you shortly to set it up. Anything urgent, text me here or call ${HOLLY_PRETTY}.`),
+    textLead(lead.phone, `Hi ${first}, this is Holly Griewahn with Foundation Realty. Got your request to see ${lead.listing || 'the listing'}. I'll call you shortly to set it up. Anything urgent, text me here or call ${HOLLY_PRETTY}. ${SMS_FOOTER}`, { consent: lead.smsConsent }),
     emailHolly(lead).catch((err) => { console.error('Lead email failed (lead IS saved):', err); return false }),
   ])
 

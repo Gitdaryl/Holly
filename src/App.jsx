@@ -10,6 +10,8 @@ import BrokerSignature from './components/BrokerSignature';
 import { AWARDS, awardText } from './data/profiles';
 import HeroVideo from './components/HeroVideo';
 import SiteNav from './components/SiteNav';
+import TextConsent from './components/TextConsent';
+import { consentFields } from './lib/sms-consent';
 
 // ═══════════════════════════════════════════════════════════
 // ICONS LIBRARY
@@ -141,6 +143,7 @@ function RegionMap({ region }) {
 // Posts to /api/contact with the region so Holly knows what they were looking at.
 function ContactModal({ region, onClose }) {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+  const [smsConsent, setSmsConsent] = useState(false);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -158,7 +161,7 @@ function ContactModal({ region, onClose }) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, region }),
+        body: JSON.stringify({ ...form, region, ...consentFields(smsConsent) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
@@ -200,7 +203,7 @@ function ContactModal({ region, onClose }) {
             {status === 'error' && (
               <div style={{ marginBottom: '0.9rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626', fontSize: '0.85rem' }}>{error}</div>
             )}
-<p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+<TextConsent checked={smsConsent} onChange={setSmsConsent} />
             <button type="submit" disabled={status === 'sending'} style={{ width: '100%', padding: '0.85rem', background: '#e64774', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Sending...' : 'Send to Holly'}
             </button>
@@ -222,6 +225,7 @@ export default function IrishHillsRealty() {
   const [highlightedLake, setHighlightedLake] = useState(null);
   const [contactRegion, setContactRegion] = useState(null); // non-null opens the Email Holly lightbox
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+  const [smsConsent, setSmsConsent] = useState(false);
   const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
   const [formError, setFormError] = useState('');
   const [homeArticles, setHomeArticles] = useState([]);
@@ -286,13 +290,14 @@ export default function IrishHillsRealty() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, ...consentFields(smsConsent) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
       track('contact');
       setFormStatus('success');
       setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+      setSmsConsent(false);
     } catch (err) {
       setFormStatus('error');
       setFormError(err.message);
@@ -881,7 +886,7 @@ export default function IrishHillsRealty() {
                     {formError}
                   </div>
                 )}
-<p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+<TextConsent checked={smsConsent} onChange={setSmsConsent} />
                 <button type="submit" disabled={formStatus === 'sending'}
                   style={{ width: '100%', padding: '0.85rem', background: formStatus === 'sending' ? '#66706e' : '#e64774', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: formStatus === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   {formStatus === 'sending' ? (
@@ -1028,7 +1033,7 @@ export default function IrishHillsRealty() {
           </div>
         </div>
         <div style={{ paddingTop: '2rem', borderTop: '1px solid rgba(230,71,116,0.2)', textAlign: 'center', fontSize: '0.9rem' }}>
-          <p>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan</p>
+          <p>&copy; 2026 Holly Griewahn | Foundation Realty | Manitou Beach, Michigan | <a href="/privacy" style={{ color: 'inherit' }}>Privacy</a> | <a href="/terms" style={{ color: 'inherit' }}>Terms</a></p>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>All listings and information deemed reliable but not guaranteed.</p>
         </div>
       </footer>

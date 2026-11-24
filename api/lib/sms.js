@@ -11,6 +11,27 @@
 //      HOLLY_SMS_PHONE (her cell, any US format). Unset HOLLY_SMS_PHONE means
 //      Holly is not texted; leads still get their auto-reply if Twilio is set.
 
+import { SMS_CONSENT_VERSION } from '../../src/lib/sms-consent.js'
+
+// Compliance footer carried by the first automatic text to a new lead, matching
+// the sample messages filed with the carrier campaign.
+export const SMS_FOOTER = 'Msg & data rates may apply. Reply STOP to end, HELP for help.'
+
+// The consent a form sends is a plain boolean from the visitor's checkbox.
+// Only a literal true counts; anything else (missing, "true", 1) is no consent.
+// Returns the record stored with the lead: time, page and wording version.
+export function consentRecord(body, req) {
+  const b = body || {}
+  if (b.smsConsent !== true) return { smsConsent: false }
+  const page = String(b.consentPage || '').slice(0, 200) || String(req?.headers?.referer || '').slice(0, 200) || null
+  return {
+    smsConsent: true,
+    smsConsentAt: new Date().toISOString(),
+    smsConsentPage: page,
+    smsConsentVersion: String(b.consentVersion || '').slice(0, 20) || SMS_CONSENT_VERSION,
+  }
+}
+
 export function normalizePhone(raw) {
   return String(raw || '').replace(/\D/g, '').slice(-10)
 }
@@ -63,7 +84,13 @@ export async function notifyHolly(text) {
 // Leads opted in by typing their number into a form asking Holly to contact
 // them; one confirmation text is the expected response, not marketing.
 // Every outbound lead text is also stored so the Texts tab shows both sides.
-export async function textLead(phone, text, { author = 'auto' } = {}) {
+//
+// Automatic texts (author 'auto') fail closed: they go out only when the caller
+// passes consent === true. A form lead passes the box they ticked; a client on
+// a transaction roadmap passes true because they agreed with Holly directly.
+// Texts Holly sends by hand (author 'holly') are her own conversation.
+export async function textLead(phone, text, { author = 'auto', consent = false } = {}) {
+  if (author === 'auto' && consent !== true) return { ok: false, error: 'no text consent' }
   const to = toE164(phone)
   if (!to) return { ok: false, error: 'lead has no usable phone' }
   const r = await send(to, text)

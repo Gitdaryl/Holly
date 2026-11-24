@@ -1,3 +1,5 @@
+import TextConsent from '../components/TextConsent.jsx';
+import { consentFields } from '../lib/sms-consent.js';
 import { track } from '../lib/track';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -64,6 +66,7 @@ const EXTRAS = [
 
 export default function CMAPage() {
   const [form, setForm] = useState(EMPTY);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [step, setStep] = useState(1); // 1 = property, 2 = contact
   const [status, setStatus] = useState('idle'); // idle | sending | sent | error
 
@@ -90,7 +93,7 @@ export default function CMAPage() {
       const res = await fetch('/api/cma', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, ...consentFields(smsConsent) }),
       });
       if (!res.ok) throw new Error('Failed');
       track('cma');
@@ -379,7 +382,7 @@ export default function CMAPage() {
                   Holly will review your details and provide a personalized CMA within 24 hours. No obligation, no pressure - just honest market insight from a local expert.
                 </div>
 
-                <p style={{ fontSize: '0.9rem', color: '#98a3a1', lineHeight: 1.4, marginBottom: '0.6rem' }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                <TextConsent checked={smsConsent} onChange={setSmsConsent} />
                 <button
                   onClick={submit}
                   disabled={!step2Valid || status === 'sending'}

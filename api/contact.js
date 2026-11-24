@@ -3,7 +3,7 @@
 // Sends email to Holly via Resend
 
 import { saveLeadToNotion, persistLead } from './lib/leads.js';
-import { notifyHolly, prettyPhone } from './lib/sms.js';
+import { notifyHolly, prettyPhone, consentRecord } from './lib/sms.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
   // Persist before notify: Blob first (always available), then Notion.
-  const blobPath = await persistLead('contact', { name: fullName, email, phone, message, region });
+  const blobPath = await persistLead('contact', { name: fullName, email, phone, message, region, ...consentRecord(req.body, req) });
   let savedToNotion = false;
   try {
     await saveLeadToNotion({ name: fullName, email, phone, interest: message, region, source: 'Contact Form' });

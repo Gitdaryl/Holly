@@ -2,7 +2,7 @@
 // Receives seller inquiry, emails Holly with all details via Resend
 // Also saves to Notion Holly Leads DB as "CMA Request" source
 
-import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone } from './lib/sms.js';
+import { notifyHolly, textLead, HOLLY_PRETTY, prettyPhone, consentRecord, SMS_FOOTER } from './lib/sms.js';
 import { persistLead } from './lib/leads.js';
 
 export default async function handler(req, res) {
@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Address and name are required' });
   }
 
-  const blobPath = await persistLead('cma', { address, region, type, beds, baths, sqft, yearBuilt, condition, timeline, extras, name, email, phone, notes });
+  const consent = consentRecord(req.body, req);
+  const blobPath = await persistLead('cma', { address, region, type, beds, baths, sqft, yearBuilt, condition, timeline, extras, name, email, phone, notes, ...consent });
 
   const results = await Promise.allSettled([
     emailViaResend({ address, region, type, beds, baths, sqft, yearBuilt, condition, timeline, extras, name, email, phone, notes }),
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
   const first = String(name).split(' ')[0];
   const [sms, reply] = await Promise.all([
     notifyHolly(`Seller lead: ${name} wants a value on ${address}${timeline ? `, ${(TIMELINE_LABELS[timeline] || timeline).toLowerCase()}` : ''}.${phone ? ` Call: ${prettyPhone(phone)}` : email ? ` Email: ${email}` : ''}`),
-    phone ? textLead(phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). Got your request for a value on ${address}. I'll pull the recent lake sales and reach out shortly. Questions in the meantime? Text me here or call ${HOLLY_PRETTY}.`) : Promise.resolve({ ok: false }),
+    phone && consent.smsConsent ? textLead(phone, `Hi ${first}, Holly Griewahn here (Foundation Realty). Got your request for a value on ${address}. I'll pull the recent lake sales and reach out shortly. Questions in the meantime? Text me here or call ${HOLLY_PRETTY}. ${SMS_FOOTER}`, { consent: true }) : Promise.resolve({ ok: false }),
   ]);
 
   return res.status(200).json({ success: true, sms: sms.ok, autoReply: reply.ok });

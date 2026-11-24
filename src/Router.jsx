@@ -17,6 +17,7 @@ import PlanPage from './pages/PlanPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import MarketPage from './pages/MarketPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
+import LegalPage from './pages/LegalPage.jsx';
 import SellPage from './pages/SellPage.jsx';
 import EventsPage from './pages/EventsPage.jsx';
 import HollyYetiPage from './pages/HollyYetiPage.jsx';
@@ -99,6 +100,8 @@ export default function Router() {
         <Route path="/plan/:lake/:address" element={<PlanPage />} />
         <Route path="/deal/:id" element={<DealPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<LegalPage kind="privacy" />} />
+        <Route path="/terms" element={<LegalPage kind="terms" />} />
         <Route path="/sell" element={<SellPage />} />
         <Route path="/why-holly" element={<WhyHollyPage />} />
         <Route path="/events" element={<EventsPage />} />

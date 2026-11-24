@@ -1,3 +1,5 @@
+import TextConsent from './TextConsent.jsx';
+import { consentFields } from '../lib/sms-consent.js';
 import React, { useState, useEffect } from 'react';
 import { track } from '../lib/track';
 
@@ -28,6 +30,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
   const owner = role === 'owner';
   const [count, setCount] = useWaitlistCount(lake);
   const [form, setForm] = useState({ name: '', phone: '', email: '', budget: '', timing: '', notes: '' });
+  const [smsConsent, setSmsConsent] = useState(false);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -38,7 +41,7 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
     setStatus('sending'); setError('');
     try {
       const r = await fetch(`/api/waitlist?lake=${encodeURIComponent(lake)}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, role }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, role, ...consentFields(smsConsent) }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || 'Send failed');
@@ -138,12 +141,13 @@ export default function LakeWaitlist({ lake, lakeName, compact = false, role = '
               </div>
             </>
           )}
+          <div style={{ gridColumn: '1 / -1' }}><TextConsent dark checked={smsConsent} onChange={setSmsConsent} style={{ margin: 0 }} /></div>
           {error && <p style={{ gridColumn: '1 / -1', color: '#fca5a5', fontSize: '0.9rem' }}>{error}</p>}
           <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button type="submit" disabled={status === 'sending'} style={{ background: '#e64774', color: 'white', border: 'none', padding: '0.85rem 1.5rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: status === 'sending' ? 0.7 : 1 }}>
               {status === 'sending' ? 'Adding you...' : owner ? `Keep me posted on ${lakeName}` : `Put me on the ${lakeName} list`}
             </button>
-            <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</span>
+            
           </div>
         </form>
       )}

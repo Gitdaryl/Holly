@@ -2,7 +2,7 @@
 // Accepts: { name, email, phone, interest, region, sessionId }
 // Saves to Notion Holly Leads DB + emails via Resend as fallback
 import { saveLeadToNotion, persistLead } from './lib/leads.js';
-import { notifyHolly, prettyPhone } from './lib/sms.js';
+import { notifyHolly, prettyPhone, consentRecord } from './lib/sms.js';
 
 
 export default async function handler(req, res) {
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name or email required' });
   }
 
-  const blobPath = await persistLead('chat', { name, email, phone, interest, region, sessionId });
+  const blobPath = await persistLead('chat', { name, email, phone, interest, region, sessionId, ...consentRecord(req.body, req) });
 
   const results = await Promise.allSettled([
     saveLeadToNotion({ name, email, phone, interest, region, sessionId, source: 'AI Chat Widget' }),

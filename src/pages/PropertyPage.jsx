@@ -1,3 +1,5 @@
+import TextConsent from '../components/TextConsent.jsx';
+import { consentFields } from '../lib/sms-consent.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { regions } from '../data/regions';
@@ -90,6 +92,7 @@ export default function PropertyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '', preferredTime: '' });
+  const [smsConsent, setSmsConsent] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   const [formError, setFormError] = useState('');
   const [lightboxIndex, setLightboxIndex] = useState(null);
@@ -133,6 +136,7 @@ export default function PropertyPage() {
           preferred: formData.preferredTime,
           message: formData.message,
           title: `${property.title} (${property.price})`,
+          ...consentFields(smsConsent),
         }),
       });
       const data = await res.json();
@@ -441,7 +445,7 @@ export default function PropertyPage() {
                     <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#66706e', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.35rem' }}>Message</label>
                     <textarea value={formData.message} onChange={e => setFormData(d => ({ ...d, message: e.target.value }))} rows={3} placeholder="Questions, financing situation, timeline..." style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: '8px', border: '1px solid #eeddd8', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }} />
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: '#98a3a1', lineHeight: 1.4 }}>By submitting you agree to receive texts and calls from Holly Griewahn, Foundation Realty, at the number provided. Message and data rates may apply. Reply STOP to end.</p>
+                  <TextConsent checked={smsConsent} onChange={setSmsConsent} />
                   {formError && <p style={{ color: '#ef4444', fontSize: '0.82rem' }}>{formError}</p>}
                   <button type="submit" disabled={formStatus === 'sending'} style={{ background: '#e64774', color: 'white', border: 'none', padding: '0.85rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit', opacity: formStatus === 'sending' ? 0.7 : 1, transition: 'opacity 0.2s' }}>
                     {formStatus === 'sending' ? 'Sending...' : 'Request Showing'}

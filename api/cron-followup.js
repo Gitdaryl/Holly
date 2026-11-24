@@ -65,7 +65,8 @@ export default async function handler(req, res) {
   }
 
   // 2. Waitlist check-ins (day 3, day 14)
-  for (const l of items.filter((l) => l.source === 'Waitlist' && l.phone && open(l))) {
+  // Automatic texts go only to people who ticked the texting box (l.smsConsent).
+  for (const l of items.filter((l) => l.source === 'Waitlist' && l.phone && l.smsConsent && open(l))) {
     if (replied.has(normalizePhone(l.phone))) continue
     const days = age(l) / DAY
     const step = days >= 14 ? 2 : days >= 3 ? 1 : 0
@@ -77,13 +78,13 @@ export default async function handler(req, res) {
       : `Hi ${first}, quick check-in from Holly. Still looking on ${lake}? Happy to set up a time to talk through what's coming up. Call or text me at ${HOLLY_PRETTY}.`
     actions.push({ job: 'checkin', step, to: l.phone, name: l.name, text })
     if (!dry) {
-      const r = await textLead(l.phone, text, { author: 'auto' })
+      const r = await textLead(l.phone, text, { author: 'auto', consent: l.smsConsent })
       if (r.ok) await mark('admin/checkin/', l.id, step)
     }
   }
 
   // 3. Seller nurture (30/60/90)
-  for (const l of items.filter((l) => l.source === 'Home value' && l.phone && open(l))) {
+  for (const l of items.filter((l) => l.source === 'Home value' && l.phone && l.smsConsent && open(l))) {
     if (replied.has(normalizePhone(l.phone))) continue
     const days = age(l) / DAY
     const step = days >= 90 ? 3 : days >= 60 ? 2 : days >= 30 ? 1 : 0
@@ -97,7 +98,7 @@ export default async function handler(req, res) {
         : `Hi ${first}, last check-in from Holly on${addr || ' your home'}. Whenever you're ready, I'm at ${HOLLY_PRETTY}. Thanks for thinking of me.`
     actions.push({ job: 'nurture', step, to: l.phone, name: l.name, text })
     if (!dry) {
-      const r = await textLead(l.phone, text, { author: 'auto' })
+      const r = await textLead(l.phone, text, { author: 'auto', consent: l.smsConsent })
       if (r.ok) await mark('admin/nurture/', l.id, step)
     }
   }
@@ -115,6 +116,8 @@ export default async function handler(req, res) {
 
 const fmtDay = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })
 
+// Deal clients agreed to roadmap reminders directly with Holly (in person or by
+// phone) before she added their number, so these pass consent: true.
 async function dealReminders(actions, dry) {
   const today = deals.todayET()
   const active = (await deals.listDeals()).filter((d) => d.status === 'active')
@@ -128,19 +131,19 @@ async function dealReminders(actions, dry) {
       const until = daysBetween(today, s.date)
       // Client: heads-up 2 days out (1 day if the hourly run missed it), and the morning of their own steps.
       if (deal.clientPhone && until >= 1 && until <= 2 && !done.has(`${s.id}/client-pre`)) {
-        const text = `Hi ${first}, Holly here. Coming up ${until === 1 ? 'tomorrow' : fmtDay(s.date)}: ${s.title}${s.who === 'you' && s.action ? `. ${s.action}` : ''}\nYour roadmap: ${link}`
+        const text = `Hi ${first}, Holly here. Coming up ${until === 1 ? 'tomorrow' : fmtDay(s.date)}: ${s.title}${s.who === 'you' && s.action ? `. ${s.action}` : ''}\nYour roadmap: ${link} Reply STOP to end these texts.`
         actions.push({ job: 'deal-client', to: deal.clientPhone, step: s.id, text })
         if (!dry) {
-          const r = await textLead(deal.clientPhone, text, { author: 'auto' })
+          const r = await textLead(deal.clientPhone, text, { author: 'auto', consent: true })
           if (r.ok) await deals.markReminded(deal.id, s.id, 'client-pre')
           else if (!done.has(`${s.id}/client-fail`)) forHolly.push({ deal, s, kind: 'client-fail', line: `Text did not go through to ${first} about ${s.title}. Please call.` })
         }
       }
       if (deal.clientPhone && until === 0 && s.who === 'you' && !done.has(`${s.id}/client-day`)) {
-        const text = `Hi ${first}, today on your roadmap: ${s.title}.${s.action ? ` ${s.action}` : ''} Questions? Text me here. ${link}`
+        const text = `Hi ${first}, today on your roadmap: ${s.title}.${s.action ? ` ${s.action}` : ''} Questions? Text me here. ${link} Reply STOP to end these texts.`
         actions.push({ job: 'deal-client', to: deal.clientPhone, step: s.id, text })
         if (!dry) {
-          const r = await textLead(deal.clientPhone, text, { author: 'auto' })
+          const r = await textLead(deal.clientPhone, text, { author: 'auto', consent: true })
           if (r.ok) await deals.markReminded(deal.id, s.id, 'client-day')
           else if (!done.has(`${s.id}/client-fail`)) forHolly.push({ deal, s, kind: 'client-fail', line: `Text did not go through to ${first} about ${s.title}. Please call.` })
         }

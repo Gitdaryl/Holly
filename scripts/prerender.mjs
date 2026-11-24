@@ -19,6 +19,7 @@ import { regions } from '../src/data/regions.js'
 import { propertiesData } from '../src/data/amenities.js'
 import { isSold, isActive, soldStats, soldBadge, trackRecord, fmtPrice } from '../src/lib/listing-stats.js'
 import { marketFor, marketIndex } from '../src/lib/market.js'
+import { LEGAL, LEGAL_UPDATED } from '../src/data/legal.js'
 import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs, AWARDS } from '../src/data/profiles.js'
 import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
 import { fetchVideos } from '../api/lib/youtube-feed.js'
@@ -801,6 +802,20 @@ if (articles.length) {
     }))
     llms.push(`- [${a.title}](${SITE}/blog/${a.slug}): ${a.excerpt || ''}`)
   }
+}
+
+// Privacy and Terms: raw HTML so a carrier's campaign reviewer, a crawler and
+// a visitor without JavaScript all read the same policy text React renders.
+for (const kind of ['privacy', 'terms']) {
+  const doc = LEGAL[kind]
+  const inner = doc.blocks.map(([type, c]) => (type === 'h' ? `<h2>${esc(c)}</h2>` : type === 'ul' ? `<ul>${c.map((li) => `<li>${esc(li)}</li>`).join('')}</ul>` : `<p>${esc(c)}</p>`)).join('\n')
+  const other = kind === 'privacy' ? ['/terms', 'Terms of Use and Text Message Terms'] : ['/privacy', 'Privacy Policy']
+  routes.push(write(`/${kind}`, {
+    title: `${doc.title} | Holly Griewahn, Foundation Realty`,
+    description: doc.description,
+    jsonld: [breadcrumbs([['Irish Hills', '/'], [doc.title, `/${kind}`]])],
+    body: WRAP(`<h1>${esc(doc.title)}</h1>\n${inner}\n<p>Last updated ${esc(LEGAL_UPDATED)}</p>\n<p><a href="${other[0]}">${esc(other[1])}</a></p>`),
+  }))
 }
 
 // Private surfaces: explicit noindex so a bot that ignores robots.txt still gets the hint.

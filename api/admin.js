@@ -351,6 +351,7 @@ function normalize({ pathname, data }) {
     name: data.name || 'Unknown',
     phone: data.phone || null,
     email: data.email || null,
+    smsConsent: data.smsConsent === true,
   }
   if (root === 'waitlist') {
     return { ...base, source: data.role === 'owner' ? 'Lake owner' : 'Waitlist', about: data.lakeName || bucket,
@@ -395,7 +396,7 @@ async function askReview(req, res) {
   if (!/^[0-9a-f-]{36}$/.test(String(id || ''))) return res.status(400).json({ error: 'bad id' })
   if (!phone) return res.status(400).json({ error: 'This lead has no phone number.' })
   const first = String(name || '').trim().split(' ')[0] || 'there'
-  const r = await textLead(phone, `Hi ${first}, it's Holly Griewahn. Thank you for trusting me with your sale. If you have two minutes, a Google review helps the next family find me: ${WRITE_REVIEW_URL}  Thank you! ${HOLLY_PRETTY}`)
+  const r = await textLead(phone, `Hi ${first}, it's Holly Griewahn. Thank you for trusting me with your sale. If you have two minutes, a Google review helps the next family find me: ${WRITE_REVIEW_URL}  Thank you! ${HOLLY_PRETTY}`, { author: 'holly' })
   if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
   await put(`admin/review-asked/${id}/${Date.now()}`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
   return res.status(200).json({ ok: true })
