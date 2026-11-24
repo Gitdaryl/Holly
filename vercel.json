@@ -1,8 +1,30 @@
 {
+  "redirects": [
+    {
+      "source": "/((?!api/|admin|desk|help/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "hollygriewahn.vercel.app"
+        }
+      ],
+      "destination": "https://hollygriewahnrealtor.com/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/review/tap", "destination": "/api/review-tap?v=tap" },
-    { "source": "/review/qr", "destination": "/api/review-tap?v=qr" },
-    { "source": "/review", "destination": "/api/review-tap?v=link" },
+    {
+      "source": "/review/tap",
+      "destination": "/api/review-tap?v=tap"
+    },
+    {
+      "source": "/review/qr",
+      "destination": "/api/review-tap?v=qr"
+    },
+    {
+      "source": "/review",
+      "destination": "/api/review-tap?v=link"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
