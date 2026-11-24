@@ -14,7 +14,7 @@ export const LEGAL = {
     title: 'Privacy Policy',
     description: 'What Holly Griewahn, Foundation Realty, collects through this site, why, and who helps handle it, including how text messaging is used.',
     blocks: [
-      ['p', 'This site belongs to Holly Griewahn, a REALTOR with Foundation Realty, 100 Walnut St, Manitou Beach, MI 49253. This page says what we collect, why, and who helps us handle it.'],
+      ['p', 'This site is operated by Holly Griewahn Realty LLC, for Holly Griewahn, a REALTOR with Foundation Realty, 100 Walnut St, Manitou Beach, MI 49253. This page says what we collect, why, and who helps us handle it.'],
       ['h', 'What we collect'],
       ['ul', [
         'What you type into a form or the chat: your name, phone, email, the home or lake you are asking about, your budget, timing and notes.',
@@ -42,7 +42,7 @@ export const LEGAL = {
     title: 'Terms of Use and Text Message Terms',
     description: 'Terms for using the Holly Griewahn site, including what text messages you will get, how often, and how to stop them.',
     blocks: [
-      ['p', 'By using this site you agree to these terms. Please also read the Privacy Policy.'],
+      ['p', 'This site is operated by Holly Griewahn Realty LLC, for Holly Griewahn, a REALTOR with Foundation Realty. By using this site you agree to these terms. Please also read the Privacy Policy.'],
       ['h', 'Text messages from Holly Griewahn'],
       ['ul', [
         'What you will get: replies to your request, showing details, updates on the lake or home you asked about, and, for clients, reminders about your transaction.',
