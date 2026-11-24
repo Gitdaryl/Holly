@@ -4,7 +4,7 @@ import { lakes } from '../../src/data/lakes.js'
 import { listAll, countInWindow, dailySeries, windowDays, todayISO } from './engage-store.js'
 import { verify as verifyAdminToken } from './admin-auth.js'
 
-export const SITE = process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app'
+export const SITE = process.env.PUBLIC_SITE_URL || 'https://hollygriewahnrealtor.com'
 
 // Exported so the newsletter uses these exact values instead of defining a
 // third palette. One place the brand colours live for email.

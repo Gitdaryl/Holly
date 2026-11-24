@@ -22,7 +22,7 @@ import { sendMail, newsletterFrom } from './lib/mail.js'
 // complains. It costs perhaps a quarter of signups, and those are the quarter
 // who would have reported it.
 
-const SITE = () => (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
+const SITE = () => (process.env.PUBLIC_SITE_URL || 'https://hollygriewahnrealtor.com').replace(/\/$/, '')
 const confirmUrl = (t) => `${SITE()}/api/newsletter?action=confirm&t=${encodeURIComponent(t)}`
 const unsubUrl = (t) => `${SITE()}/api/newsletter?action=unsubscribe&t=${encodeURIComponent(t)}`
 

@@ -24,7 +24,7 @@ import { buildSameAs, BROKERAGE, PHONE, SHOW, showSameAs, AWARDS } from '../src/
 import { fetchEvents, EVENT_PAGE } from '../api/lib/events-feed.js'
 import { fetchVideos } from '../api/lib/youtube-feed.js'
 
-const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
+const SITE = (process.env.PUBLIC_SITE_URL || 'https://hollygriewahnrealtor.com').replace(/\/$/, '')
 
 // Where the BUILD reads live data from. Normally the same as SITE, but on the
 // first build after PUBLIC_SITE_URL flips to the real domain, that domain may

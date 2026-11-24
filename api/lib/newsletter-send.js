@@ -35,7 +35,7 @@ import { newsletterFrom, sendMail, sendMailBatch } from './mail.js'
 // Subscribers are read at SEND time, never from a snapshot: someone who
 // unsubscribed five minutes ago must not get it.
 
-export const siteUrl = () => (process.env.PUBLIC_SITE_URL || 'https://hollygriewahn.vercel.app').replace(/\/$/, '')
+export const siteUrl = () => (process.env.PUBLIC_SITE_URL || 'https://hollygriewahnrealtor.com').replace(/\/$/, '')
 const unsubUrl = (hash) => `${siteUrl()}/api/newsletter?action=unsubscribe&t=${encodeURIComponent(mintUnsub(hash))}`
 const BATCH = 100 // Resend's batch maximum
 const BUDGET_MS = 20000 // stop starting new batches after this; the function limit is 30s

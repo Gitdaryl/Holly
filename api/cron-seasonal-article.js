@@ -18,7 +18,7 @@ import { triggerRebuild } from './lib/deploy-hook.js'
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 // Same source of truth as every other absolute URL on the site, so the domain
 // move is one environment variable and not a hunt.
-const SITE_URL = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://hollygriewahn.vercel.app';
+const SITE_URL = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://hollygriewahnrealtor.com';
 const EVENTS_URL = 'https://manitoubeachmichigan.com/api/events';
 const EVENTS_PAGE = 'https://manitoubeachmichigan.com/events';
 const EVENT_WINDOW_DAYS = 45;
