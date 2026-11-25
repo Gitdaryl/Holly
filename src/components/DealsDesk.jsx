@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { WHO } from '../data/deal-templates';
 import HelpVideo from './HelpVideo';
+import { DEAL_CONSENT_TEXT } from '../lib/sms-consent';
 
 // The Deals tab on Holly's desk: every transaction roadmap she is running,
 // a two-minute form to start one (or read the purchase agreement for the
@@ -21,6 +22,8 @@ const fmt = (iso) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-
 const todayISO = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Detroit' });
 const digits = (p) => String(p || '').replace(/\D/g, '');
 const uid = () => `step-${Math.random().toString(36).slice(2, 8)}`;
+const PREFS = [['', 'Not asked yet'], ['text', 'Text'], ['email', 'Email'], ['both', 'Both']];
+const when = (iso) => (iso ? new Date(iso).toLocaleString('en-US', { timeZone: 'America/Detroit', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '');
 
 const inputStyle = { width: '100%', font: 'inherit', fontSize: '0.9rem', padding: '0.55rem 0.7rem', border: `1px solid ${LINE}`, borderRadius: '9px', color: INK, background: 'white' };
 function Field({ label, children, hint }) {
@@ -91,6 +94,7 @@ function List({ session, onOpen, onNew }) {
                 <div style={{ fontSize: '0.78rem', color: MUTED }}>{d.clientName} · {d.side === 'seller' ? 'selling' : 'buying'}{d.status !== 'active' ? ` · ${d.status}` : d.daysToClose != null ? ` · closes ${fmt(d.closingOn)} (${d.daysToClose < 0 ? `${-d.daysToClose}d ago` : d.daysToClose === 0 ? 'today' : `in ${d.daysToClose}d`})` : ''}</div>
               </div>
               <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0 }}>
+                {d.status === 'active' && d.clientPhone && d.consent !== 'yes' && d.contactPref !== 'email' && <span title="No texts go out until they reply YES" style={{ fontSize: '0.65rem', fontWeight: 800, background: '#e0ecfa', color: '#1d4e89', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>{d.consent === 'asked' ? 'WAITING ON YES' : 'NOT ASKED TO TEXT'}</span>}
                 {d.unanswered && <span title="Unanswered question" style={{ fontSize: '0.65rem', fontWeight: 800, background: PINK, color: 'white', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>QUESTION</span>}
                 {d.overdue > 0 && <span style={{ fontSize: '0.65rem', fontWeight: 800, background: '#fef3c7', color: '#b45309', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>{d.overdue} PAST DUE</span>}
               </div>
@@ -106,7 +110,7 @@ function List({ session, onOpen, onNew }) {
 
 // ── new ────────────────────────────────────────────────────────────────
 
-const EMPTY = { side: 'buyer', financing: 'financed', lakeHome: true, address: '', city: '', clientName: '', clientPhone: '', clientEmail: '', price: '', acceptedOn: todayISO(), closingOn: '', lender: '', titleCompany: '' };
+const EMPTY = { side: 'buyer', financing: 'financed', lakeHome: true, address: '', city: '', clientName: '', clientPhone: '', clientEmail: '', contactPref: '', price: '', acceptedOn: todayISO(), closingOn: '', lender: '', titleCompany: '' };
 
 function NewDeal({ session, onCreated, onCancel }) {
   const [f, setF] = useState(EMPTY);
@@ -191,9 +195,10 @@ function NewDeal({ session, onCreated, onCancel }) {
         </div>
         <Field label="Client's name"><input style={inputStyle} value={f.clientName} onChange={set('clientName')} placeholder="Client's full name, or both names" required /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <Field label="Client's cell" hint="Ask them first. The roadmap link and reminders go here."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="Their cell number" /></Field>
+          <Field label="Client's cell" hint="Ask them first. Nothing is texted until they reply YES to your consent text, which you send from the roadmap page."><input style={inputStyle} inputMode="tel" value={f.clientPhone} onChange={set('clientPhone')} placeholder="Their cell number" /></Field>
           <Field label="Client's email"><input style={inputStyle} inputMode="email" value={f.clientEmail} onChange={set('clientEmail')} /></Field>
         </div>
+        <Field label="How do they like to hear from you?" hint="Ask at your first meeting. Texting needs their YES; email is just a note for now."><Seg value={f.contactPref} onChange={set('contactPref')} options={PREFS} /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
           <Field label="Offer accepted"><input style={inputStyle} type="date" value={f.acceptedOn} onChange={set('acceptedOn')} required /></Field>
           <Field label="Closing date" hint={f.closingOn ? '' : `Blank = ${f.financing === 'cash' ? 30 : 45} days out; change it any time.`}><input style={inputStyle} type="date" value={f.closingOn} onChange={set('closingOn')} /></Field>
@@ -282,6 +287,13 @@ function Detail({ session, id, onBack }) {
     if (!window.confirm(`Text the roadmap link to ${deal.clientName} at ${deal.clientPhone}?`)) return;
     try { await api('/api/admin?action=deal-send', { method: 'POST', session, body: { id } }); flash('Texted.'); load(); } catch (e) { setError(e.message); }
   };
+  const consent = async (action, okMsg) => {
+    if (dirty) { setError('Save your changes first.'); return; }
+    setError('');
+    try { const r = await api(`/api/admin?action=${action}`, { method: 'POST', session, body: { id } }); setData({ ...data, deal: r.deal }); setDeal(r.deal); flash(okMsg); }
+    catch (e) { setError(e.message); }
+  };
+  const askConsent = () => { if (window.confirm(`Text ${deal.clientName} at ${deal.clientPhone} asking permission to text them? This is the one message that goes before they say YES.`)) consent('deal-consent-request', 'Consent text sent.'); };
   const copy = async () => { try { await navigator.clipboard.writeText(data.link); flash('Link copied.'); } catch { flash(data.link); } };
   const answer = async (e) => {
     e.preventDefault();
@@ -289,6 +301,9 @@ function Detail({ session, id, onBack }) {
     catch (err) { setError(err.message); }
   };
   const first = deal.clientName.split(' ')[0];
+  const digitsNow = digits(deal.clientPhone).slice(-10);
+  const tc = deal.textConsent && deal.textConsent.phone === digitsNow ? deal.textConsent : null;
+  const cstate = tc?.yesAt ? 'yes' : tc?.requestedAt ? 'asked' : 'none';
   const p = { done: deal.steps.filter((s) => s.done).length, total: deal.steps.length };
 
   return (
@@ -303,13 +318,30 @@ function Detail({ session, id, onBack }) {
 
       <div className="adm-card" style={{ display: 'grid', gap: '0.7rem' }}>
         <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>
-          <button type="button" className="adm-btn pink" onClick={send} disabled={!deal.clientPhone}>Text {first} the link</button>
+          <button type="button" className={cstate === 'yes' ? 'adm-btn pink' : 'adm-btn'} style={cstate === 'yes' && deal.clientPhone ? undefined : { opacity: 0.45, cursor: 'not-allowed' }} onClick={send} disabled={!deal.clientPhone || cstate !== 'yes'} title={cstate !== 'yes' ? 'Available after they reply YES to the consent text' : ''}>Text {first} the link{cstate !== 'yes' ? ' (after YES)' : ''}</button>
           <button type="button" className="adm-btn" onClick={copy}>Copy link</button>
           <a className="adm-btn" href={data.link} target="_blank" rel="noreferrer">See it as {first}</a>
           <Link className="adm-btn" to={`/admin?tab=stationery&deal=${id}`}>Write a letter</Link>
           {deal.clientPhone && <a className="adm-btn" href={`tel:${digits(deal.clientPhone)}`}>Call</a>}
         </div>
         <div style={{ fontSize: '0.78rem', color: MUTED }}>{data.sent ? `Link texted ${data.sent} time${data.sent === 1 ? '' : 's'}.` : 'The client has not been sent the link yet.'} {p.done}/{p.total} steps done.</div>
+        <div style={{ border: `1px solid ${LINE}`, borderRadius: '10px', padding: '0.75rem 0.85rem', display: 'grid', gap: '0.5rem', background: cstate === 'yes' ? '#f0f8f6' : 'white' }}>
+          <div style={{ fontWeight: 700, fontSize: '0.88rem' }}>Texting permission</div>
+          {!deal.clientPhone && <div style={{ fontSize: '0.82rem', color: MUTED }}>Add their cell number below and save. Then you can ask if it is OK to text them.</div>}
+          {deal.clientPhone && cstate === 'none' && <div style={{ fontSize: '0.82rem', color: MUTED, lineHeight: 1.5 }}>You have not asked yet. No texts go out to {first} (not the link, not the date reminders) until they reply YES.</div>}
+          {deal.clientPhone && cstate === 'asked' && <div style={{ fontSize: '0.82rem', lineHeight: 1.5 }}>Asked {when(tc.requestedAt)}. Waiting for {first} to reply YES. Their reply shows in the Texts tab and on your phone.</div>}
+          {cstate === 'yes' && <div style={{ fontSize: '0.82rem', color: DEEP, fontWeight: 700, lineHeight: 1.5 }}>{first} said YES on {when(tc.yesAt)}. The link and date reminders can go out by text.</div>}
+          <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>
+            {deal.clientPhone && cstate !== 'yes' && <button type="button" className="adm-btn pink" onClick={askConsent}>{cstate === 'asked' ? 'Send the consent text again' : 'Send the consent text'}</button>}
+            {cstate === 'asked' && <button type="button" className="adm-btn" onClick={() => consent('deal-consent-yes', 'Marked. Texts are on for this client.')}>They replied YES</button>}
+            {cstate === 'yes' && <button type="button" className="adm-btn" onClick={() => { if (window.confirm('Turn texts off for this client? Use this if you marked YES by mistake.')) consent('deal-consent-undo', 'Texts are off for this client.'); }}>Undo YES</button>}
+          </div>
+          <details style={{ fontSize: '0.78rem', color: MUTED }}>
+            <summary style={{ cursor: 'pointer', fontWeight: 700 }}>The exact words this sends</summary>
+            <p style={{ margin: '0.4rem 0 0', lineHeight: 1.5 }}>{DEAL_CONSENT_TEXT}</p>
+          </details>
+          <Field label="How they like to hear from you"><Seg value={deal.contactPref || ''} onChange={(v) => edit({ contactPref: v })} options={PREFS} /></Field>
+        </div>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'end' }}>
           <Field label="Status"><select style={{ ...inputStyle, width: 'auto' }} value={deal.status} onChange={(e) => edit({ status: e.target.value })}><option value="active">Under contract</option><option value="closed">Closed</option><option value="cancelled">Cancelled</option></select></Field>
           <Field label="Offer accepted"><input style={{ ...inputStyle, width: 'auto' }} type="date" value={deal.acceptedOn || ''} onChange={(e) => edit({ acceptedOn: e.target.value })} /></Field>

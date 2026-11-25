@@ -20,3 +20,12 @@ export function consentFields(checked) {
     consentVersion: SMS_CONSENT_VERSION,
   };
 }
+
+// The one text Holly sends a transaction client to ask for texting permission.
+// This must stay character for character the same as Sample message #4 filed
+// with the carrier campaign; if you change it, the filing has to change too.
+// Nothing else goes to a roadmap client until they reply YES.
+export const DEAL_CONSENT_VERSION = '2026-11-25';
+
+export const DEAL_CONSENT_TEXT =
+  "Holly Griewahn, Foundation Realty: I'm so excited to be working with you! Communication is a big part of making your home buying or selling experience as smooth and stress-free as possible. With your permission, I'd love to communicate with you via text throughout the process, including important updates, appointment reminders, inspections, deadlines, closing details, and other information related to your real estate transaction. Is it OK if I send you these text messages? Please reply YES to confirm your consent. Message frequency varies. Message and data rates may apply. You may reply STOP at any time to opt out or HELP for assistance.";

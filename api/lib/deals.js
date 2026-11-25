@@ -1,6 +1,8 @@
 import crypto from 'node:crypto'
 import { list, put } from '@vercel/blob'
 import { SITE } from './report.js'
+import { normalizePhone } from './sms.js'
+import { DEAL_CONSENT_VERSION } from '../../src/lib/sms-consent.js'
 import { WHO, SIDES as SIDE_INFO, addDays, daysBetween } from '../../src/data/deal-templates.js'
 
 // A "deal" is one client's transaction roadmap: the dated steps from offer
@@ -22,6 +24,52 @@ import { WHO, SIDES as SIDE_INFO, addDays, daysBetween } from '../../src/data/de
 export const SIDES = ['buyer', 'seller']
 export const STATUSES = ['active', 'closed', 'cancelled']
 export const WHO_KEYS = Object.keys(WHO)
+
+export const CONTACT_PREFS = ['text', 'email', 'both']
+
+// ── texting permission ──────────────────────────────────────────────────
+// A roadmap client is texted only after they have replied YES to the consent
+// text Holly sends from the desk. The record is owned by the server: the desk
+// never posts it, normalizeDeal carries it over from the stored deal, and it
+// is dropped if the client's number changes, because a YES belongs to a number.
+//   textConsent: { phone: <10 digits>, requestedAt, yesAt, version }
+export function hasTextConsent(deal) {
+  const c = deal?.textConsent
+  const d = normalizePhone(deal?.clientPhone)
+  return Boolean(c && c.yesAt && d.length === 10 && c.phone === d)
+}
+
+export function consentState(deal) {
+  if (hasTextConsent(deal)) return 'yes'
+  const c = deal?.textConsent
+  return c && c.requestedAt && c.phone === normalizePhone(deal?.clientPhone) ? 'asked' : 'none'
+}
+
+function keepConsent(existing, phone) {
+  const c = existing?.textConsent
+  if (!c) return null
+  return c.phone === normalizePhone(phone) ? c : null
+}
+
+// The only writers of the record. Each saves a new version of the deal.
+export async function recordConsentRequest(deal) {
+  const phone = normalizePhone(deal.clientPhone)
+  const prev = deal.textConsent && deal.textConsent.phone === phone ? deal.textConsent : null
+  const next = { ...deal, textConsent: { phone, requestedAt: new Date().toISOString(), yesAt: prev?.yesAt || null, version: DEAL_CONSENT_VERSION }, updatedAt: new Date().toISOString() }
+  return saveDeal(next)
+}
+
+export async function recordConsentYes(deal) {
+  const phone = normalizePhone(deal.clientPhone)
+  const c = deal.textConsent
+  if (!c || !c.requestedAt || c.phone !== phone) throw Object.assign(new Error('Send the consent text first, then mark their YES.'), { status: 400 })
+  return saveDeal({ ...deal, textConsent: { ...c, yesAt: new Date().toISOString() }, updatedAt: new Date().toISOString() })
+}
+
+export async function clearConsentYes(deal) {
+  if (!deal.textConsent) return deal
+  return saveDeal({ ...deal, textConsent: { ...deal.textConsent, yesAt: null }, updatedAt: new Date().toISOString() })
+}
 
 const secret = () => process.env.ADMIN_SECRET || ''
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
@@ -77,6 +125,7 @@ export function normalizeDeal(input, existing = null) {
   if (!address) throw Object.assign(new Error('Enter the property address.'), { status: 400 })
   const clientName = str(b.clientName, 80) || existing?.clientName || ''
   if (!clientName) throw Object.assign(new Error('Enter the client\'s name.'), { status: 400 })
+  const clientPhone = str(b.clientPhone, 30).replace(/[^\d+() .-]/g, '').trim()
   const rawSteps = Array.isArray(b.steps) ? b.steps.slice(0, 60) : existing?.steps || []
   const steps = rawSteps.map((s, i) => ({
     id: /^[a-z0-9-]{1,40}$/.test(String(s?.id || '')) ? s.id : `step-${i + 1}-${crypto.randomUUID().slice(0, 6)}`,
@@ -101,8 +150,10 @@ export function normalizeDeal(input, existing = null) {
     city: str(b.city, 80),
     lake: str(b.lake, 60),
     clientName,
-    clientPhone: str(b.clientPhone, 30).replace(/[^\d+() .-]/g, '').trim(),
+    clientPhone,
     clientEmail: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(b.clientEmail || '')) ? str(b.clientEmail, 120) : '',
+    contactPref: CONTACT_PREFS.includes(b.contactPref) ? b.contactPref : (b.contactPref === '' ? '' : existing?.contactPref || ''),
+    textConsent: keepConsent(existing, clientPhone),
     price: Number.isFinite(Number(b.price)) && Number(b.price) > 0 ? Math.round(Number(b.price)) : null,
     lender: str(b.lender, 80),
     titleCompany: str(b.titleCompany, 80),
@@ -195,7 +246,7 @@ export function todayET() {
 
 // What the client page receives: the roadmap and nothing Holly keeps to herself.
 export function publicView(deal, notes = []) {
-  const { internal, clientEmail, ...rest } = deal
+  const { internal, clientEmail, textConsent, contactPref, ...rest } = deal
   const today = todayET()
   return {
     ...rest,
@@ -217,6 +268,7 @@ export function summary(deal, notes = []) {
     id: deal.id, side: deal.side, address: deal.address, city: deal.city, clientName: deal.clientName, clientPhone: deal.clientPhone,
     status: deal.status, acceptedOn: deal.acceptedOn, closingOn: deal.closingOn, daysToClose: deal.closingOn ? daysBetween(today, deal.closingOn) : null,
     progress: p, overdue, unanswered: Boolean(unanswered), updatedAt: deal.updatedAt, link: dealLink(deal.id),
+    consent: consentState(deal), contactPref: deal.contactPref || '',
   }
 }
 

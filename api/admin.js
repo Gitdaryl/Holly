@@ -6,6 +6,7 @@ import { buildReport, sellerKeyFor, SITE } from './lib/report.js'
 import { windowDays, todayISO } from './lib/engage-store.js'
 import { authorize, loginAllowed, mintLinkToken, mintSession, verify } from './lib/admin-auth.js'
 import { notifyHolly, textLead, HOLLY_PRETTY, normalizePhone } from './lib/sms.js'
+import { DEAL_CONSENT_TEXT } from '../src/lib/sms-consent.js'
 import { WRITE_REVIEW_URL } from './reviews.js'
 import { transcribeWithDeepgram } from './voice-inbound.js'
 import { AGENT_BY_KEY, assistantFor } from './lib/ai-agents.js'
@@ -186,8 +187,21 @@ async function dealAction(req, res, action) {
     }
     const deal = await deals.loadDeal(String(b.id || ''))
     if (!deal && action !== 'deal-extract') return res.status(404).json({ error: 'No such deal.' })
+    // Texting permission. The client is asked once, by hand, with the exact words
+    // filed with the carrier; nothing else is texted until Holly marks their YES.
+    if (action === 'deal-consent-request') {
+      if (!deal.clientPhone) return res.status(400).json({ error: 'Add the client\'s cell number first, and save.' })
+      if (deals.hasTextConsent(deal)) return res.status(400).json({ error: 'They already said yes. Nothing to send.' })
+      const r = await textLead(deal.clientPhone, DEAL_CONSENT_TEXT, { author: 'holly' })
+      if (!r.ok) return res.status(502).json({ error: `Text failed: ${r.error}` })
+      const saved = await deals.recordConsentRequest(deal)
+      return res.status(200).json({ ok: true, deal: saved })
+    }
+    if (action === 'deal-consent-yes') return res.status(200).json({ ok: true, deal: await deals.recordConsentYes(deal) })
+    if (action === 'deal-consent-undo') return res.status(200).json({ ok: true, deal: await deals.clearConsentYes(deal) })
     if (action === 'deal-send') {
       if (!deal.clientPhone) return res.status(400).json({ error: 'Add the client\'s cell number first.' })
+      if (!deals.hasTextConsent(deal)) return res.status(400).json({ error: 'They have not said YES to texts yet. Send the consent text first, or copy the link and email it.' })
       const first = deal.clientName.split(' ')[0]
       const what = deal.side === 'seller' ? 'sale' : 'purchase'
       const text = String(b.body || '').trim().slice(0, 600)
@@ -203,7 +217,7 @@ async function dealAction(req, res, action) {
       const note = await deals.addNote(deal.id, { from: 'holly', kind: 'reply', text, name: 'Holly' })
       // The reply also lands in their texts, from the number they already know.
       let texted = false
-      if (deal.clientPhone && b.alsoText !== false) {
+      if (deal.clientPhone && b.alsoText !== false && deals.hasTextConsent(deal)) {
         const r = await textLead(deal.clientPhone, `Holly: ${text}\nYour roadmap: ${deals.dealLink(deal.id)}`, { author: 'holly' })
         texted = r.ok
       }
