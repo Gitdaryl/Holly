@@ -28,3 +28,12 @@ export async function head(pathname) {
   if (!store.has(key)) throw new Error('BlobNotFoundError')
   return meta(key)
 }
+
+// get(pathname, { access, useCache }): the stream-and-metadata shape of the real SDK,
+// or null when the path is missing. Reads are always fresh here.
+export async function get(pathname) {
+  const key = String(pathname).replace('https://mem.test/', '')
+  if (!store.has(key)) return null
+  const body = store.get(key)
+  return { statusCode: 200, stream: new Response(body).body, headers: new Headers(), blob: { ...meta(key), size: body.length, contentType: 'application/json', etag: `"${key.length}-${body.length}"` } }
+}

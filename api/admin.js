@@ -14,6 +14,7 @@ import * as letter from './lib/newsletter-send.js'
 import { issue as readIssue } from './lib/newsletter-store.js'
 import * as deals from './lib/deals.js'
 import * as letters from './lib/letters.js'
+import * as people from './lib/people-store.js'
 import { sendMail, newsletterFrom } from './lib/mail.js'
 import { buildSteps, redate } from '../src/data/deal-templates.js'
 
@@ -27,6 +28,7 @@ import { buildSteps, redate } from '../src/data/deal-templates.js'
 //   POST ?action=reply   {to, body}     (bearer) send a text from the site number
 //   GET  ?view=letter | letter-new | letter-get&id= | letter-preview&id=   the newsletter
 //   POST ?action=letter-save {issue} | letter-test {id, to} | letter-send {id}   (see lib/newsletter-send.js)
+//   GET  ?view=people-health           round trip against the private people store (lib/people-store.js)
 //   GET  ?view=deals | deal&id=        transaction roadmaps (see lib/deals.js)
 //   POST ?action=deal-save {deal} | deal-send {id} | deal-reply {id, text} | deal-extract {text|pdf}
 //   GET  ?view=stationery              email readiness, review link, recent letters (see lib/letters.js)
@@ -59,6 +61,7 @@ export default async function handler(req, res) {
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
     const view = req.query.view
     if (view === 'ping') return res.status(200).json({ ok: true })
+    if (view === 'people-health') return res.status(200).json(await people.probe())
     if (view === 'inbox') return res.status(200).json(await inbox())
     if (view === 'waitlist') return res.status(200).json(await waitlist())
     if (view === 'listings') return res.status(200).json(await listings())

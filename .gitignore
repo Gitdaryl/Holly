@@ -5,3 +5,6 @@ dist/
 .vercel
 help/out/
 help/cache/
+import-data/
+*.zip
+*members_export*
