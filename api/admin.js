@@ -181,6 +181,7 @@ async function dealAction(req, res, action) {
       // Moving the closing date re-dates every step still on its template offset.
       if (existing && (existing.closingOn !== deal.closingOn || existing.acceptedOn !== deal.acceptedOn) && b.redate !== false) deal.steps = redate(deal.steps, deal)
       await deals.saveDeal(deal)
+      if (!existing) await markLeadsClient(deal.clientPhone)
       return res.status(200).json({ deal, link: deals.dealLink(deal.id) })
     }
     const deal = await deals.loadDeal(String(b.id || ''))
@@ -285,7 +286,10 @@ function session(req, res) {
 
 // ── inbox ───────────────────────────────────────────────────────────────
 
-const MAX_LEADS = 200
+// A safety ceiling, not a working limit: Holly's volume is hundreds a year. The
+// hourly follow-up job reads this same list, so nothing older than the ceiling
+// is dropped from the desk or from automation until well past that.
+const MAX_LEADS = 2000
 
 export async function allBlobs(prefix) {
   const out = []
@@ -369,16 +373,46 @@ function normalize({ pathname, data }) {
     detail: [data.preferred, data.message].filter(Boolean).join(' · '), link: prop ? `/property/${prop.slug}` : null }
 }
 
+// One person, two records: a lead and a roadmap are matched on the last ten
+// digits of the phone. Best-effort; a deals read failure must never hide leads.
+async function dealsByPhone() {
+  const map = {}
+  try {
+    for (const d of await deals.listDeals()) {
+      const k = normalizePhone(d.clientPhone)
+      if (k.length !== 10) continue
+      // listDeals puts active first, so the first one seen per phone is the live one.
+      if (!map[k]) map[k] = { id: d.id, address: d.address, status: d.status }
+    }
+  } catch (err) { console.error('inbox: deals read failed', err.message) }
+  return map
+}
+
 export async function inbox() {
-  const [leadBlobs, waitBlobs, status, asked] = await Promise.all([allBlobs('leads/'), allBlobs('waitlist/'), statusMap(), reviewAskedMap()])
+  const [leadBlobs, waitBlobs, status, asked, dealMap] = await Promise.all([allBlobs('leads/'), allBlobs('waitlist/'), statusMap(), reviewAskedMap(), dealsByPhone()])
   const blobs = [...leadBlobs, ...waitBlobs]
     .filter((b) => b.pathname.endsWith('.json'))
     .sort((a, b) => sortKey(b.pathname).localeCompare(sortKey(a.pathname)))
     .slice(0, MAX_LEADS)
-  const items = (await readJson(blobs)).map(normalize).map((l) => ({ ...l, status: status[l.id]?.status || 'new', reviewAskedAt: asked[l.id] || null }))
+  const items = (await readJson(blobs)).map(normalize).map((l) => ({ ...l, status: status[l.id]?.status || 'new', reviewAskedAt: asked[l.id] || null, deal: dealMap[normalizePhone(l.phone)] || null }))
   const counts = {}
   for (const l of items) counts[l.status] = (counts[l.status] || 0) + 1
   return { items, counts, total: leadBlobs.length + waitBlobs.length, capped: blobs.length === MAX_LEADS }
+}
+
+// A new roadmap means this person is a client: any open lead with their phone
+// moves to Client, which also stops the New-lead nudges. Dead leads are left
+// alone (Holly decided that). Best-effort: the deal is already saved.
+async function markLeadsClient(phone) {
+  const key = normalizePhone(phone)
+  if (key.length !== 10) return
+  try {
+    const { items } = await inbox()
+    for (const l of items) {
+      if (normalizePhone(l.phone) !== key || !['new', 'called', 'showing'].includes(l.status)) continue
+      await put(`admin/status/${l.id}/${Date.now()}-client`, '1', { access: 'public', addRandomSuffix: false, contentType: 'text/plain' })
+    }
+  } catch (err) { console.error('markLeadsClient failed', err.message) }
 }
 
 async function setStatus(req, res) {

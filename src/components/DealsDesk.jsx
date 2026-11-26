@@ -54,11 +54,14 @@ function Progress({ p }) {
 function List({ session, onOpen, onNew }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
+  const [q, setQ] = useState('');
   useEffect(() => { api('/api/admin?view=deals', { session }).then(setData).catch((e) => setError(e.message)); }, [session]);
   if (error) return <Note tone="error">{error}</Note>;
   if (!data) return <div style={{ textAlign: 'center', color: MUTED, padding: '3rem', fontSize: '0.85rem' }}>Loading…</div>;
-  const active = data.deals.filter((d) => d.status === 'active');
-  const past = data.deals.filter((d) => d.status !== 'active');
+  const needle = q.trim().toLowerCase();
+  const found = needle ? data.deals.filter((d) => [d.address, d.city, d.clientName, d.clientPhone].some((v) => String(v || '').toLowerCase().includes(needle)) || (needle.replace(/\D/g, '').length >= 3 && String(d.clientPhone || '').replace(/\D/g, '').includes(needle.replace(/\D/g, '')))) : data.deals;
+  const active = found.filter((d) => d.status === 'active');
+  const past = found.filter((d) => d.status !== 'active');
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
@@ -77,6 +80,8 @@ function List({ session, onOpen, onNew }) {
           <div style={{ fontSize: '0.85rem', color: MUTED, lineHeight: 1.6 }}>Next accepted offer, tap New roadmap. Upload the purchase agreement and the dates fill themselves in; two minutes, then text the client their link.</div>
         </div>
       )}
+      {data.deals.length > 1 && <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a roadmap: client, address or phone" aria-label="Search roadmaps" style={{ width: '100%', padding: '0.7rem 0.85rem', marginBottom: '0.85rem', borderRadius: '10px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.92rem', background: 'white' }} />}
+      {needle && !found.length && <div style={{ fontSize: '0.85rem', color: MUTED, padding: '1rem 0' }}>No roadmap matches that.</div>}
       <div style={{ display: 'grid', gap: '0.75rem' }}>
         {[...active, ...past].map((d) => (
           <button key={d.id} type="button" className="adm-card" onClick={() => onOpen(d.id)} style={{ textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', color: INK, opacity: d.status === 'active' ? 1 : 0.7 }}>

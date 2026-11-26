@@ -234,6 +234,7 @@ function LeadCard({ lead, session, onStatus, fresh }) {
           </button>
         )}
         {!lead.phone && !lead.email && <span style={{ fontSize: '0.78rem', color: '#98a3a1' }}>No contact details</span>}
+        {lead.deal && <Link className="adm-btn" to={`/admin?tab=deals&id=${lead.deal.id}`}>Roadmap: {lead.deal.address}</Link>}
         {lead.phone && lead.smsDeclined && <span style={{ fontSize: '0.78rem', color: '#66706e', alignSelf: 'center' }}>Did not agree to texts, please call</span>}
       </div>
     </div>
@@ -244,6 +245,7 @@ function Inbox({ session }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('open');
+  const [q, setQ] = useState('');
   const [fresh, setFresh] = useState(() => new Set());
   // Leads that arrived since she last opened the inbox drop in and ring.
   const load = useCallback(() => {
@@ -258,24 +260,33 @@ function Inbox({ session }) {
   if (error) return <ErrorBox error={error} />;
   if (!data) return <Loading />;
   const onStatus = (id, status) => setData((d) => ({ ...d, items: d.items.map((l) => (l.id === id ? { ...l, status } : l)) }));
-  const items = data.items.filter((l) => filter === 'all' ? true : filter === 'open' ? !['dead', 'client'].includes(l.status) : l.status === filter);
+  // Typing in the search box looks across every status, so a client or a dead
+  // lead is found no matter which filter was last tapped.
+  const needle = q.trim().toLowerCase();
+  const needleDigits = digits(needle);
+  const hit = (l) => [l.name, l.email, l.about, l.detail, l.source, l.deal?.address].some((v) => String(v || '').toLowerCase().includes(needle))
+    || (needleDigits.length >= 3 && digits(l.phone).includes(needleDigits));
+  const items = needle
+    ? data.items.filter(hit)
+    : data.items.filter((l) => filter === 'all' ? true : filter === 'open' ? !['dead', 'client'].includes(l.status) : l.status === filter);
   const newCount = data.items.filter((l) => l.status === 'new').length;
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
         <div style={{ fontFamily: SERIF, fontSize: '1.3rem', fontWeight: 700 }}>{newCount ? `${newCount} new` : 'Inbox'} <span style={{ fontSize: '0.8rem', color: MUTED, fontFamily: FONT, fontWeight: 600 }}>· {data.total} total</span></div>
         <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-          {[['open', 'Open'], ['new', 'New'], ['called', 'Called'], ['showing', 'Showings'], ['all', 'All']].map(([k, l]) => (
+          {[['open', 'Open'], ['new', 'New'], ['called', 'Called'], ['showing', 'Showings'], ['client', 'Clients'], ['dead', 'Dead'], ['all', 'All']].map(([k, l]) => (
             <button key={k} onClick={() => setFilter(k)} className="adm-btn" style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', background: filter === k ? DEEP : 'white', color: filter === k ? 'white' : MUTED, borderColor: filter === k ? DEEP : LINE }}>{l}</button>
           ))}
         </div>
       </div>
+      <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find someone: name, phone, email or address" aria-label="Search the inbox" style={{ width: '100%', padding: '0.7rem 0.85rem', marginBottom: '0.85rem', borderRadius: '10px', border: `1px solid ${LINE}`, fontFamily: 'inherit', fontSize: '0.92rem', background: 'white' }} />
       {items.length === 0 ? (
-        <Empty title="Nothing here" body={filter === 'open' ? 'Every lead is handled. When someone fills in a form on the site it shows up here and on your phone.' : 'No leads match that filter.'} />
+        <Empty title="Nothing here" body={needle ? 'No one matches that. Try part of a name, the last four digits of a phone, or a street.' : filter === 'open' ? 'Every lead is handled. When someone fills in a form on the site it shows up here and on your phone.' : 'No leads match that filter.'} />
       ) : (
         <div style={{ display: 'grid', gap: '0.75rem' }}>{items.map((l) => <LeadCard key={l.id} lead={l} session={session} onStatus={onStatus} fresh={fresh.has(l.id)} />)}</div>
       )}
-      {data.capped && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '1rem', textAlign: 'center' }}>Showing the latest {data.items.length}.</p>}
+      {data.capped && <p style={{ fontSize: '0.75rem', color: '#98a3a1', marginTop: '1rem', textAlign: 'center' }}>Showing the latest {data.items.length} of {data.total}.</p>}
     </>
   );
 }
