@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       // The gate that matters. Unsubscribe links are absolute URLs that live
       // in inboxes forever; if they are built on a host that stops resolving,
       // the opt-out breaks for every message already sent.
-      safeToSend: SITE().includes('hollygriewahn.com'),
+      safeToSend: SITE().includes('hollygriewahnrealtor.com'),
     })
   }
 

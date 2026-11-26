@@ -46,11 +46,11 @@ export function readiness() {
   const site = siteUrl()
   const waitingOn = []
   if (!from) waitingOn.push('A sending address. Holly finishes the email steps, then Yeti sets NEWSLETTER_FROM.')
-  if (!site.includes('hollygriewahn.com')) waitingOn.push('The switch to hollygriewahn.com. Unsubscribe links live in inboxes for a year, so they cannot point at the temporary address.')
+  if (!site.includes('hollygriewahnrealtor.com')) waitingOn.push('The site address must be hollygriewahnrealtor.com. Unsubscribe links live in inboxes for a year, so they cannot point at a temporary address.')
   if (!process.env.RESEND_API_KEY) waitingOn.push('RESEND_API_KEY is not set.')
   if (!process.env.NEWSLETTER_SECRET) waitingOn.push('NEWSLETTER_SECRET is not set.')
   const canTest = Boolean(from && process.env.RESEND_API_KEY && process.env.NEWSLETTER_SECRET)
-  return { from, site, canTest, canSend: canTest && site.includes('hollygriewahn.com'), waitingOn }
+  return { from, site, canTest, canSend: canTest && site.includes('hollygriewahnrealtor.com'), waitingOn }
 }
 
 async function allSubs() {
